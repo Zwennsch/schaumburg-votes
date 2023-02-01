@@ -13,7 +13,8 @@ def create_app(test_config=None):
     )
 
     if test_config is None:
-        # load the instance config, if it exists, when not testing
+        # load the instance config, if it exists, when not testing. Override default configuration with values taken from config.py in instance folder
+        # this can for example be used to set the real SECRET_KEY
         app.config.from_pyfile('config.py', silent=True)
     else:
         # load the test config, if passed in
