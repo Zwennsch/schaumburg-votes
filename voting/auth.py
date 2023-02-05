@@ -13,21 +13,21 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
     if request.method == 'POST':
-        if not request.form.get('username'):
+        if request.form.get('username') is None:
             flash("must enter username", 'error')
             return redirect(url_for('/login'))
         username = request.form.get('username')
 
-        if not request.form.get('password'):
+        if request.form.get('password') is None:
             flash("must enter password", 'error')
             return redirect(url_for('/login'))
         password = request.form.get('password')
 
-        db = get_db
+        db = get_db()
         error = None
             
         user = db.execute(
-            'SELECT FROM user WHERE username = ?', (username,)
+            'SELECT * FROM user WHERE username = ?', (username,)
         ).fetchone()
 
         if user is None:
@@ -42,6 +42,29 @@ def login():
             return redirect(url_for('vote_now'))
         
         flash(error)
-        # TODO: Why can't I use redirect('/login') ??
-        return render_template('auth/login.html')
+        
+    # case for request.method == 'GET'
+    return render_template('auth/login.html')
 
+@bp.route('/logout')
+def logout():
+    session.clear()
+    # TODO: check for correctness. I might just return a render_template('index.html')
+    return redirect(url_for('index'))
+
+@bp.before_app_request
+def load_logged_in_user():
+    user_id = session['user_id']
+
+    if user_id is None:
+        g.user = None
+    else:
+        g.user = get_db().execute(
+            'SELECT * FROM user WHERE id = ?', (user_id,)
+        ).fetchone()
+
+def login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect('')
