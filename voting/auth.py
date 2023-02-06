@@ -63,8 +63,15 @@ def load_logged_in_user():
             'SELECT * FROM user WHERE id = ?', (user_id,)
         ).fetchone()
 
+# decorator for each view, that requires a login. 
+# TODO: use this for the vote.html view
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
-            return redirect('')
+            # redirect to login if user is not loaded
+            return redirect(url_for('auth.login'))
+        # return original view, if user id logged in
+        return view(**kwargs)
+
+    return wrapped_view
