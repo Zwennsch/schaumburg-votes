@@ -15,13 +15,14 @@ def login():
     if request.method == 'POST':
         if request.form.get('username') is None:
             flash("must enter username", 'error')
-            return redirect(url_for('/login'))
+            return render_template('/login.html')
         username = request.form.get('username')
 
         if request.form.get('password') is None:
             flash("must enter password", 'error')
-            return redirect(url_for('/login'))
-        password = request.form.get('password')
+            return render_template('/login.html')
+            # TODO: I might have to change the default value, actually there shouldn't be one.
+        password = request.form.get('password', default= '')
 
         db = get_db()
         error = None
