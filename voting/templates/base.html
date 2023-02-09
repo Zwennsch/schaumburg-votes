@@ -8,12 +8,12 @@
         <title>Schaumburg wählt: {% block title %} {% endblock %}</title>
     </head>
     <!--  TODO: cannot integrate the background images properly because of syntax issues with jinja -->
-    <body style="background-image: url('images/desktop_background_main.png');">
+    <body style="background-image: url('../static/desktop_background_main.png');">
         <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
           <div class="container">
             <a href="#"
                 class="navbar-brand mb-0">
-                <img class="mb-2"src="images/wahl_logo.png" width="30" height="30"/>
+                <img class="mb-2" src="../static/wahl_logo.png" width="30" height="30"/>
                 OS Schaumburger Strasse
             </a>
             <button type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" class="navbar-toggler"
@@ -24,12 +24,20 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
+                  <!-- TODO: make a link active depending on the page the user is on-->
                     <li class="nav-item">
-                      <a class="nav-link active" href="#">Home</a>
+                      <!-- TODO: change the urls for the links once the views/blueprints have been created-->
+                      <a class="nav-link" href="./index.html">Home</a>
                     </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="./log_in.html">Log In</a>
-                    </li>
+                    {% if g.user %}
+                      <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.login')}}">Log Out</a>
+                      </li>
+                    {% else %}
+                      <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.logout')}}">Log In</a>
+                      </li>
+                    {% endif %}
                     <li class="nav-item">
                       <a class="nav-link" href="./vote.html">Vote Now</a>
                     </li>
