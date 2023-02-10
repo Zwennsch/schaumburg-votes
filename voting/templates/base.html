@@ -27,7 +27,7 @@
                   <!-- TODO: make a link active depending on the page the user is on-->
                     <li class="nav-item">
                       <!-- TODO: change the urls for the links once the views/blueprints have been created-->
-                      <a class="nav-link" href="./index.html">Home</a>
+                      <a class="nav-link" href="{{ url_for('home.index')}}">Home</a>
                     </li>
                     {% if g.user %}
                       <li class="nav-item">
