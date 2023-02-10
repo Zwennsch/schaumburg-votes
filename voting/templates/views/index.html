@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+{% block main %}
+  <div class="container landing-logo centered">
+    <img class="welcome-logo" src="images/wahl_logo.png" width="80" height="80"/>
+    <h1>Welcome to <br>Schaumburg wählt!</h1>
+    {% if not username == '' %}
+    <h2>Hello {{username}}</h2>
+    {% else %}
+    <h2>Please login</h2>
+    <!-- TODO: I might have to built a login button that refers to the login page-->
+    {% endif %}
+  </div>
+{% endblock %}
