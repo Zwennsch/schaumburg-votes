@@ -16,8 +16,8 @@ html, body{
     display: flex;
     align-items: center;
     justify-content: center;
-
 }
+
 .button-container button{
     margin: 0 10px;
 }
@@ -89,12 +89,19 @@ html, body{
     margin-right: 20px;
 }
 
-
+#login-btn{
+    margin-left: 10px;
+    padding: 12px;
+    background-color: #6c757d;
+    color: white;
+}
+#login-btn:hover{
+    background-color: #212529;
+}
 
 #vote-btn{
     display: flex;
     justify-content: center;
-
 }
 
 

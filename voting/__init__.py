@@ -26,10 +26,6 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    @app.route('/hello')
-    def hello():
-        return 'hello world!'
-
     from . import db
     db.init_app(app)
 
@@ -38,6 +34,9 @@ def create_app(test_config=None):
 
     from . import home
     app.register_blueprint(home.bp)
+
+    from . import vote
+    app.register_blueprint(vote.bp)
 
     return app
 
