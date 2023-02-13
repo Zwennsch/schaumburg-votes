@@ -3,7 +3,12 @@ from flask import (
 )
 from voting.db import get_db
 
-bp = Blueprint('home', __name__)
+bp = Blueprint('views', __name__)
+
+@bp.route('/vote', methods=('GET', 'POST'))
+def vote():
+    return render_template('views/vote.html')
+
 
 @bp.route('/')
 def index():

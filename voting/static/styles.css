@@ -32,6 +32,8 @@ html, body{
     display: flex; /* Use flexbox to position the elements side by side */
     align-items: center; /* Add space between the elements */
     justify-content: center;
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
 .landing-logo-2{
     display: flex; /* Use flexbox to position the elements side by side */

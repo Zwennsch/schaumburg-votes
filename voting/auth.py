@@ -15,12 +15,12 @@ def login():
     if request.method == 'POST':
         if request.form.get('username') is None:
             flash("must enter username", 'error')
-            return render_template('/login.html')
+            return render_template('auth/login.html')
         username = request.form.get('username')
 
         if request.form.get('password') is None:
             flash("must enter password", 'error')
-            return render_template('/login.html')
+            return render_template('auth/login.html')
             # TODO: I might have to change the default value, actually there shouldn't be one.
         password = request.form.get('password', default= '')
 

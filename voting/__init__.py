@@ -32,11 +32,8 @@ def create_app(test_config=None):
     from . import auth
     app.register_blueprint(auth.bp)
 
-    from . import home
-    app.register_blueprint(home.bp)
-
-    from . import vote
-    app.register_blueprint(vote.bp)
+    from . import views
+    app.register_blueprint(views.bp)
 
     return app
 
