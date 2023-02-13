@@ -85,6 +85,9 @@ html, body{
 .test html, body{
     height: 100%;
 }
+.vote-btn{
+    margin: 15px;
+}
 .welcome-logo{
     margin-right: 20px;
 }
