@@ -31,15 +31,18 @@ def login():
             'SELECT * FROM user WHERE username = ?', (username,)
         ).fetchone()
 
+        # case for not signed in successfully, error is set to value
         if user is None:
             error = 'Incorrect username'
         elif not check_password_hash(user['password'], password):
             error = 'Incorrect password'
 
+        # case that a user us successfully logged_in
         if error is None:
             session.clear()
+            # set the session['user_id'] value correct:
             session['user_id'] = user['id']
-            # TODO: I am not sure of how to provide the 'endpoint string' for the 'url_for' function. Have to check when implementing 
+            # if user['] redirect to ('/') and display courses if user has voted, otherwise 
             return redirect(url_for('vote_now'))
         
         flash(error)
