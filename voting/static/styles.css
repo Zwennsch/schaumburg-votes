@@ -29,9 +29,12 @@ html, body{
     transform: translate(-50%, -50%);
 }
 .flash {
+    top: 20%;
     margin: 1em 0;
     padding: 1em;
-    background: #cae6f6;
+    background: rgb(255,255,255,0.3);
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     border: 1px solid #377ba8;
   }
 .landing-logo{

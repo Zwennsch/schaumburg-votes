@@ -10,7 +10,7 @@ def vote():
     if request.method == 'GET':
         # make sure a user is logged in, otherwise redirect use flash and redirect to login
         if session.get('user_id') == None:
-            flash("please login first", category="info")
+            flash("Please Login First", category="info")
             redirect(url_for('auth.login'))
         else:
             return render_template('views/vote.html')
@@ -18,6 +18,7 @@ def vote():
     # case for POST
     else:
         # TODO: implement POST case for vote:
+        
         print('in POST for vote')
 
     return redirect(url_for('views.index'))
