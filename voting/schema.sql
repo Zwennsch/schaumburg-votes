@@ -4,7 +4,8 @@ DROP TABLE IF EXISTS vote;
 CREATE TABLE user (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL
+    password TEXT NOT NULL,
+    final_course TEXT DEFAULT 'LEER'
 );
 
 CREATE TABLE vote (

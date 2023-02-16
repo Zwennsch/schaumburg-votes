@@ -3,7 +3,13 @@ import sqlite3
 import click
 from flask import current_app, g
 
+
 def get_db():
+    """Returns the database for the 'g' object.
+
+    Sets db to the actual ['DATABASE'] from current_app.config if there isn't any db in the g object
+    """
+
     if 'db' not in g:
         g.db = sqlite3.connect(
             current_app.config['DATABASE'],

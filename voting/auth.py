@@ -31,6 +31,8 @@ def login():
             'SELECT * FROM user WHERE username = ?', (username,)
         ).fetchone()
 
+        db_pw = user['password']
+
         # case for not signed in successfully, error is set to value
         if user is None:
             error = 'Incorrect username'
