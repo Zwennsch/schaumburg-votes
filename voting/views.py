@@ -18,7 +18,7 @@ def vote():
     # case for POST
     else:
         # TODO: implement POST case for vote:
-        
+
         print('in POST for vote')
 
     return redirect(url_for('views.index'))
@@ -33,6 +33,8 @@ def index():
     username = None
     # get username if g.user is not None:
     if g.user:
-        username = db.execute('SELECT username FROM user WHERE id = ?', (g.user['id']))
+        id = g.user['id']
+        ##TODO:needs to be fixed because db command doesn't work.
+        username = db.execute('SELECT username FROM user WHERE id = ?', id)
         
     return render_template('views/index.html', username = username )

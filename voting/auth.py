@@ -31,12 +31,14 @@ def login():
             'SELECT * FROM user WHERE username = ?', (username,)
         ).fetchone()
 
-        db_pw = user['password']
+        # db_pw = user['password']
 
         # case for not signed in successfully, error is set to value
         if user is None:
             error = 'Incorrect username'
-        elif not check_password_hash(user['password'], password):
+        # just for testing purpose, has te be switched to check_password_hash later
+        elif not password == user['password']:
+       # elif not check_password_hash(user['password'], password):
             error = 'Incorrect password'
 
         # case that a user us successfully logged_in
@@ -44,8 +46,8 @@ def login():
             session.clear()
             # set the session['user_id'] value correct:
             session['user_id'] = user['id']
-            # if user['] redirect to ('/') and display courses if user has voted, otherwise 
-            return redirect(url_for('vote_now'))
+            flash("successfully logged in", 'info')
+            return redirect(url_for('views.index'))
         
         flash(error)
         

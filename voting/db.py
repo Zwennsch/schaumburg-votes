@@ -31,6 +31,9 @@ def init_db():
 
     with current_app.open_resource('schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
+    # TODO: some further work has to be done: 
+    # users have to be set up with passwords -> extra function
+    # the db has to be filled with those passwords encrypted
 
 @click.command('init-db')
 def init_db_command():

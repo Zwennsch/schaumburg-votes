@@ -5,6 +5,8 @@ CREATE TABLE user (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
+    class TEXT NOT NULL,
+    vote_passed INTEGER DEFAULT 0,
     final_course TEXT DEFAULT 'LEER'
 );
 
