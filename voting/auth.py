@@ -31,12 +31,10 @@ def login():
             'SELECT * FROM user WHERE username = ?', (username,)
         ).fetchone()
 
-        # db_pw = user['password']
-
         # case for not signed in successfully, error is set to value
         if user is None:
             error = 'Incorrect username'
-        # just for testing purpose, has te be switched to check_password_hash later
+        # TODO:just for testing purpose, has te be switched to check_password_hash later
         elif not password == user['password']:
        # elif not check_password_hash(user['password'], password):
             error = 'Incorrect password'
@@ -57,8 +55,8 @@ def login():
 @bp.route('/logout')
 def logout():
     session.clear()
-    # TODO: check for correctness. I might just return a render_template('index.html')
-    return redirect(url_for('index'))
+    user = g.user
+    return redirect(url_for('views.index'))
 
 @bp.before_app_request
 def load_logged_in_user():

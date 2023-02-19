@@ -33,8 +33,6 @@ def index():
     username = None
     # get username if g.user is not None:
     if g.user:
-        id = g.user['id']
-        ##TODO:needs to be fixed because db command doesn't work.
-        username = db.execute('SELECT username FROM user WHERE id = ?', id)
         
+        username = g.user['username']
     return render_template('views/index.html', username = username )
