@@ -13,12 +13,13 @@ def vote():
             flash("Please Login First", category="info")
             redirect(url_for('auth.login'))
         else:
-            return render_template('views/vote.html')
+            return render_template('views/vote2.html')
    
     # case for POST
     else:
         # TODO: implement POST case for vote:
-
+        kurs1 = request.form.get("menu1")
+        print(kurs1)
         print('in POST for vote')
 
     return redirect(url_for('views.index'))

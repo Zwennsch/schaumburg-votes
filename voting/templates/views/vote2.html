@@ -1,0 +1,39 @@
+{% extends 'base.html' %} {% block title %}Log In{% endblock %} {% block main %}
+
+<div class="centered">
+  <form method="post">
+    <div class="form-group">
+      <label for="menu1">Erstwahl</label>
+      <select class="form-control" id="menu1" name="menu1">
+        <option value="Fußball">Fußball</option>
+        <option value="Schwimmen">Schwimmen</option>
+        <option value="Garten">Garten</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="menu2">Zweitwahl</label>
+      <select class="form-control" id="menu2" name="menu2">
+        <option value="Fußball">Fußball</option>
+        <option value="Schwimmen">Schwimmen</option>
+        <option value="Garten">Garten</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="menu3">Drittwahl</label>
+      <select class="form-control" id="menu3" name="menu3">
+        <option value="Fußball">Fußball</option>
+        <option value="Schwimmen">Schwimmen</option>
+        <option value="Garten">Garten</option>
+      </select>
+    </div>
+    <button type="submit" class="btn" id="vote-btn">Submit</button>
+  </form>
+</div>
+
+{% endblock %} {% block script %}
+<!-- <script>
+  function setDropdownText(text, btnID) {
+    document.getElementById(btnID).innerHTML = text;
+  }
+</script> -->
+{% endblock %}

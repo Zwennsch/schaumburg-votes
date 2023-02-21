@@ -1,11 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700&display=swap');
-*{
-    font-family: 'Nunito Sans', sans-serif;
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700&display=swap");
+* {
+  font-family: "Nunito Sans", sans-serif;
 }
-li, a{
-    font-family: 'Nunito Sans', sans-serif;
-    font-weight:700;
-    font-size:15px;
+li,
+a {
+  font-family: "Nunito Sans", sans-serif;
+  font-weight: 700;
+  font-size: 15px;
 }
 /*
 html, body{
@@ -13,133 +14,139 @@ html, body{
 }
 */
 .button-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.button-container button{
-    margin: 0 10px;
+.button-container button {
+  margin: 0 10px;
 }
 
 .centered {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 .flash {
-    top: 20%;
-    margin: 1em 0;
-    padding: 1em;
-    background: rgb(255,255,255,0.3);
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    border: 1px solid #377ba8;
-  }
-.landing-logo{
-    display: flex; /* Use flexbox to position the elements side by side */
-    align-items: center; /* Add space between the elements */
-    justify-content: center;
-    margin-top: 15px;
-    margin-bottom: 15px;
+  top: 20%;
+  margin: 1em 0;
+  padding: 1em;
+  background: rgb(255, 255, 255, 0.3);
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid #377ba8;
 }
-.landing-logo-2{
-    display: flex; /* Use flexbox to position the elements side by side */
-    justify-content: space-evenly;
+.landing-logo {
+  display: flex; /* Use flexbox to position the elements side by side */
+  align-items: center; /* Add space between the elements */
+  justify-content: center;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+.landing-logo-2 {
+  display: flex; /* Use flexbox to position the elements side by side */
+  justify-content: space-evenly;
 }
 
-.landing-logo h1{
-    font-size: 40px;
-    font-weight: 800;
-    text-align: center;
+.landing-logo h1 {
+  font-size: 40px;
+  font-weight: 800;
+  text-align: center;
 }
 .login-container {
-    width: 500px;
-    margin: 0 auto;
-    background-color: rgb(255,255,255,0.3);
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    padding: 20px;
+  width: 500px;
+  margin: 0 auto;
+  background-color: rgb(255, 255, 255, 0.3);
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  padding: 20px;
 }
 .login-container h1 {
-    text-align: center;
-    font-size: 24px;
+  text-align: center;
+  font-size: 24px;
 }
 .login-container input[type="text"],
 .login-container input[type="password"] {
-    width: 100%;
-    margin-bottom: 20px;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 .login-container input[type="submit"] {
-    width: 100%;
-    padding: 12px;
-    background-color: #6c757d;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 18px;
+  width: 100%;
+  padding: 12px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 18px;
 }
 .login-container input[type="submit"]:hover {
-    background-color: #212529;
+  background-color: #212529;
 }
-.nav{
-    background-color: #5CC8D7;
+.nav {
+  background-color: #5cc8d7;
 }
-.navbar-brand{
-    font-size: 30px;
+.navbar-brand {
+  font-size: 30px;
 }
-.test html, body{
-    height: 100%;
+.test html,
+body {
+  height: 100%;
 }
-.vote-btn{
-    margin: 15px;
+.vote-btn {
+  margin: 15px;
 }
-.welcome-logo{
-    margin-right: 20px;
-}
-
-#login-btn{
-    margin-left: 10px;
-    padding: 12px;
-    background-color: #6c757d;
-    color: white;
-}
-#login-btn:hover{
-    background-color: #212529;
+.welcome-logo {
+  margin-right: 20px;
 }
 
-#vote-btn{
-    display: flex;
-    justify-content: center;
+#login-btn {
+  margin-left: 10px;
+  padding: 12px;
+  background-color: #6c757d;
+  color: white;
+}
+#login-btn:hover {
+  background-color: #212529;
 }
 
+#vote-btn {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  background-color: #6c757d;
+  color: white;
+}
+#vote-btn:hover {
+  background-color: #212529;
+}
 
 @media (max-width: 500px) {
-    .login-container {
-        width: 90%; /* Reduce the width of the container */
-    }
-    .login-container h1 {
-        font-size: 18px; /* Reduce the size of the heading */
-    }
-    .navbar-brand{
-        font-size: 20px;
-    }
-    .landing-logo h1{
-        font-size: 20px;
-    }
-    .landing-logo img{
-        width: 50px;
-        height: 50px;
-    }
-    .vertical-buttons{
-        display: flex;
-        flex-direction: column;
-        align-items: center; /* Add space between the elements */
-        height: 100%;
-    }
+  .login-container {
+    width: 90%; /* Reduce the width of the container */
+  }
+  .login-container h1 {
+    font-size: 18px; /* Reduce the size of the heading */
+  }
+  .navbar-brand {
+    font-size: 20px;
+  }
+  .landing-logo h1 {
+    font-size: 20px;
+  }
+  .landing-logo img {
+    width: 50px;
+    height: 50px;
+  }
+  .vertical-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Add space between the elements */
+    height: 100%;
+  }
 }

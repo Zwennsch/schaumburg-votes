@@ -55,7 +55,6 @@ def login():
 @bp.route('/logout')
 def logout():
     session.clear()
-    user = g.user
     return redirect(url_for('views.index'))
 
 @bp.before_app_request
