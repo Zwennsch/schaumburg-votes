@@ -38,6 +38,18 @@ html, body{
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   border: 1px solid #377ba8;
 }
+.form-group label {
+  /* text-align: end;  this is not working for some reason*/
+  font-size: x-large;
+  font-weight: bold;
+}
+.form-groups {
+  display: flex; /* Use flexbox to position the elements side by side */
+  align-items: center; /* Add space between the elements */
+  justify-content: center;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
 .landing-logo {
   display: flex; /* Use flexbox to position the elements side by side */
   align-items: center; /* Add space between the elements */
@@ -63,6 +75,7 @@ html, body{
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   padding: 20px;
 }
+
 .login-container h1 {
   text-align: center;
   font-size: 24px;
@@ -116,7 +129,9 @@ body {
 }
 
 #vote-btn {
-  margin-top: 10px;
+  font-weight: 600;
+  font-size: x-large;
+  margin-top: 20px;
   display: flex;
   justify-content: center;
   background-color: #6c757d;

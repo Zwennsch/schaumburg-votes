@@ -18,7 +18,7 @@ def vote():
     # case for POST
     else:
         # TODO: implement POST case for vote:
-        kurs1 = request.form.get("menu1")
+        kurs1 = request.form.get("wahl1")
         print(kurs1)
         print('in POST for vote')
 
