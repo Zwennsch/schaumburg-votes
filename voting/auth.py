@@ -69,12 +69,12 @@ def load_logged_in_user():
         ).fetchone()
 
 # decorator for each view, that requires a login. 
-# TODO: use this for the vote.html view
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
             # redirect to login if user is not loaded
+            flash("Please Login First", category="info")
             return redirect(url_for('auth.login'))
         # return original view, if user id logged in
         return view(**kwargs)

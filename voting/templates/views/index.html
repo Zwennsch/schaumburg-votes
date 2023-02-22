@@ -1,21 +1,23 @@
-{% extends 'base.html' %}
-
-{% block title %}Home{% endblock %}
-{% block main %}
-  <div class="container centered">
-    <div class="landing-logo">
-      <img class="welcome-logo" src="{{ url_for('static', filename='schaumburg_logo.png') }}" width="80" height="80"/>
-      <h1>Welcome to <br>Schaumburg wählt!</h1>
-    </div>
-    <div class="landing-logo">
-      {% if username %}
-        <h2>Hello {{username}}</h2>
-      {% else %}
-        <h2>Please login</h2>
-        <form action=" {{ url_for('auth.login')}}", method="get">
-          <button class="btn" id="login-btn" type="submit">Login</button>
-        </form>
-      {% endif %}
-    </div>
+{% extends 'base.html' %} {% block title %}Home{% endblock %} {% block main %}
+<div class="container centered">
+  <div class="landing-logo">
+    <img
+      class="welcome-logo"
+      src="{{ url_for('static', filename='schaumburg_logo.png') }}"
+      width="80"
+      height="80"
+    />
+    <h1>Welcome to <br />Schaumburg wählt!</h1>
   </div>
+  <div class="landing-logo" style="margin-top: 40px">
+    {% if username %}
+    <h1>Hello {{username}}</h1>
+    {% else %}
+    <h1>Please login</h1>
+    <form action=" {{ url_for('auth.login')}}" , method="get">
+      <button class="btn" id="login-btn" type="submit">Login</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}

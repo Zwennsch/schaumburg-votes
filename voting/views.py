@@ -2,24 +2,23 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 from voting.db import get_db
+from voting.auth import login_required
 
 bp = Blueprint('views', __name__)
 
 @bp.route('/vote', methods=('GET', 'POST'))
+@login_required
 def vote():
     if request.method == 'GET':
-        # make sure a user is logged in, otherwise redirect use flash and redirect to login
-        if session.get('user_id') == None:
-            flash("Please Login First", category="info")
-            redirect(url_for('auth.login'))
-        else:
-            return render_template('views/vote2.html')
-   
+        return render_template('views/vote2.html')
     # case for POST
     else:
         # TODO: implement POST case for vote:
-        kurs1 = request.form.get("wahl1")
-        print(kurs1)
+        wahl_1 = request.form.get("wahl1")
+        wahl_2 = request.form.get("wahl2")
+        wahl_3 = request.form.get("wahl3")
+        # save votes to db 
+
         print('in POST for vote')
 
     return redirect(url_for('views.index'))

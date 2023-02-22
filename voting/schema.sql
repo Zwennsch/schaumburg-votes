@@ -13,7 +13,7 @@ CREATE TABLE user (
 CREATE TABLE vote (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
-    created TEXT NOT NULL,
+    date_created TEXT NOT NULL,
     first_vote TEXT,
     second_vote TEXT,
     third_vote TEXT,
