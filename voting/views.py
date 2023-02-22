@@ -15,12 +15,27 @@ def vote():
         return render_template('views/vote2.html')
     # case for POST
     else:
-        # TODO: implement POST case for vote:
         wahl_1 = request.form.get("wahl1")
         wahl_2 = request.form.get("wahl2")
         wahl_3 = request.form.get("wahl3")
-        # save votes to db 
-        
+
+        # save votes into vote-table in db 
+        id = g.user['id']
+        db = get_db()
+
+        db.execute(
+            "INSERT INTO vote (user_id, date_created, first_vote, second_vote, third_vote)"
+            "VALUES (?,datetime('now', 'localtime'),?,?,?)",
+            (id, wahl_1, wahl_2, wahl_3)
+        )
+        flash("your vote has been saved!")
+
+        # update vote passed for user
+        db.execute(
+            "UPDATE user SET vote_passed = 1 WHERE id = ?",
+            (id,)
+        )
+        db.commit()
 
     return redirect(url_for('views.index'))
 
@@ -29,12 +44,9 @@ def vote():
 
 @bp.route('/')
 def index():
-    # get db
-    db = get_db()
+
     user = None
     # get username if g.user is not None:
     if g.user:
-        
         user = g.user
-        print(g.user['class'])
     return render_template('views/index.html', user = user )
