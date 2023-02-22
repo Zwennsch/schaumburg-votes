@@ -10,8 +10,8 @@
     <h1>Welcome to <br />Schaumburg wählt!</h1>
   </div>
   <div class="landing-logo" style="margin-top: 40px">
-    {% if username %}
-    <h1>Hello {{username}}</h1>
+    {% if g.user['username'] %}
+    <h1>Hello {{g.user['username']}}</h1>
     {% else %}
     <h1>Please login</h1>
     <form action=" {{ url_for('auth.login')}}" , method="get">

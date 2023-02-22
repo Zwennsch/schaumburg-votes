@@ -5,7 +5,13 @@
     <div class="form-groups vertical-buttons login-container">
       <div class="form-group container">
         <label for="wahl1">1. Wahl</label>
-        <select class="form-control container" id="wahl1" name="wahl1">
+        <select
+          onchange="toggleDisability(this);"
+          class="form-control container"
+          id="wahl1"
+          name="wahl1"
+        >
+          <option selected disabled>choose course</option>
           <option value="Fußball">Fußball</option>
           <option value="Schwimmen">Schwimmen</option>
           <option value="Garten">Garten</option>
@@ -13,7 +19,13 @@
       </div>
       <div class="form-group container">
         <label for="wahl2">2. Wahl</label>
-        <select class="form-control" id="wahl2" name="wahl2">
+        <select
+          onchange="toggleDisability(this);"
+          class="form-control container"
+          id="wahl2"
+          name="wahl2"
+        >
+          <option selected disabled>choose course</option>
           <option value="Fußball">Fußball</option>
           <option value="Schwimmen">Schwimmen</option>
           <option value="Garten">Garten</option>
@@ -21,12 +33,28 @@
       </div>
       <div class="form-group container">
         <label for="wahl3">3. Wahl</label>
-        <select class="form-control" id="wahl3" name="wahl3">
+        <select
+          onchange="toggleDisability(this);"
+          class="form-control container"
+          id="wahl3"
+          name="wahl3"
+        >
+          <option selected disabled>choose course</option>
           <option value="Fußball">Fußball</option>
           <option value="Schwimmen">Schwimmen</option>
           <option value="Garten">Garten</option>
         </select>
       </div>
+    </div>
+    <div class="button-container">
+      <button
+        onclick="resetValues();"
+        type="reset"
+        class="btn"
+        id="restart-btn"
+      >
+        Reset
+      </button>
     </div>
     <div class="button-container">
       <button type="submit" class="btn" id="vote-btn">Vote now!</button>
@@ -35,9 +63,28 @@
 </div>
 
 {% endblock %} {% block script %}
-<!-- <script>
-  function setDropdownText(text, btnID) {
-    document.getElementById(btnID).innerHTML = text;
+<script>
+  function toggleDisability(selectElement) {
+    // getting all select elements
+    var arraySelects = document.getElementsByClassName("form-control");
+    // get the index of the selected option
+    var selectedOptionIndex = selectElement.selectedIndex;
+    // disable options at the same index in other select elements:
+    for (var i = 0; i < arraySelects.length; i++) {
+      if (arraySelects[i] != selectElement) {
+        arraySelects[i].options[selectedOptionIndex].disabled = true;
+      }
+    }
   }
-</script> -->
+
+  function resetValues() {
+    var numOptions = document.getElementById("wahl1").options.length;
+    var arraySelects = document.getElementsByClassName("form-control");
+    for (var i = 0; i < arraySelects.length; i++) {
+      for (var j = 1; j < numOptions; j++) {
+        arraySelects[i].options[j].disabled = false;
+      }
+    }
+  }
+</script>
 {% endblock %}

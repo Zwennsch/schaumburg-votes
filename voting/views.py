@@ -10,6 +10,8 @@ bp = Blueprint('views', __name__)
 @login_required
 def vote():
     if request.method == 'GET':
+        if g.user['vote_passed'] == 1:
+            flash("already voted, you can change your vote now")
         return render_template('views/vote2.html')
     # case for POST
     else:
@@ -18,8 +20,7 @@ def vote():
         wahl_2 = request.form.get("wahl2")
         wahl_3 = request.form.get("wahl3")
         # save votes to db 
-
-        print('in POST for vote')
+        
 
     return redirect(url_for('views.index'))
 
@@ -30,9 +31,10 @@ def vote():
 def index():
     # get db
     db = get_db()
-    username = None
+    user = None
     # get username if g.user is not None:
     if g.user:
         
-        username = g.user['username']
-    return render_template('views/index.html', username = username )
+        user = g.user
+        print(g.user['class'])
+    return render_template('views/index.html', user = user )
