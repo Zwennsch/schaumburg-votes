@@ -38,6 +38,12 @@ html, body{
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   border: 1px solid #377ba8;
 }
+.flash-2 {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 .form-group label {
   /* text-align: end;  this is not working for some reason*/
   font-size: x-large;
@@ -111,7 +117,6 @@ html, body{
 body {
   height: 100%;
 }
-
 
 .welcome-logo {
   margin-right: 20px;
