@@ -47,7 +47,7 @@ def login():
             flash("successfully logged in", 'info')
             return redirect(url_for('views.index'))
         
-        flash(error)
+        flash(error, "warning")
         
     # case for request.method == 'GET'
     return render_template('auth/login.html')

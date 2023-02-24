@@ -7,8 +7,10 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     # sets default configuration that the app will use
     app.config.from_mapping(
-        # the secret key should be overridden with a random value when deploying 
+        # TODO:the secret key should be overridden with a random value when deploying 
+        # TODO: need an API to load courses into csv file
         SECRET_KEY='dev',
+        COURSES=os.path.join(app.instance_path, 'courses.csv'),
         DATABASE=os.path.join(app.instance_path, 'voting.sqlite')
     )
 
@@ -30,7 +32,7 @@ def create_app(test_config=None):
     db.init_app(app)
 
     from . import models
-    models.load_courses()
+    models.load_courses(app)
 
     from . import auth
     app.register_blueprint(auth.bp)
