@@ -25,7 +25,6 @@ def vote():
 
         db = get_db()
         id = g.user['id']
-
         #update if vote already passed
         if g.user['vote_passed'] == 1:
            db.execute(

@@ -34,7 +34,7 @@ def login():
         # case for not signed in successfully, error is set to value
         if user is None:
             error = 'Incorrect username'
-        # TODO:just for testing purpose, has te be switched to check_password_hash later
+        # TODO:just for testing purpose, has to be switched to check_password_hash later
         elif not password == user['password']:
        # elif not check_password_hash(user['password'], password):
             error = 'Incorrect password'

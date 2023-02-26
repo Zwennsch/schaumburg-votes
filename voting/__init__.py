@@ -30,7 +30,7 @@ def create_app(test_config=None):
     db.init_app(app)
 
     from . import models
-    models.load_courses()
+    models.load_courses(app)
 
     from . import auth
     app.register_blueprint(auth.bp)
