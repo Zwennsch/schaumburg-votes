@@ -12,9 +12,9 @@
           name="wahl1"
         >
           <option selected disabled>choose course</option>
-          <option value="Fußball">Fußball</option>
-          <option value="Schwimmen">Schwimmen</option>
-          <option value="Garten">Garten</option>
+          {% for course in courses %}
+          <option value="{{course.name}}">{{course.name}}</option>
+          {% endfor %}
         </select>
       </div>
       <div class="form-group container">
@@ -26,9 +26,9 @@
           name="wahl2"
         >
           <option selected disabled>choose course</option>
-          <option value="Fußball">Fußball</option>
-          <option value="Schwimmen">Schwimmen</option>
-          <option value="Garten">Garten</option>
+          {% for course in courses %}
+          <option value="{{course.name}}">{{course.name}}</option>
+          {% endfor %}
         </select>
       </div>
       <div class="form-group container">
@@ -40,9 +40,9 @@
           name="wahl3"
         >
           <option selected disabled>choose course</option>
-          <option value="Fußball">Fußball</option>
-          <option value="Schwimmen">Schwimmen</option>
-          <option value="Garten">Garten</option>
+          {% for course in courses %}
+          <option value="{{course.name}}">{{course.name}}</option>
+          {% endfor %}
         </select>
       </div>
     </div>

@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, redirect, render_template, request, current_app, url_for
 )
 from voting.db import get_db
 from voting.auth import login_required
@@ -11,7 +11,7 @@ bp = Blueprint('views', __name__)
 @login_required
 def vote():
     if request.method == 'GET':
-        courses = get_courses
+        courses = get_courses(current_app)
         return render_template('views/vote2.html', courses = courses)
 
     # case for POST
