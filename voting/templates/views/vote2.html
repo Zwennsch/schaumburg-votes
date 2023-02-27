@@ -3,13 +3,14 @@
 <div class="centered">
   <form method="post">
     <div class="form-groups vertical-buttons login-container">
+      {% for i in range(3) %}
       <div class="form-group container">
-        <label for="wahl1">1. Wahl</label>
+        <label for="wahl{{i+1}}">{{i+1}}. Wahl</label>
         <select
           onchange="toggleDisability(this);"
           class="form-control container"
-          id="wahl1"
-          name="wahl1"
+          id="wahl{{i+1}}"
+          name="wahl{{i+1}}"
         >
           <option selected disabled>choose course</option>
           {% for course in courses %}
@@ -17,34 +18,7 @@
           {% endfor %}
         </select>
       </div>
-      <div class="form-group container">
-        <label for="wahl2">2. Wahl</label>
-        <select
-          onchange="toggleDisability(this);"
-          class="form-control container"
-          id="wahl2"
-          name="wahl2"
-        >
-          <option selected disabled>choose course</option>
-          {% for course in courses %}
-          <option value="{{course.name}}">{{course.name}}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="form-group container">
-        <label for="wahl3">3. Wahl</label>
-        <select
-          onchange="toggleDisability(this);"
-          class="form-control container"
-          id="wahl3"
-          name="wahl3"
-        >
-          <option selected disabled>choose course</option>
-          {% for course in courses %}
-          <option value="{{course.name}}">{{course.name}}</option>
-          {% endfor %}
-        </select>
-      </div>
+      {% endfor %}
     </div>
     <div class="button-container">
       <button

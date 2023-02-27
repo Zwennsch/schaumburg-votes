@@ -11,8 +11,7 @@ bp = Blueprint('views', __name__)
 @login_required
 def vote():
     if request.method == 'GET':
-        courses = get_courses(current_app)
-        return render_template('views/vote2.html', courses = courses)
+        return render_template('views/vote2.html', courses = get_courses(current_app))
 
     # case for POST
     else:
