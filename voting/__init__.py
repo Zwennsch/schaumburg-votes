@@ -5,11 +5,14 @@ from flask import Flask
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+    # TODO: I might have to change this....
+    
     # sets default configuration that the app will use
     app.config.from_mapping(
         # the secret key should be overridden with a random value when deploying 
         SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'voting.sqlite')
+        DATABASE=os.path.join(app.instance_path, 'voting.sqlite'),
+        DEFAULT_IMAGE='New-Class-Alert.jpg'
     )
 
     if test_config is None:

@@ -54,8 +54,9 @@ def vote():
 
     return redirect(url_for('views.index'))
 
-            
-
+@bp.route("/course-overview")         
+def overview():
+    return render_template('views/courses.html', courses=get_courses(current_app))
 
 @bp.route('/')
 def index():

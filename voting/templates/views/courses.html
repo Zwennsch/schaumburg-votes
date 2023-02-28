@@ -1,0 +1,28 @@
+{% extends 'base.html' %} {% block title %}Course Overview{% endblock %} {%
+block main %}
+<div class="card-group" style="margin-top: 80px">
+  {% for course in courses %}
+  <div class="card" style="margin: 5px">
+    <img
+      src="{{ url_for('static', filename='' + course.img_name) }}"
+      class="card-img-top"
+      alt="{{course.name}}"
+    />
+    <div class="card-body">
+      <h5 class="card-title">{{course.name}}</h5>
+      <p class="card-text">
+        {{course.description}}
+        <br />
+        This is a wider card with supporting text below as a natural lead-in to
+        additional content. This content is a little bit longer.
+      </p>
+    </div>
+    <div class="card-footer">
+      <small class="text-muted"
+        >Maximale Teilnehmer: {{course.max_participants}}</small
+      >
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

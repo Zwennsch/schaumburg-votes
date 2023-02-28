@@ -63,16 +63,17 @@
               <a class="nav-link" href="{{ url_for('views.vote')}}">Vote Now</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="./courses.html">Course Overview</a>
+              <a class="nav-link" href="{{ url_for('views.overview')}}"
+                >Course Overview</a
+              >
             </li>
           </ul>
         </div>
       </div>
     </nav>
     <main>
-      {% with messages = get_flashed_messages(with_categories=true) %} 
-      {% if messages %} 
-      {% for category, message in messages %}
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %}
       <div
         class="alert alert-{{ category }} alert-dismissible fade flash-2 show"
         role="alert"
@@ -85,9 +86,7 @@
           aria-label="Close"
         ></button>
       </div>
-      {% endfor %} {% endif %} {% endwith %}
-      
-      {% block main %}{% endblock %}
+      {% endfor %} {% endif %} {% endwith %} {% block main %}{% endblock %}
     </main>
     {% block script %}{% endblock %}
     <script

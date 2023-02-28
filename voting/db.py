@@ -31,15 +31,21 @@ def init_db():
 
     with current_app.open_resource('schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
-    # TODO: some further work has to be done: 
-    # users have to be set up with passwords -> extra function
-    # the db has to be filled with those passwords encrypted
+   
 
 @click.command('init-db')
 def init_db_command():
     """Clear the existing data and create new tables."""
     init_db()
     click.echo('Initialized the database')
+
+@click.command('fill-user-db')
+def fill_user_db_command():
+    # TODO: should read users from instance csv-file and set random passwords for each user.
+    # users have to be set up with passwords -> extra function
+    # create a csv file that stores the random password for each student
+    # the db has to be filled with those passwords encrypted
+    pass
 
 def init_app(app):
     app.teardown_appcontext(close_db)
