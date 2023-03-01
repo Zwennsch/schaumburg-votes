@@ -19,8 +19,7 @@
     />
     <title>Schaumburg wählt: {% block title %} {% endblock %}</title>
   </head>
-  <!--  TODO: cannot integrate the background images properly because of syntax issues with jinja -->
-  <body style="background-image: url('../static/desktop_background_main.png')">
+  <body background="{{ url_for('static', filename='desktop_background_main.png') }}">
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
       <div class="container">
         <a href="#" class="navbar-brand mb-0">
@@ -47,7 +46,6 @@
           <ul class="navbar-nav">
             <!-- TODO: make a link active depending on the page the user is on-->
             <li class="nav-item">
-              <!-- TODO: change the urls for the links once the views/blueprints have been created-->
               <a class="nav-link" href="{{ url_for('views.index')}}">Home</a>
             </li>
             {% if g.user %}

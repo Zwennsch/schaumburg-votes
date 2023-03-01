@@ -2,6 +2,7 @@ import sqlite3
 
 import click
 from flask import current_app, g
+from voting.helpers import fill_user_db
 
 
 def get_db():
@@ -42,11 +43,12 @@ def init_db_command():
 @click.command('fill-user-db')
 def fill_user_db_command():
     # TODO: should read users from instance csv-file and set random passwords for each user.
-    # users have to be set up with passwords -> extra function
-    # create a csv file that stores the random password for each student
-    # the db has to be filled with those passwords encrypted
+    
+    fill_user_db(current_app.config['STUDENTS'], get_db())
+    click.echo('user-db initialized')
     pass
 
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
+    app.cli.add_command(fill_user_db_command)

@@ -3,8 +3,10 @@ DROP TABLE IF EXISTS vote;
 
 CREATE TABLE user (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
     username TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL,
+    password_hash TEXT NOT NULL,
     class TEXT NOT NULL,
     vote_passed INTEGER DEFAULT 0,
     final_course TEXT DEFAULT 'LEER'
