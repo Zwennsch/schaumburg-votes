@@ -4,7 +4,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import check_password_hash
 
 from voting.db import get_db
 
@@ -34,9 +34,7 @@ def login():
         # case for not signed in successfully, error is set to value
         if user is None:
             error = 'Incorrect username'
-        # TODO:just for testing purpose, has to be switched to check_password_hash later
-        elif not password == user['password']:
-       # elif not check_password_hash(user['password'], password):
+        elif not check_password_hash(user['password_hash'], password):
             error = 'Incorrect password'
 
         # case that a user us successfully logged_in

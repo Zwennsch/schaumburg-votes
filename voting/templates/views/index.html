@@ -12,7 +12,7 @@
   <!-- TODO: show voted courses, if voted, else button vote now! -->
   <div class="landing-logo" style="margin-top: 40px">
     {% if g.user['username'] %}
-    <h1>Hello {{g.user['username']}}</h1>
+    <h1>Hello {{g.user['first_name']}}</h1>
     {% else %}
     <h1>Please login</h1>
     <form action=" {{ url_for('auth.login')}}" , method="get">
