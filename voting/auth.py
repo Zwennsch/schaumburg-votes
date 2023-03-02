@@ -21,7 +21,8 @@ def login():
         if request.form.get('password') is None:
             flash("must enter password", 'error')
             return render_template('auth/login.html')
-            # TODO: I might have to change the default value, actually there shouldn't be one.
+        
+        # TODO: I might have to change the default value, actually there shouldn't be one.
         password = request.form.get('password', default= '')
 
         db = get_db()

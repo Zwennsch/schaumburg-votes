@@ -61,7 +61,12 @@ def overview():
 @bp.route('/')
 def index():
     user = None
-    # get username if g.user is not None:
     if g.user:
         user = g.user
+        user_id = g.user['id']
+        if g.user['vote_passed'] == 1:
+            db = get_db()
+            vote = db.execute("SELECT * FROM vote WHERE user_id = ?", (user_id,)).fetchone()
+            print(vote['first_vote'])
+            return render_template('views/voted.html', vote=vote)
     return render_template('views/index.html', user = user )
