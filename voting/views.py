@@ -23,6 +23,12 @@ def vote():
         if None in (wahl_1, wahl_2, wahl_3):
             flash("Invalid vote. Please vote again.", "warning")
             return redirect(url_for('views.vote'))
+        
+        # check for no duplicates
+        votes_list = [wahl_1, wahl_2, wahl_3]
+        if len(votes_list) != len(set(votes_list)):
+            flash("mindestens ein Kurs doppelt gewählt", "warning")
+            return redirect(url_for('views.vote'))
 
         db = get_db()
         id = g.user['id']
@@ -67,6 +73,5 @@ def index():
         if g.user['vote_passed'] == 1:
             db = get_db()
             vote = db.execute("SELECT * FROM vote WHERE user_id = ?", (user_id,)).fetchone()
-            print(vote['first_vote'])
             return render_template('views/voted.html', vote=vote)
     return render_template('views/index.html', user = user )
