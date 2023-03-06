@@ -1,13 +1,21 @@
 {% extends 'base.html' %} {% block title %}Home{% endblock %} {% block main %}
 <div class="container centered">
-  <div class="landing-logo">
-    <h1>Hello {{g.user['first_name']}}, your votes are:</h1>
-    <br />
-    <h1>1.:{{ vote['first_vote'] }}</h1>
-    <br />
-    <h1>2.:{{ vote['second_vote'] }}</h1>
-    <br />
-    <h1>3.:{{ vote['third_vote'] }}</h1>
+  <div class="voted">
+    <h1>Hallo {{g.user['first_name']}},</h1>
+    <h2>Deine Wahl bisher:</h2>
+    <div class="card voted-card" style="width: 18rem">
+      <div
+        class="card-header"
+        style="background-color: rgba(235, 127, 50, 0.77)"
+      >
+        WP-Wahl
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">1. Wahl: {{ vote['first_vote'] }}</li>
+        <li class="list-group-item">2. Wahl: {{ vote['second_vote'] }}</li>
+        <li class="list-group-item">3. Wahl: {{ vote['third_vote'] }}</li>
+      </ul>
+    </div>
   </div>
 </div>
 {% endblock %}

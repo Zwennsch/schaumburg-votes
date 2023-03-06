@@ -42,7 +42,6 @@ def init_db_command():
 
 @click.command('fill-user-db')
 def fill_user_db_command():
-    # TODO: should read users from instance csv-file and set random passwords for each user.
     
     fill_user_db(current_app.config['STUDENTS'], get_db())
     click.echo('user-db initialized')
