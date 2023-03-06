@@ -7,14 +7,16 @@
       width="80"
       height="80"
     />
-    <h1>Welcome to <br />Schaumburg wählt!</h1>
+    <h1>Willkommen bei <br />Schaumburg wählt!</h1>
   </div>
-  <!-- TODO: show voted courses, if voted, else button vote now! -->
   <div class="landing-logo" style="margin-top: 40px">
     {% if g.user['username'] %}
     <h1>Hello {{g.user['first_name']}}</h1>
+    <form action=" {{ url_for('views.vote')}}" , method="get">
+      <button class="btn" id="login-btn" type="submit">Vote Now</button>
+    </form>
     {% else %}
-    <h1>Please login</h1>
+    <h1>Bitte einloggen</h1>
     <form action=" {{ url_for('auth.login')}}" , method="get">
       <button class="btn" id="login-btn" type="submit">Login</button>
     </form>

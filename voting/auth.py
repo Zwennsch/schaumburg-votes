@@ -27,7 +27,8 @@ def login():
 
         db = get_db()
         error = None
-            
+        category = ''    
+
         user = db.execute(
             'SELECT * FROM user WHERE username = ?', (username,)
         ).fetchone()
@@ -35,18 +36,20 @@ def login():
         # case for not signed in successfully, error is set to value
         if user is None:
             error = 'Incorrect username'
+            category = 'danger'
         elif not check_password_hash(user['password_hash'], password):
             error = 'Incorrect password'
+            category = 'danger'
 
         # case that a user us successfully logged_in
         if error is None:
             session.clear()
             # set the session['user_id'] value correct:
             session['user_id'] = user['id']
-            flash("successfully logged in", 'info')
+            flash("successfully logged in", 'success')
             return redirect(url_for('views.index'))
         
-        flash(error)
+        flash(error, category=category)
         
     # case for request.method == 'GET'
     return render_template('auth/login.html')
