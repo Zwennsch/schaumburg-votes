@@ -14,12 +14,12 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 def login():
     if request.method == 'POST':
         if request.form.get('username') is None:
-            flash("must enter username", 'error')
+            flash("Bitte Benutzernamen eingeben!", 'error')
             return render_template('auth/login.html')
         username = request.form.get('username')
 
         if request.form.get('password') is None:
-            flash("must enter password", 'error')
+            flash("Bitte Passwort eingeben!", 'error')
             return render_template('auth/login.html')
         
         # TODO: I might have to change the default value, actually there shouldn't be one.
@@ -35,10 +35,10 @@ def login():
 
         # case for not signed in successfully, error is set to value
         if user is None:
-            error = 'Incorrect username'
+            error = 'Falscher Benutzername'
             category = 'danger'
         elif not check_password_hash(user['password_hash'], password):
-            error = 'Incorrect password'
+            error = 'Falsches Passwort'
             category = 'danger'
 
         # case that a user us successfully logged_in
@@ -46,7 +46,7 @@ def login():
             session.clear()
             # set the session['user_id'] value correct:
             session['user_id'] = user['id']
-            flash("successfully logged in", 'success')
+            flash("Erfolgreich eingeloggt", 'success')
             return redirect(url_for('views.index'))
         
         flash(error, category=category)
@@ -76,7 +76,7 @@ def login_required(view):
     def wrapped_view(**kwargs):
         if g.user is None:
             # redirect to login if user is not loaded
-            flash("Please Login First", category="info")
+            flash("Bitte erst einloggen.", category="info")
             return redirect(url_for('auth.login'))
         # return original view, if user id logged in
         return view(**kwargs)

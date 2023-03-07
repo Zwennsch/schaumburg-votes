@@ -21,7 +21,7 @@ def vote():
 
         # check that a vote for every choice has been made:
         if None in (wahl_1, wahl_2, wahl_3):
-            flash("Invalid vote. Please vote again.", "warning")
+            flash("Wahl ungültig. Bitte wiederholen", "warning")
             return redirect(url_for('views.vote'))
         
         # check for no duplicates
@@ -41,7 +41,7 @@ def vote():
                 (wahl_1, wahl_2, wahl_3, id)
            )
         #    print('vote already passed')
-           flash("your vote has been updated", "success")
+           flash("Deine Wahl wurde aktualisiert", "success")
 
         # save first votes into vote-table in db 
         else:
@@ -55,7 +55,7 @@ def vote():
                 "UPDATE user SET vote_passed = 1 WHERE id = ?",
                 (id,)
             )
-            flash("Your Vote has been saved!", "success")
+            flash("Deine Wahl wurde gespeichert", "success")
         db.commit()
 
     return redirect(url_for('views.index'))

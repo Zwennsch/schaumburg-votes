@@ -2,7 +2,7 @@
 
 <div class="centered">
   <form method="post">
-    <div class="form-groups vertical-buttons login-container">
+    <div class="form-groups vertical-buttons vote-container">
       {% for i in range(3) %}
       <div class="form-group container">
         <label for="wahl{{i+1}}">{{i+1}}. Wahl</label>
@@ -12,7 +12,7 @@
           id="wahl{{i+1}}"
           name="wahl{{i+1}}"
         >
-          <option selected disabled>choose course</option>
+          <option selected disabled>Kurs wählen</option>
           {% for course in courses %}
           <option value="{{course.name}}">{{course.name}}</option>
           {% endfor %}
@@ -31,7 +31,7 @@
       </button>
     </div>
     <div class="button-container">
-      <button type="submit" class="btn" id="vote-btn">Vote now!</button>
+      <button type="submit" class="btn" id="vote-btn">Jetzt wählen!</button>
     </div>
   </form>
 </div>
