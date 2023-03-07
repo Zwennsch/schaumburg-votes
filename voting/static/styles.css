@@ -8,11 +8,6 @@ a {
   font-weight: 700;
   font-size: 15px;
 }
-/*
-html, body{
-    height: 100%
-}
-*/
 .button-container {
   display: flex;
   align-items: center;
@@ -137,12 +132,10 @@ html, body{
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   padding: 20px;
 }
-/* TODO: Marker has to be removed somehow*/
 .voted-card::marker {
-  display: none;
-  color: red;
+  /* TODO: Marker has to be removed somehow. This is just a hack */
+  color: rgba(255, 255, 255, 0);
 }
-
 .welcome-logo {
   margin-right: 20px;
 }

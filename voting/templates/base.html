@@ -19,10 +19,16 @@
     />
     <title>Schaumburg wählt: {% block title %} {% endblock %}</title>
   </head>
-  <body background="{{ url_for('static', filename='desktop_background_main.png') }}">
+  <body
+    background="{{ url_for('static', filename='desktop_background_main.png') }}"
+  >
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
       <div class="container">
-        <a href="#" class="navbar-brand mb-0">
+        <a
+          href="{{ url_for('views.index') }}"
+          class="navbar-brand mb-0"
+          style="margin-right: 50px"
+        >
           <img
             class="mb-2"
             src="../static/schaumburg_logo.png"
@@ -45,9 +51,11 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
             <!-- TODO: make a link active depending on the page the user is on-->
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('views.index')}}">zu Hause</a>
-            </li>
+            <!-- <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('views.index')}}"
+                >zu Hause</a
+              >
+            </li> -->
             {% if g.user %}
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('auth.logout')}}">Logout</a>
@@ -58,7 +66,9 @@
             </li>
             {% endif %}
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('views.vote')}}">Jetzt wählen</a>
+              <a class="nav-link" href="{{ url_for('views.vote')}}"
+                >Jetzt wählen</a
+              >
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('views.overview')}}"
