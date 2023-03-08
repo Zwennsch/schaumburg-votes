@@ -51,11 +51,6 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
             <!-- TODO: make a link active depending on the page the user is on-->
-            <!-- <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('views.index')}}"
-                >zu Hause</a
-              >
-            </li> -->
             {% if g.user %}
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('auth.logout')}}">Logout</a>
@@ -67,7 +62,8 @@
             {% endif %}
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('views.vote')}}"
-                >Jetzt wählen</a
+                >{% if g.user['vote_passed'] == 1 %}Wahl erneuern{% else %}Jetzt
+                wählen{% endif %}</a
               >
             </li>
             <li class="nav-item">

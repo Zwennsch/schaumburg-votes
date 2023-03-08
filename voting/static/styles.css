@@ -60,7 +60,7 @@ a {
 }
 .landing-logo-2 {
   display: flex; /* Use flexbox to position the elements side by side */
-  justify-content: space-evenly;
+  justify-content: center;
 }
 
 .landing-logo h1 {
@@ -158,6 +158,9 @@ a {
   background-color: #e47171;
   color: white;
 }
+#restart-btn:hover {
+  background-color: #e03838;
+}
 #vote-btn {
   font-weight: 600;
   font-size: x-large;
@@ -182,6 +185,9 @@ a {
     font-size: 20px;
   }
   .landing-logo h1 {
+    font-size: 20px;
+  }
+  .landing-logo-2 h1 {
     font-size: 20px;
   }
   .landing-logo img {

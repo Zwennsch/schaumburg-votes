@@ -9,11 +9,11 @@
     />
     <h1>Willkommen bei <br />Schaumburg wählt!</h1>
   </div>
-  <div class="landing-logo" style="margin-top: 40px">
+  <div class="landing-logo-2" style="margin-top: 40px">
     {% if g.user['username'] %}
-    <h1>Hello {{g.user['first_name']}}</h1>
+    <h1>Hallo {{g.user['first_name']}}</h1>
     <form action=" {{ url_for('views.vote')}}" , method="get">
-      <button class="btn" id="login-btn" type="submit">Vote Now</button>
+      <button class="btn" id="login-btn" type="submit">Jetzt wählen</button>
     </form>
     {% else %}
     <h1>Bitte einloggen</h1>
