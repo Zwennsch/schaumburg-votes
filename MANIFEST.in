@@ -1,0 +1,4 @@
+include voting/schema.sql
+graft voting/static
+graft voting/templates
+global-exclude *.pyc

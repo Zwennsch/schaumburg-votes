@@ -21,7 +21,7 @@ def vote():
 
         # check that a vote for every choice has been made:
         if None in (wahl_1, wahl_2, wahl_3):
-            flash("Wahl ungültig. Bitte wiederholen", "warning")
+            flash("Mindestens ein Kurs nicht ausgewählt. Bitte wiederholen", "warning")
             return redirect(url_for('views.vote'))
         
         # check for no duplicates

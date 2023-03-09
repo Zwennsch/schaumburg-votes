@@ -10,10 +10,11 @@ class Course:
         self.description = description
         self.img_name = img_name
     
-
+# TODO: I iam not sure if I should pass the app object or use current_app from flask instead
 def get_courses(app: Flask):
     if 'courses' not in g:    
         courses = []
+        # TODO: should return an error if there is no courses.csv file
         with open(os.path.join(app.instance_path, 'courses.csv'), mode='r') as csv_file:
             csv_reader = csv.DictReader(csv_file)
             img_name = ''

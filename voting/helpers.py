@@ -61,6 +61,7 @@ def _add_column_in_csv(csv_file_path, column_name: str, values):
 
 
 def _get_num_students(csv_file) -> int:
+    # TODO: should return exception if no such file exists
     with open(csv_file, 'r') as input:
         reader = csv.reader(input)
         return sum(1 for row in reader) -1        
