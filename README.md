@@ -2,7 +2,7 @@
 
 ## A fully functional webapp written in Python using the Flask framework to collect and evaluate votes from students.
 
-Students from Schaumburger Str. Bremen should be able to vote from a choice of courses their favorite three some courses. 
+Students from Schaumburger Str. Bremen should be able to vote from a choice of courses their favorite three courses. 
 
 ## User instructions:
 - initialize the database first from command-line in root folder using:
