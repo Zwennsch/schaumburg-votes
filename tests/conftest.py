@@ -12,7 +12,7 @@ with open(os.path.join(os.path.dirname(__file__),'data.sql'), 'rb') as f:
 @pytest.fixture
 def app():
     db_fd, db_path = tempfile.mkstemp()
-
+    print("in app.fixture")
     app = create_app({
         'TESTING' : True,
         'DATABASE': db_path,
@@ -21,7 +21,7 @@ def app():
     with app.app_context():
         init_db()
         get_db().executescript(_data_sql)
-
+    print("before yielding the app")
     yield app
 
     os.close(db_fd)

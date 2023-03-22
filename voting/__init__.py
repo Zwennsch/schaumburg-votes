@@ -15,7 +15,6 @@ def create_app(test_config=None):
         STUDENTS=os.path.join(app.instance_path, 'students.csv'),
         DEFAULT_IMAGE='New-Class-Alert.jpg'
     )
-
     if test_config is None:
         # load the instance config, if it exists, when not testing. Override default configuration with values taken from config.py in instance folder
         # this can for example be used to set the real SECRET_KEY
