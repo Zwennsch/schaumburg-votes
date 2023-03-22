@@ -32,7 +32,16 @@ def init_db():
 
     with current_app.open_resource('schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
-   
+
+def my_test():
+    print("in my_test")   
+
+
+
+@click.command('my-test')
+def my_test_command():
+    my_test()
+    click.echo('tested')
 
 @click.command('init-db')
 def init_db_command():
@@ -42,12 +51,15 @@ def init_db_command():
 
 @click.command('fill-user-db')
 def fill_user_db_command():
-    
+    """Fills up the user-db and uses a student.csv file in instance folder to do so.
+    Provides each user with a predefined 5 character password. 
+    The passwords gets stored in a student_pwd.csv file in the instance folder
+    """
     fill_user_db(current_app.config['STUDENTS'], get_db())
     click.echo('user-db initialized')
-    pass
 
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
     app.cli.add_command(fill_user_db_command)
+    app.cli.add_command(my_test_command)
