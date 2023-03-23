@@ -19,6 +19,10 @@ def _generate_password(length: int) -> str:
 
 
 def fill_user_db(csv_file, db: sqlite3.Connection):
+    """Fills up the user-db and uses a student.csv file in instance folder to do so.
+    Provides each user with a predefined 5 character password. 
+    The passwords gets stored in a student_pwd.csv file in the instance folder
+    """
     num_students = _get_num_students(csv_file)
     password_list = _create_password_list(5, num_students)
     _add_column_in_csv(csv_file, 'password', password_list)
@@ -34,7 +38,10 @@ def fill_user_db(csv_file, db: sqlite3.Connection):
                     (row['Vorname'],row['Nachname'], row['LogIn'], password_hash, row['Klasse'])
                 )
             db.commit()
-                 
+
+# TODO: remove after testing
+def fill_user_db_test() -> None:
+    print('in fill_user_db_test in helpers')                
     
 
 def _add_column_in_csv(csv_file_path, column_name: str, values):
