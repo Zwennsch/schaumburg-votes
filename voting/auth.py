@@ -69,7 +69,7 @@ def load_logged_in_user():
             'SELECT * FROM user WHERE id = ?', (user_id,)
         ).fetchone()
 
-# decorator for each view, that requires a login. 
+    # decorator for each view, that requires a login. 
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
