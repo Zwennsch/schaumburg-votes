@@ -3,7 +3,9 @@ from flask import (
 )
 from voting.db import get_db
 from voting.auth import login_required
-from voting.models import get_courses
+from voting.models import load_courses
+
+# from voting.models import get_courses
 
 bp = Blueprint('views', __name__)
 
@@ -11,7 +13,7 @@ bp = Blueprint('views', __name__)
 @login_required
 def vote():
     if request.method == 'GET':
-        return render_template('views/vote2.html', courses = get_courses(current_app))
+        return render_template('views/vote2.html')
 
     # case for POST
     else:
@@ -60,9 +62,14 @@ def vote():
 
     return redirect(url_for('views.index'))
 
+@bp.before_app_request
+def load_course_list():
+    g.courses = load_courses(current_app)
+
 @bp.route("/course-overview")         
 def overview():
-    return render_template('views/courses.html', courses=get_courses(current_app))
+
+    return render_template('views/courses.html')
 
 @bp.route('/')
 def index():

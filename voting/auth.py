@@ -3,7 +3,6 @@ import functools
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
-
 from werkzeug.security import check_password_hash
 
 from voting.db import get_db
@@ -72,7 +71,6 @@ def load_logged_in_user():
         g.user = get_db().execute(
             'SELECT * FROM user WHERE id = ?', (user_id,)
         ).fetchone()
-
 
 # decorator for each view, that requires a login.
 def login_required(view):

@@ -26,10 +26,10 @@ class CoursesCreator(object):
     def __init__(self, app) -> None:
         self._app = app
     
-    def getCourses(self):
+    def get_courses(self):
         courses = []
         for i in range(4):
-            courses.append(Course('test_name'.join(str(i)),i, 'test_teacher'.join(str(i)), 'test_description'.join(str(i)), 'test_image_source'.join(str(i))))
+            courses.append(Course('test_name'+ str(i),i, 'test_teacher'+str(i), 'test_description'+str(i), 'test_image_source'+str(i)))
         return courses
     
 @pytest.fixture

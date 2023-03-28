@@ -1,7 +1,7 @@
 {% extends 'base.html' %} {% block title %}Course Overview{% endblock %} {%
 block main %}
 <div class="card-group" style="margin-top: 80px">
-  {% for course in courses %}
+  {% for course in g.courses %}
   <div class="card" style="margin: 5px">
     <img
       src="{{ url_for('static', filename='' + course.img_name) }}"

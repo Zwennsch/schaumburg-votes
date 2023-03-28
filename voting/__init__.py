@@ -32,10 +32,7 @@ def create_app(test_config=None):
     from . import db
     db.init_app(app)
 
-    # TODO: it still feels right, to load courses upfront and have them available through the g object
-    # from . import models
-    # models.load_courses(app)
-
+   
     from . import auth
     app.register_blueprint(auth.bp)
 
