@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, current_app
 import csv
 import os
 
@@ -9,12 +9,15 @@ class Course:
         self.teacher = teacher
         self.description = description
         self.img_name = img_name
+
+    def __str__(self) -> str:
+        return "Course name: {}".format(self.name)
     
 # TODO: I iam not sure if I should pass the app object or use current_app from flask instead
 def load_courses(app: Flask):
     courses = []
     # TODO: should return an error if there is no courses.csv file
-    with open(os.path.join(app.instance_path, 'courses.csv'), mode='r') as csv_file:
+    with open((current_app.config['COURSES']), mode='r') as csv_file:
         csv_reader = csv.DictReader(csv_file)
         img_name = ''
         for row in csv_reader:

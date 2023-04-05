@@ -17,7 +17,7 @@ def test_get_close_db(app):
 
 
 def test_init_db_command(runner, monkeypatch):
-    print('in test_init_db_command')
+    # print('in test_init_db_command')
 
     class Recorder(object):
         called = False

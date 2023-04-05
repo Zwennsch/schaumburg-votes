@@ -22,19 +22,20 @@ class AuthActions(object):
     def logout(self):
         self._client.get('auth/logout')
 
-class CoursesCreator(object):
-    def __init__(self, app) -> None:
-        self._app = app
+# class CoursesCreator(object):
+#     def __init__(self) -> None:
+#         pass
+#     @staticmethod
+#     def get_courses():
+#         courses = []
+#         for i in range(5):
+#             courses.append(Course('test_name'+ str(i),i, 'test_teacher'+str(i), 'test_description'+str(i), 'test_image_source'+str(i)))
+#         return courses
     
-    def get_courses(self):
-        courses = []
-        for i in range(4):
-            courses.append(Course('test_name'+ str(i),i, 'test_teacher'+str(i), 'test_description'+str(i), 'test_image_source'+str(i)))
-        return courses
-    
-@pytest.fixture
-def courses(app):
-    return CoursesCreator(app)
+# @pytest.fixture
+# def courses(app):
+#     print("in courses fixture!!")
+#     CoursesCreator(app)
 
 @pytest.fixture
 def auth(client):
@@ -43,10 +44,14 @@ def auth(client):
 
 @pytest.fixture
 def app():
+    # print('in app fixture!!')
     db_fd, db_path = tempfile.mkstemp()
+    course_path = os.path.join('./tests/','courses_data.csv')
+        
     app = create_app({
         'TESTING' : True,
         'DATABASE': db_path,
+        'COURSES': course_path,
     })
 
     with app.app_context():

@@ -37,9 +37,6 @@ def init_db():
         db.executescript(f.read().decode('utf8'))
 
 
-# def fill_user_db_test():
-#     print('hello, ')
-
 
 @click.command('init-db')
 def init_db_command():
