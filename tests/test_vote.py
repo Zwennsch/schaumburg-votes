@@ -1,5 +1,6 @@
 # import pytest
 from flask import session
+import pytest
 
 
 # should redirect to '/auth/login' when user is not logged in
@@ -8,14 +9,42 @@ def test_login_required_logged_out(client, auth):
         auth.logout()
         response = client.get("/vote")
         assert session.get('user_id') is None
-        # print('response from /vote when logged out: ', response.headers)
         assert response.headers["Location"] == "/auth/login"
 
-# def test_login_required_in(client, auth):
-#     # FIXME: needs to be fixed: Does not make get request to '/vote' if user is logged in
-#      with client:
-#         auth.login()
-#         assert session['user_id'] == 1py
-#         response = client.get("/vote")
-#         print('headers response from /vote: ', response.headers)
-#         assert response.headers["Location"] == "/vote"
+
+def test_login_required_in(client, auth):
+    with client:
+        auth.login()
+        assert session['user_id'] == 1
+        response = client.get("/vote")
+        assert b'Kurs1' in response.data
+        assert b'Vote' in response.data
+        assert b'Jetzt' in response.data
+
+
+@pytest.mark.parametrize(('wahl1', 'wahl2', 'wahl3', 'message'), (
+    ('', 'Kurs1', 'Kurs2', b'Mindestens ein Kurs nicht'),
+    ('Kurs1', 'Kurs1', 'Kurs2', b'Kurs doppelt'),
+))
+def test_valid_vote(client, auth, wahl1, wahl2, wahl3, message):
+    auth.login()
+    response = client.post('/vote', data={
+        "wahl1": wahl1,
+        "wahl2": wahl2,
+        "wahl3": wahl3,
+    })
+    print('in valid vote', response.data)
+    # assert message in response.data
+
+
+# def test_commit_valid_vote(client, auth, app):
+#     auth.login()
+#     response = client.post("/vote", data={
+#         "wahl1": "Kurs1",
+#         "wahl2": "Kurs2",
+#         "wahl2": "Kurs2",
+#         }
+#     )
+#     # shoud be saved to db:
+#     with app.app
+#     assert

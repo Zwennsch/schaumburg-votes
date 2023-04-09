@@ -22,20 +22,6 @@ class AuthActions(object):
     def logout(self):
         self._client.get('auth/logout')
 
-# class CoursesCreator(object):
-#     def __init__(self) -> None:
-#         pass
-#     @staticmethod
-#     def get_courses():
-#         courses = []
-#         for i in range(5):
-#             courses.append(Course('test_name'+ str(i),i, 'test_teacher'+str(i), 'test_description'+str(i), 'test_image_source'+str(i)))
-#         return courses
-    
-# @pytest.fixture
-# def courses(app):
-#     print("in courses fixture!!")
-#     CoursesCreator(app)
 
 @pytest.fixture
 def auth(client):

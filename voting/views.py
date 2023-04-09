@@ -13,54 +13,56 @@ bp = Blueprint('views', __name__)
 @login_required
 def vote():
     if request.method == 'GET':
-        return render_template('views/vote2.html')
+        return render_template('views/vote.html')
 
     # case for POST
     else:
         wahl_1 = request.form.get("wahl1")
         wahl_2 = request.form.get("wahl2")
         wahl_3 = request.form.get("wahl3")
+        error = None
 
         # check that a vote for every choice has been made:
         if None in (wahl_1, wahl_2, wahl_3):
-            flash("Mindestens ein Kurs nicht ausgewählt. Bitte wiederholen", "warning")
-            return redirect(url_for('views.vote'))
-        
+            error = ("Mindestens ein Kurs nicht ausgewählt. Bitte wiederholen")
         # check for no duplicates
-        votes_list = [wahl_1, wahl_2, wahl_3]
-        if len(votes_list) != len(set(votes_list)):
-            flash("mindestens ein Kurs doppelt gewählt", "warning")
-            return redirect(url_for('views.vote'))
-
-        db = get_db()
-        id = g.user['id']
-        #update if vote already passed
-        if g.user['vote_passed'] == 1:
-           db.execute(
-                "UPDATE vote SET first_vote = ?, second_vote = ?, third_vote = ?,"
-                "date_created = datetime('now', 'localtime')"
-                "WHERE user_id = ?", 
-                (wahl_1, wahl_2, wahl_3, id)
-           )
-        #    print('vote already passed')
-           flash("Deine Wahl wurde aktualisiert", "success")
-
-        # save first votes into vote-table in db 
         else:
-            db.execute(
-                "INSERT INTO vote (user_id, date_created, first_vote, second_vote, third_vote)"
-                "VALUES (?,datetime('now', 'localtime'),?,?,?)",
-                (id, wahl_1, wahl_2, wahl_3)
-            )
-            # update vote_passed for user
-            db.execute(
-                "UPDATE user SET vote_passed = 1 WHERE id = ?",
-                (id,)
-            )
-            flash("Deine Wahl wurde gespeichert", "success")
-        db.commit()
+            votes_list = [wahl_1, wahl_2, wahl_3]
+            if len(votes_list) != len(set(votes_list)):
+                error = ("Mindestens ein Kurs doppelt gewählt")
+            
+        if error is None:
+            db = get_db()
+            id = g.user['id']
+            #update if vote already passed
+            if g.user['vote_passed'] == 1:
+                db.execute(
+                        "UPDATE vote SET first_vote = ?, second_vote = ?, third_vote = ?,"
+                        "date_created = datetime('now', 'localtime')"
+                        "WHERE user_id = ?", 
+                        (wahl_1, wahl_2, wahl_3, id)
+                )
+                #    print('vote already passed')
+                flash("Deine Wahl wurde aktualisiert", "success")
 
-    return redirect(url_for('views.index'))
+            # save first votes into vote-table in db 
+            else:
+                db.execute(
+                    "INSERT INTO vote (user_id, date_created, first_vote, second_vote, third_vote)"
+                    "VALUES (?,datetime('now', 'localtime'),?,?,?)",
+                    (id, wahl_1, wahl_2, wahl_3)
+                )
+                # update vote_passed for user
+                db.execute(
+                    "UPDATE user SET vote_passed = 1 WHERE id = ?",
+                    (id,)
+                )
+                flash("Deine Wahl wurde gespeichert", "success")
+            db.commit()
+            return redirect(url_for('views.index'))
+        
+        flash(error, "warning")
+        return redirect(url_for('views.vote'))
 
 @bp.before_app_request
 def load_course_list():

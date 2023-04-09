@@ -5,4 +5,4 @@ VALUES
 
 INSERT INTO vote (user_id, date_created, first_vote, second_vote, third_vote)
 VALUES 
-    (1, '2023-03-09', 'Sport', 'Textil', 'Haustechnik');
+    (1, '2023-03-09', 'Kurs1', 'Kurs2', 'Kurs3');
