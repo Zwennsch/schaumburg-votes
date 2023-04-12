@@ -48,6 +48,7 @@ def init_db_command():
 @click.command('fill-user-db')
 def fill_user_db_command():
     # fill_user_db(current_app.config['STUDENTS'], get_db())
+    # TODO: remove after testing
     fill_user_db_test()
     click.echo('user-db initialized')
 

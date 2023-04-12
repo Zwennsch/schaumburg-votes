@@ -23,18 +23,18 @@ def test_login_required_in(client, auth):
 
 
 @pytest.mark.parametrize(('wahl1', 'wahl2', 'wahl3', 'message'), (
-    ('', 'Kurs1', 'Kurs2', b'Mindestens ein Kurs nicht'),
+    (None, 'Kurs1', 'Kurs2', b'Mindestens ein Kurs nicht'),
     ('Kurs1', 'Kurs1', 'Kurs2', b'Kurs doppelt'),
 ))
 def test_valid_vote(client, auth, wahl1, wahl2, wahl3, message):
+    # with client:
     auth.login()
     response = client.post('/vote', data={
         "wahl1": wahl1,
         "wahl2": wahl2,
         "wahl3": wahl3,
     })
-    print('in valid vote', response.data)
-    # assert message in response.data
+    assert message in response.data
 
 
 # def test_commit_valid_vote(client, auth, app):

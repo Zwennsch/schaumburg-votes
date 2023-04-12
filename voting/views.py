@@ -22,14 +22,14 @@ def vote():
         wahl_3 = request.form.get("wahl3")
         error = None
 
+        votes_list = [wahl_1, wahl_2, wahl_3]
         # check that a vote for every choice has been made:
-        if None in (wahl_1, wahl_2, wahl_3):
+        if None in votes_list:
             error = ("Mindestens ein Kurs nicht ausgewählt. Bitte wiederholen")
+
         # check for no duplicates
-        else:
-            votes_list = [wahl_1, wahl_2, wahl_3]
-            if len(votes_list) != len(set(votes_list)):
-                error = ("Mindestens ein Kurs doppelt gewählt")
+        elif len(votes_list) != len(set(votes_list)):
+            error = ("Mindestens ein Kurs doppelt gewählt")
             
         if error is None:
             db = get_db()
@@ -58,11 +58,13 @@ def vote():
                     (id,)
                 )
                 flash("Deine Wahl wurde gespeichert", "success")
+
             db.commit()
             return redirect(url_for('views.index'))
         
         flash(error, "warning")
-        return redirect(url_for('views.vote'))
+        return render_template('views/vote.html')
+        # return redirect(url_for('views.vote'))
 
 @bp.before_app_request
 def load_course_list():

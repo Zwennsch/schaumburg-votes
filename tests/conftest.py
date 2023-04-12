@@ -32,6 +32,9 @@ def auth(client):
 def app():
     # print('in app fixture!!')
     db_fd, db_path = tempfile.mkstemp()
+
+    # creates an app with 4 courses : Kurs1... Kurs4 as name, 11 to 14 as participants, Teacher1 to Teacher4 as teachers
+    # Beschreibung1 to Beschreibung4 as description, kurs1.img to kurs4.img as img_name
     course_path = os.path.join('./tests/','courses_data.csv')
         
     app = create_app({
