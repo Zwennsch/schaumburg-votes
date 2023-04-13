@@ -1,6 +1,6 @@
-# import pytest
-from flask import session
 import pytest
+from flask import session, g
+from voting.db import get_db
 
 
 # should redirect to '/auth/login' when user is not logged in
@@ -26,7 +26,7 @@ def test_login_required_in(client, auth):
     (None, 'Kurs1', 'Kurs2', b'Mindestens ein Kurs nicht'),
     ('Kurs1', 'Kurs1', 'Kurs2', b'Kurs doppelt'),
 ))
-def test_valid_vote(client, auth, wahl1, wahl2, wahl3, message):
+def test_invalid_vote(client, auth, wahl1, wahl2, wahl3, message):
     # with client:
     auth.login()
     response = client.post('/vote', data={
@@ -37,14 +37,63 @@ def test_valid_vote(client, auth, wahl1, wahl2, wahl3, message):
     assert message in response.data
 
 
-# def test_commit_valid_vote(client, auth, app):
-#     auth.login()
-#     response = client.post("/vote", data={
-#         "wahl1": "Kurs1",
-#         "wahl2": "Kurs2",
-#         "wahl2": "Kurs2",
-#         }
-#     )
-#     # shoud be saved to db:
-#     with app.app
-#     assert
+def test_commit_valid_vote(client, auth, app):
+    # make sure that logged-in user can open the vote.html page
+    auth.login(voted=False)
+    assert client.get('/vote').status_code == 200
+
+    with app.app_context():
+        # make sure that no vote has been passed yet
+        db = get_db()
+        voted = db.execute(
+            'SELECT vote_passed FROM user WHERE id = 2').fetchone()[0]
+        assert voted == 0
+
+    # pass vote and make sure it gets stored in user table
+    client.post('/vote', data={
+        "wahl1": "Kurs1",
+        "wahl2": "Kurs2",
+        "wahl3": "Kurs3",
+    }
+    )
+    with app.app_context():
+        db = get_db()
+        voted = db.execute(
+            'SELECT vote_passed FROM user WHERE id = 2').fetchone()[0]
+        assert voted == 1
+        vote = db.execute('SELECT * FROM vote WHERE user_id = 2').fetchone()
+        assert vote['first_vote'] == "Kurs1"
+    # count = db.execute('SELECT COUNT(id)')
+
+
+def test_update_vote(client, app, auth):
+
+    auth.login()
+    # assert that user has already voted
+    with client:
+        client.get('vote/')
+        assert g.user['vote_passed'] == 1
+
+    client.post('/vote', data={
+        "wahl1": "Kurs4",
+        "wahl2": "Kurs3",
+        "wahl3": "Kurs2",
+    }
+    )
+    with app.app_context():
+        db = get_db()
+        vote = db.execute('SELECT * FROM vote WHERE user_id = 1').fetchone()
+        assert vote['first_vote'] == "Kurs4"
+
+def test_courses_view(client):
+    response = client.get('/course-overview')   
+    assert b'Maximale Teilnehmer' in response.data
+    # assert course-description in response
+    assert b'Beschreibung1' in response.data
+
+def test_index_not_voted(auth, client):
+    auth.login(voted = False)
+    response = client.get('/')
+    assert b'Willkommen bei' in response.data
+    assert b'Jetzt' in response.data
+    assert b'1. Wahl' not in response.data
