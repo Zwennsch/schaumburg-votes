@@ -4,7 +4,6 @@ import tempfile
 import pytest
 from voting import create_app
 from voting.db import get_db, init_db
-from voting.models import Course
 
 with open(os.path.join(os.path.dirname(__file__), 'data.sql'), 'rb') as f:
     _data_sql = f.read().decode('utf8')
