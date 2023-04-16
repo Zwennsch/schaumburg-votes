@@ -13,6 +13,7 @@ def create_app(test_config=None):
         DATABASE=os.path.join(app.instance_path, 'voting.sqlite'),
         COURSES=os.path.join(app.instance_path, 'courses.csv'),
         STUDENTS=os.path.join(app.instance_path, 'students.csv'),
+        STUDENTS_PWD=os.path.join(app.instance_path, 'students_pwd.csv'),
         DEFAULT_IMAGE='New-Class-Alert.jpg'
     )
     if test_config is None:

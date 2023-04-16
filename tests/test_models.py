@@ -18,9 +18,7 @@ def test_load_courses(app):
 
 def test_load_courses_empty_static_folder(app):
     with app.app_context():
-        # static_fd, static_path = tempfile.mkstemp()
         app.static_folder = None
-        # print("app_static folder: ",app.static_folder)
         courses = load_courses(app)
 
         assert len(courses) == 4

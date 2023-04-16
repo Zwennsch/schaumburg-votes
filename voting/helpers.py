@@ -13,46 +13,51 @@ def _generate_password(length: int) -> str:
     :param length: The length of the password
     """
     alphabet = string.ascii_letters + string.digits
-    
 
     return ''.join(secrets.choice(alphabet) for i in range(length))
 
 
-def fill_user_db(csv_file, db: sqlite3.Connection):
+def fill_user_db(user_input_csv_file, user_output_psw_csv,  db: sqlite3.Connection):
     """Fills up the user-db and uses a student.csv file in instance folder to do so.
     Provides each user with a predefined 5 character password. 
-    The passwords gets stored in a student_pwd.csv file in the instance folder
+    The passwords gets stored in a user_output_psw_csv file in the instance folder
     """
-    num_students = _get_num_students(csv_file)
+    num_students = _get_num_students(user_input_csv_file)
     password_list = _create_password_list(5, num_students)
-    _add_column_in_csv(csv_file, 'password', password_list)
-    with open('instance/student_pwd.csv', mode='r') as csv_file:
-            csv_reader = csv.DictReader(csv_file)
-            for row in csv_reader:
-                #  TODO: the generated hash takes a long time to either create or input and looks not right
-                 password_hash = generate_password_hash(row['password'])
-                 print(password_hash)
-                 db.execute(
-                      "INSERT INTO user (first_name, last_name, username, password_hash, class)"
-                    " VALUES (?,?,?,?,?)", 
-                    (row['Vorname'],row['Nachname'], row['LogIn'], password_hash, row['Klasse'])
-                )
-            db.commit()
+    _add_column_in_csv(user_input_csv_file,
+                       user_output_psw_csv, 'password', password_list)
+    with open(user_output_psw_csv, mode='r') as csv_file:
+        csv_reader = csv.DictReader(csv_file)
+        print('filling up db..')
+        print('please wait')
+        for row in csv_reader:
+            #  TODO: the generated hash takes a long time to either create or input and looks not right
+            # print('pw in actual method: ', row['password'])
+            password_hash = generate_password_hash(row['password'])
+            db.execute(
+                "INSERT INTO user (first_name, last_name, username, password_hash, class)"
+                " VALUES (?,?,?,?,?)",
+                (row['Vorname'], row['Nachname'],
+                 row['LogIn'], password_hash, row['Klasse'])
+            )
+        db.commit()
+        print('db ready!')
 
 # TODO: remove after testing
-def fill_user_db_test() -> None:
-    print('in fill_user_db_test in helpers')                
-    
+# def fill_user_db_test() -> None:
+#     print('in fill_user_db_test in helpers')
 
-def _add_column_in_csv(csv_file_path, column_name: str, values):
+
+def _add_column_in_csv(csv_input_file_path, csv_output_file_path, column_name: str, values):
     """Adds a new column to the csv entry and fills it with the specified values
-        :param csv_file_path: The file to add the new column, path included
+        :param csv_input_file_path: The file to add the new column, path included
+        :param csv_out_file_path: The file to add the new column, path included
         :param column_name: The name of the new column to be added
         :param values: A list of strings with the values for each row of the column
-    """ 
-    with open(csv_file_path, 'r') as csvinput, open('instance/student_pwd.csv', 'w') as csvoutput:
-        writer = csv.writer(csvoutput, lineterminator='\n')
-        reader = csv.reader(csvinput)
+    """
+    with open(csv_input_file_path, 'r') as csv_input, open(csv_output_file_path, 'w') as csv_output:
+        writer = csv.writer(csv_output, lineterminator='\n')
+        reader = csv.reader(csv_input)
 
         counter = 0
         all = []
@@ -61,9 +66,9 @@ def _add_column_in_csv(csv_file_path, column_name: str, values):
         all.append(row)
 
         for row in reader:
-             row.append(values[counter])
-             all.append(row)
-             counter +=1
+            row.append(values[counter])
+            all.append(row)
+            counter += 1
         writer.writerows(all)
 
 
@@ -71,8 +76,7 @@ def _get_num_students(csv_file) -> int:
     # TODO: should return exception if no such file exists
     with open(csv_file, 'r') as input:
         reader = csv.reader(input)
-        return sum(1 for row in reader) -1        
-
+        return sum(1 for row in reader) - 1
 
 
 def _create_password_list(pwd_length: int, num_of_pwd: int) -> list[str]:

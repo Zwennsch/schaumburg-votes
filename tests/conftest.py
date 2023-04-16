@@ -43,11 +43,15 @@ def app():
     # creates an app with 4 courses : Kurs1... Kurs4 as name, 11 to 14 as participants, Teacher1 to Teacher4 as teachers
     # Beschreibung1 to Beschreibung4 as description, kurs1.img to kurs4.img as img_name
     course_path = os.path.join('./tests/', 'courses_data.csv')
+    students_path = os.path.join('./tests/', 'students_data.csv')
+    students_pwd_path = os.path.join('./tests/', 'students_pwd_data.csv')
 
     app = create_app({
         'TESTING': True,
         'DATABASE': db_path,
         'COURSES': course_path,
+        'STUDENTS': students_path,
+        'STUDENTS_PWD': students_pwd_path
     })
 
     with app.app_context():
