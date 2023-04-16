@@ -1,8 +1,6 @@
 import sqlite3
 import pytest
-
 from voting.db import get_db
-import voting.helpers 
 
 
 def test_get_close_db(app):
@@ -32,28 +30,18 @@ def test_init_db_command(runner, monkeypatch):
     assert Recorder.called
 
 
-def test_fill_user_db_command(runner, monkeypatch):
+def test_fill_user_db_command(runner, monkeypatch, app):
     class Recorder(object):
         called = False
 
-    def fake_fill_user_db():
+    def fake_fill_user_db(*args, **kwargs):
         print('in fake fill_user_db')
         Recorder.called = True
 
-    assert Recorder.called is False
-
-    # this does work: gets called from inside db 
-    # monkeypatch.setattr('voting.db.fill_user_db_test', fake_fill_user_db)
-
-    # this does work as well, but I have to import 'voting.db' as a whole: 
-    # monkeypatch.setattr(voting.db,'fill_user_db_test', fake_fill_user_db)
-
-    # FIXME: this isn't working, the fill_user_db is not recognized, but I don't know why
-    # since it isn't working for now it is commented out:
-    
-    # monkeypatch.setattr(voting.helpers, 'fill_user_db_test', fake_fill_user_db)
-
-    # result = runner.invoke(args=['fill-user-db'])
-    # print('result of runner.invoke: ', result.output)
-    # assert 'user-db' in result.output
-    # assert Recorder.called
+    with app.app_context():
+        assert Recorder.called is False
+        monkeypatch.setattr('voting.db.fill_user_db', fake_fill_user_db)
+        result = runner.invoke(args=['fill-user-db'])
+        # print('result of runner.invoke: ', result.output)
+        assert 'user-db initialized' in result.output
+        assert Recorder.called

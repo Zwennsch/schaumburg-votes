@@ -43,10 +43,6 @@ def fill_user_db(user_input_csv_file, user_output_psw_csv,  db: sqlite3.Connecti
         db.commit()
         print('db ready!')
 
-# TODO: remove after testing
-# def fill_user_db_test() -> None:
-#     print('in fill_user_db_test in helpers')
-
 
 def _add_column_in_csv(csv_input_file_path, csv_output_file_path, column_name: str, values):
     """Adds a new column to the csv entry and fills it with the specified values

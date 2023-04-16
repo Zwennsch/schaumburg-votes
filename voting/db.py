@@ -1,9 +1,7 @@
 import sqlite3
-
 import click
 from flask import current_app, g
 from voting.helpers import fill_user_db
-# from voting.helpers import fill_user_db
 
 
 def get_db():
@@ -47,10 +45,8 @@ def init_db_command():
 
 @click.command('fill-user-db')
 def fill_user_db_command():
-    fill_user_db(user_input_csv_file= current_app.config['STUDENTS'], 
-                 user_output_psw_csv= current_app.config['STUDENTS_PWD'], db= get_db())
-    # TODO: remove after testing
-    # fill_user_db_test()
+    fill_user_db(user_input_csv_file=current_app.config['STUDENTS'],
+                 user_output_psw_csv=current_app.config['STUDENTS_PWD'], db=get_db())
     click.echo('user-db initialized')
 
 
