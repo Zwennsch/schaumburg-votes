@@ -65,7 +65,6 @@ def vote():
 
         flash(error, "warning")
         return render_template('views/vote.html')
-        # return redirect(url_for('views.vote'))
 
 
 @bp.before_app_request

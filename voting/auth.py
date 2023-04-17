@@ -25,7 +25,6 @@ def login():
 
         # neither username or password are empty
         if error is None:
-            # TODO: I might have to change the default value, actually there shouldn't be one.
             password = request.form.get('password', default='')
             username = request.form.get('username')
             db = get_db()

@@ -45,8 +45,12 @@ def init_db_command():
 
 @click.command('fill-user-db')
 def fill_user_db_command():
-    fill_user_db(user_input_csv_file=current_app.config['STUDENTS'],
+    try:
+        fill_user_db(user_input_csv_file=current_app.config['STUDENTS'],
                  user_output_psw_csv=current_app.config['STUDENTS_PWD'], db=get_db())
+    except:
+        click.echo('no students.csv file found.')
+        return
     click.echo('user-db initialized')
 
 

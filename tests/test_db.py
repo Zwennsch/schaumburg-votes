@@ -35,13 +35,22 @@ def test_fill_user_db_command(runner, monkeypatch, app):
         called = False
 
     def fake_fill_user_db(*args, **kwargs):
-        print('in fake fill_user_db')
         Recorder.called = True
 
     with app.app_context():
         assert Recorder.called is False
         monkeypatch.setattr('voting.db.fill_user_db', fake_fill_user_db)
         result = runner.invoke(args=['fill-user-db'])
-        # print('result of runner.invoke: ', result.output)
         assert 'user-db initialized' in result.output
         assert Recorder.called
+
+def test_fill_user_db_no_students_file(runner, monkeypatch, app):
+
+    with app.app_context():
+        app.config['STUDENTS'] = ' '
+        result = runner.invoke(args=['fill-user-db'])
+        assert 'no students.csv' in result.output
+
+
+
+
