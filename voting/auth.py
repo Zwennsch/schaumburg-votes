@@ -53,7 +53,7 @@ def login():
         flash(error, category=category)
 
     # case for request.method == 'GET'
-    return render_template('auth/login.html')
+    return render_template('auth/login.html', active_page='login')
 
 
 @bp.route('/logout')

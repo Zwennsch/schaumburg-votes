@@ -9,11 +9,12 @@ from voting.models import load_courses
 
 bp = Blueprint('views', __name__)
 
+
 @bp.route('/vote', methods=('GET', 'POST'))
 @login_required
 def vote():
     if request.method == 'GET':
-        return render_template('views/vote.html')
+        return render_template('views/vote.html', active_page='vote')
 
     # case for POST
     else:
@@ -30,22 +31,22 @@ def vote():
         # check for no duplicates
         elif len(votes_list) != len(set(votes_list)):
             error = ("Mindestens ein Kurs doppelt gewählt")
-            
+
         if error is None:
             db = get_db()
             id = g.user['id']
-            #update if vote already passed
+            # update if vote already passed
             if g.user['vote_passed'] == 1:
                 db.execute(
-                        "UPDATE vote SET first_vote = ?, second_vote = ?, third_vote = ?,"
-                        "date_created = datetime('now', 'localtime')"
-                        "WHERE user_id = ?", 
-                        (wahl_1, wahl_2, wahl_3, id)
+                    "UPDATE vote SET first_vote = ?, second_vote = ?, third_vote = ?,"
+                    "date_created = datetime('now', 'localtime')"
+                    "WHERE user_id = ?",
+                    (wahl_1, wahl_2, wahl_3, id)
                 )
                 #    print('vote already passed')
                 flash("Deine Wahl wurde aktualisiert", "success")
 
-            # save first votes into vote-table in db 
+            # save first votes into vote-table in db
             else:
                 db.execute(
                     "INSERT INTO vote (user_id, date_created, first_vote, second_vote, third_vote)"
@@ -61,19 +62,22 @@ def vote():
 
             db.commit()
             return redirect(url_for('views.index'))
-        
+
         flash(error, "warning")
         return render_template('views/vote.html')
         # return redirect(url_for('views.vote'))
+
 
 @bp.before_app_request
 def load_course_list():
     g.courses = load_courses(current_app)
 
-@bp.route("/course-overview")         
+
+@bp.route("/course-overview")
 def overview():
 
-    return render_template('views/courses.html')
+    return render_template('views/courses.html', active_page='overview')
+
 
 @bp.route('/')
 def index():
@@ -83,6 +87,7 @@ def index():
         user_id = g.user['id']
         if g.user['vote_passed'] == 1:
             db = get_db()
-            vote = db.execute("SELECT * FROM vote WHERE user_id = ?", (user_id,)).fetchone()
+            vote = db.execute(
+                "SELECT * FROM vote WHERE user_id = ?", (user_id,)).fetchone()
             return render_template('views/voted.html', vote=vote)
-    return render_template('views/index.html', user = user )
+    return render_template('views/index.html', user=user, active_page='index')

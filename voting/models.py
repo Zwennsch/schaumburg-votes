@@ -14,8 +14,6 @@ class Course:
     def __str__(self) -> str:
         return "Course name: {}".format(self.name)
 
-# TODO: I iam not sure if I should pass the app object or use current_app from flask instead
-
 
 def load_courses(app: Flask):
     courses = []

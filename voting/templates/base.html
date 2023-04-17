@@ -50,24 +50,23 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
-            <!-- TODO: make a link active depending on the page the user is on-->
             {% if g.user %}
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('auth.logout')}}">Logout</a>
             </li>
             {% else %}
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('auth.login')}}">Login</a>
+              <a class="nav-link {% if active_page == 'login' %} active{% endif %}" href="{{ url_for('auth.login')}}">Login</a>
             </li>
             {% endif %}
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('views.vote')}}"
+              <a class="nav-link {% if active_page == 'vote' %} active{% endif %}" href="{{ url_for('views.vote')}}"
                 >{% if g.user['vote_passed'] == 1 %}Wahl erneuern{% else %}Jetzt
                 wählen{% endif %}</a
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('views.overview')}}"
+              <a class="nav-link {% if active_page == 'overview' %} active{% endif %}" href="{{ url_for('views.overview')}}"
                 >Kursübersicht</a
               >
             </li>
