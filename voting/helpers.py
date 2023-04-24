@@ -3,7 +3,7 @@ import string
 import csv
 import sqlite3
 from werkzeug.security import generate_password_hash
-# from flask import current_app
+from typing import List
 
 
 def _generate_password(length: int) -> str:
@@ -74,7 +74,7 @@ def _get_num_students(csv_file) -> int:
         return sum(1 for row in reader) - 1
 
 
-def _create_password_list(pwd_length: int, num_of_pwd: int) -> list[str]:
+def _create_password_list(pwd_length: int, num_of_pwd: int) -> List[str]:
     pwd_list = []
     for i in range(num_of_pwd):
         pwd_list.append(_generate_password(pwd_length))
