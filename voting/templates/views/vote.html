@@ -7,7 +7,7 @@
       <div class="form-group container">
         <label for="wahl{{i+1}}">{{i+1}}. Wahl</label>
         <select
-          onchange="toggleDisability(this);"
+          onchange="toggleDisability();"
           class="form-control container"
           id="wahl{{i+1}}"
           name="wahl{{i+1}}"
@@ -38,16 +38,20 @@
 
 {% endblock %} {% block script %}
 <script>
-  function toggleDisability(selectElement) {
+  function toggleDisability() {
+    resetValues();
     // getting all select elements
     var arraySelects = document.getElementsByClassName("form-control");
-    // get the index of the selected option
-    var selectedOptionIndex = selectElement.selectedIndex;
     // disable options at the same index in other select elements:
     for (var i = 0; i < arraySelects.length; i++) {
-      if (arraySelects[i] != selectElement) {
-        arraySelects[i].options[selectedOptionIndex].disabled = true;
-      }
+      var select = arraySelects[i];
+      // get the index of the selected option
+      var selectedOptionIndex = select.selectedIndex;
+        for (var k = 0; k < arraySelects.length; k++) {
+         if (i !== k) {
+           arraySelects[k].options[selectedOptionIndex].disabled = true;
+         }
+        }
     }
   }
 
