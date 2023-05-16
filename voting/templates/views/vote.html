@@ -47,11 +47,11 @@
       var select = arraySelects[i];
       // get the index of the selected option
       var selectedOptionIndex = select.selectedIndex;
-        for (var k = 0; k < arraySelects.length; k++) {
-         if (i !== k) {
-           arraySelects[k].options[selectedOptionIndex].disabled = true;
-         }
+      for (var k = 0; k < arraySelects.length; k++) {
+        if (i !== k) {
+          arraySelects[k].options[selectedOptionIndex].disabled = true;
         }
+      }
     }
   }
 
