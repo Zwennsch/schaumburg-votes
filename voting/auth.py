@@ -85,3 +85,13 @@ def login_required(view):
         return view(**kwargs)
 
     return wrapped_view
+
+
+def admin_required(view):
+    db = get_db()
+    admins = db.execute(
+        
+    )
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user not in admins:
