@@ -6,3 +6,7 @@ VALUES
 INSERT INTO vote (user_id, date_created, first_vote, second_vote, third_vote)
 VALUES 
     (1, '2023-03-09', 'Kurs1', 'Kurs2', 'Kurs3');
+
+INSERT INTO admin (id, username, password_hash)
+VALUES
+    (1, 'test_admin','pbkdf2:sha256:260000$EuDStd4TQnnx8df5$70fd102d2e11298bfadcbccfd7811e1aad9a5b2ab0b26988100bf302001ba4fc');              

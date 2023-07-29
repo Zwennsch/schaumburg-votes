@@ -1,7 +1,8 @@
 import sqlite3
+import sys
 import click
 from flask import current_app, g
-from voting.helpers import fill_user_db
+from voting.helpers import fill_user_db, create_admin_db
 
 
 def get_db():
@@ -53,8 +54,23 @@ def fill_user_db_command():
         return
     click.echo('user-db initialized')
 
+@click.command('create-admin')
+@click.argument('name')
+@click.argument('password')
+def create_admin_command(name, password):
+    print(len(sys.argv))
+    click.echo(f'created admin with {name} and {password}')
+    try:
+        create_admin_db(name, password, db= get_db())
+    except:
+        click.echo('wrong number of arguments')
+        return
+    click.echo('admin-user added to database')
+    
 
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
     app.cli.add_command(fill_user_db_command)
+    app.cli.add_command(create_admin_command)
+

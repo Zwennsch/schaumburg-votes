@@ -1,2 +1,3 @@
 the hashed_password is from arvid8 and got hashed by following password: 'trsvv' 
+the password for admin is '12345'
 

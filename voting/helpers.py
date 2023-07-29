@@ -43,6 +43,14 @@ def fill_user_db(user_input_csv_file, user_output_psw_csv,  db: sqlite3.Connecti
         db.commit()
         print('db ready!')
 
+def create_admin_db(name, password, db: sqlite3.Connection):
+    password_hash = generate_password_hash(password)
+    db.execute(
+        "INSERT INTO admin (username, password_hash) VALUES (?,?)",
+        (name, password_hash)
+    )
+    db.commit()
+
 
 def _add_column_in_csv(csv_input_file_path, csv_output_file_path, column_name: str, values):
     """Adds a new column to the csv entry and fills it with the specified values

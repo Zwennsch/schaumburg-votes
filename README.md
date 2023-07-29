@@ -9,8 +9,9 @@ Students from Schaumburger Str. Bremen should be able to vote from a choice of c
     flask --app voting init-db
 
 - fill table 'user' inside voting.sql db in instance folder:
-    1. store a file students.csv in instance folder
-    this will only be for temporarily use, you can delete this file after the data is stored in the database voting.sql in the instance folder
+    Keep in mind that when in production the instance folder is located in 'venv/var/voting-instance' instead of the regular instance folder of a flask app.
+    1. store a file students.csv in the instance folder.
+    This will only be for temporarily use, you can delete this file after the data is stored in the database voting.sql in the instance folder
     the file contains 4 columns:
         Klasse, Nachname, Vorname, LogIn
     2. from command-line in root folder use:

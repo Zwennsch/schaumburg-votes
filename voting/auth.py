@@ -71,9 +71,8 @@ def load_logged_in_user():
             'SELECT * FROM user WHERE id = ?', (user_id,)
         ).fetchone()
 
+
 # decorator for each view, that requires a login.
-
-
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
@@ -87,11 +86,7 @@ def login_required(view):
     return wrapped_view
 
 
-def admin_required(view):
-    db = get_db()
-    admins = db.execute(
-        
-    )
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if g.user not in admins:
+# def admin_required(view):
+#     @functools.wraps(view)
+#     def wrapped_view(**kwargs):
+#         if g.user not in admins:

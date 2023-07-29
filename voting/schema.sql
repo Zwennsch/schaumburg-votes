@@ -22,3 +22,10 @@ CREATE TABLE vote (
     FOREIGN KEY (user_id) REFERENCES user (id)
 );
 
+CREATE TABLE admin (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL UNIQUE CHECK(length(username) <= 30),
+    password_hash TEXT NOT NULL
+);
+    
+
