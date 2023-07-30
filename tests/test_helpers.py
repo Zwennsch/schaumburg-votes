@@ -66,3 +66,12 @@ def test_fill_user_db(app):
 
     os.unlink(output_path)
     
+def test_add_new_admin_into_admin_db(app):
+    with app.app_context():
+        db = get_db()
+        # add the admin-user into the db
+        m.add_new_admin_into_admin_db('hans', 'password123', db)
+
+        # check that user is in db:
+        admin = db.execute("SELECT * FROM admin WHERE username = 'hans'" ).fetchone()
+        assert admin['username'] == 'hans'

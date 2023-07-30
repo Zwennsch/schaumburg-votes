@@ -31,14 +31,12 @@ def test_init_db_command(runner, monkeypatch):
 
 
 # should run the create-admin-command with a selected username and password
-# @pytest.mark.parametrize(('username', 'password', 'message'),
-#                          (
-#     ('trsvv', b'Missing argument'),
-#     ('', '', b'not Missing arguments'),
-#     ('test_username', 'kfjdshf', b''),
-#     ('test', 'trsvv', b'Falscher Benutzername'),
-# ))
-def test_create_admin_user_command(runner, monkeypatch, app):
+@pytest.mark.parametrize(('username', 'password', 'message'),
+                         (
+    ('trsvv', 'cd', '5 characters'),
+    ('test_username', 'kfjdshf', 'admin-user for test_username'),
+))
+def test_create_admin_user_command(runner, monkeypatch, app, username, password, message):
     class Recorder(object):
         called = False
     
@@ -48,11 +46,16 @@ def test_create_admin_user_command(runner, monkeypatch, app):
     with app.app_context():
         assert Recorder.called is False
         monkeypatch.setattr('voting.db.create_admin_db', fake_create_admin_db)
-        result = runner.invoke(args=['create-admin', 'admin', '12345'])
-        assert 'admin-user' in result.output
-        # assert '12345' in result.output
-        assert Recorder.called
+        result = runner.invoke(args=['create-admin', username, password])
+        assert message in result.output
+        if len(password) >= 5:
+            assert Recorder.called
 
+def test_create_admin_user_command_missing_arguments(runner, app):
+    with app.app_context():
+        result = runner.invoke(args=['create-admin', 'username'])
+        assert 'Missing' in result.output
+        
     
 
 def test_fill_user_db_command(runner, monkeypatch, app):

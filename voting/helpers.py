@@ -18,7 +18,7 @@ def _generate_password(length: int) -> str:
 
 
 def fill_user_db(user_input_csv_file, user_output_psw_csv,  db: sqlite3.Connection):
-    """Fills up the user-db and uses a student.csv file in instance folder to do so.
+    """Fills up the user-db and uses a student.csv file in the instance folder to do so.
     Provides each user with a predefined 5 character password. 
     The passwords gets stored in a user_output_psw_csv file in the instance folder
     """
@@ -43,7 +43,8 @@ def fill_user_db(user_input_csv_file, user_output_psw_csv,  db: sqlite3.Connecti
         db.commit()
         print('db ready!')
 
-def create_admin_db(name, password, db: sqlite3.Connection):
+
+def add_new_admin_into_admin_db(name, password, db: sqlite3.Connection):
     password_hash = generate_password_hash(password)
     db.execute(
         "INSERT INTO admin (username, password_hash) VALUES (?,?)",

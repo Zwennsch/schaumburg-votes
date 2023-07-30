@@ -2,7 +2,7 @@ import sqlite3
 import sys
 import click
 from flask import current_app, g
-from voting.helpers import fill_user_db, create_admin_db
+from voting.helpers import fill_user_db, add_new_admin_into_admin_db
 
 
 def get_db():
@@ -36,7 +36,6 @@ def init_db():
         db.executescript(f.read().decode('utf8'))
 
 
-
 @click.command('init-db')
 def init_db_command():
     """Clear the existing data and create new tables."""
@@ -48,29 +47,30 @@ def init_db_command():
 def fill_user_db_command():
     try:
         fill_user_db(user_input_csv_file=current_app.config['STUDENTS'],
-                 user_output_psw_csv=current_app.config['STUDENTS_PWD'], db=get_db())
+                     user_output_psw_csv=current_app.config['STUDENTS_PWD'], db=get_db())
     except:
         click.echo('no students.csv file found.')
         return
     click.echo('user-db initialized')
 
+
 @click.command('create-admin')
 @click.argument('name')
 @click.argument('password')
 def create_admin_command(name, password):
-    print(len(sys.argv))
-    click.echo(f'created admin with {name} and {password}')
-    try:
-        create_admin_db(name, password, db= get_db())
-    except:
-        click.echo('wrong number of arguments')
+    if len(password) < 5:
+        click.echo('password must be at least 5 characters')
         return
-    click.echo('admin-user added to database')
-    
+    try:
+        add_new_admin_into_admin_db(name, password, db=get_db())
+    except:
+        click.echo('error while accessing database')
+        return
+    click.echo(f'admin-user for {name} added to database')
+
 
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
     app.cli.add_command(fill_user_db_command)
     app.cli.add_command(create_admin_command)
-
