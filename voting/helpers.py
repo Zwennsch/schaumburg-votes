@@ -88,3 +88,17 @@ def _create_password_list(pwd_length: int, num_of_pwd: int) -> List[str]:
     for i in range(num_of_pwd):
         pwd_list.append(_generate_password(pwd_length))
     return pwd_list
+
+def is_username_taken(username, db: sqlite3.Connection):
+    # Prepare the SQL query with the username as a parameter
+    query = """
+    SELECT COUNT(*) FROM user WHERE username = :username
+    UNION ALL
+    SELECT COUNT(*) FROM admin WHERE username = :username;
+    """
+
+    # Execute the query with the username parameter and fetch results
+    results = db.execute(query, {'username': username}).fetchall()
+
+    # Check if any of the results is greater than 0, indicating that the username is taken
+    return any(count > 0 for count, in results)

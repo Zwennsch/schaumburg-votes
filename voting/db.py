@@ -1,8 +1,8 @@
 import sqlite3
-import sys
 import click
 from flask import current_app, g
-from voting.helpers import fill_user_db, add_new_admin_into_admin_db
+from voting.helpers import fill_user_db, add_new_admin_into_admin_db, is_username_taken
+import cProfile
 
 
 def get_db():
@@ -59,7 +59,12 @@ def fill_user_db_command():
 @click.argument('password')
 def create_admin_command(name, password):
     if len(password) < 5:
-        click.echo('password must be at least 5 characters')
+        click.echo('password must be at least 5 characters long. Try again')
+        return
+    # check if username already exists:
+    db = get_db()
+    if is_username_taken(name, db):
+        click.echo('username already exists. Please choose another one')
         return
     try:
         add_new_admin_into_admin_db(name, password, db=get_db())

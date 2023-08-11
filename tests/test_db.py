@@ -15,8 +15,6 @@ def test_get_close_db(app):
 
 
 def test_init_db_command(runner, monkeypatch):
-    # print('in test_init_db_command')
-
     class Recorder(object):
         called = False
 
@@ -34,7 +32,7 @@ def test_init_db_command(runner, monkeypatch):
 @pytest.mark.parametrize(('username', 'password', 'message'),
                          (
     ('trsvv', 'cd', '5 characters'),
-    ('test_username', 'kfjdshf', 'admin-user for test_username'),
+    ('dsfkldjfhkfjhklf', 'kfjdshf', 'admin-user for'),
 ))
 def test_create_admin_user_command(runner, monkeypatch, app, username, password, message):
     class Recorder(object):
@@ -45,7 +43,7 @@ def test_create_admin_user_command(runner, monkeypatch, app, username, password,
 
     with app.app_context():
         assert Recorder.called is False
-        monkeypatch.setattr('voting.db.create_admin_db', fake_create_admin_db)
+        monkeypatch.setattr('voting.db.add_new_admin_into_admin_db', fake_create_admin_db)
         result = runner.invoke(args=['create-admin', username, password])
         assert message in result.output
         if len(password) >= 5:
