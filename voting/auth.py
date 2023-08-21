@@ -29,6 +29,15 @@ def login():
             username = request.form.get('username')
             db = get_db()
 
+            # check if user is admin user and render admin-page
+            admin = db.execute('SELECT * FROM  admin WHERE username = ?', (username,)).fetchone()
+            if admin and check_password_hash(admin['password_hash'], password):
+                # successfully logged in as admin user
+                session.clear()
+                session['admin'] = True
+                session['admin_name'] = admin['username']
+                return redirect(url_for('views.admin_page'))
+            
             user = db.execute(
                 'SELECT * FROM user WHERE username = ?', (username,)
             ).fetchone()

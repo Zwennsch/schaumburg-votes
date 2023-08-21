@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, current_app, url_for
+    Blueprint, flash, g, redirect, render_template, request, session, current_app, url_for
 )
 from voting.db import get_db
 from voting.auth import login_required
@@ -72,9 +72,19 @@ def load_course_list():
     g.courses = load_courses(current_app)
 
 
+@bp.route("/admin", methods=('GET', 'POST'))
+def admin_page():
+    if not session.get('admin'):
+        flash('Permission denied. Log in as admin user', category='warning')
+        return redirect(url_for('views.index'))
+    if request.method == 'POST':
+        # TODO: 
+        pass
+    return render_template('views/admin.html')
+        
+
 @bp.route("/course-overview")
 def overview():
-
     return render_template('views/courses.html', active_page='overview')
 
 
