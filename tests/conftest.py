@@ -13,8 +13,8 @@ class AuthActions(object):
     def __init__(self, client) -> None:
         self._client = client
 
-    def admin_login(self, client) -> None:
-        return self._client.post('/auth/login', data={'username': 'admin', 'password': '12345'})
+    def admin_login(self):
+        return self._client.post('/auth/login', data={'username': 'test_admin', 'password': '12345'})
 
     def login(self, username='test_username', password='trsvv', voted=True):
         if voted:
@@ -25,11 +25,8 @@ class AuthActions(object):
         else:
             return self._client.post('auth/login',
                                      data={'username': 'other_username', 'password': password})
-        
-    # FIXME: this doesn't make sense, username and password don't get accessed. I think this can be deleted
-    # def login_not_voted(self, username='other_username', password='trsvv'):
-    #     return self._client.post('auth/login')
 
+       
     def logout(self):
         self._client.get('auth/logout')
 

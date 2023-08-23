@@ -36,6 +36,7 @@ def login():
                 session.clear()
                 session['admin'] = True
                 session['admin_name'] = admin['username']
+                # g.admin = True
                 return redirect(url_for('views.admin_page'))
             
             user = db.execute(

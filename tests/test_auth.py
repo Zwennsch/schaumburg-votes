@@ -22,19 +22,23 @@ def test_login(client, auth):
 # should redirect to '/' and flash message 'Permission denied'
 def test_admin_unauthorized(client, auth):
     # FIXME: should return 403 error but than I will not be redirected properly by flask redirect
+    # doesn't redirect to '/' in test but does when actual app is running. Maybe because of test client?
     with client:
         auth.logout()
         response = client.get('/admin')
-        assert b'Permission' in response.data
+        assert b'Redirect' in response.data
 
-    # auth.login()
-    # response = client.get('/admin')
-    # assert b'Permission denied' in response.data
+    # should redirect when logged in as normal user:
+    auth.login()
+    response = client.get('/admin')
+    assert b'Redirect' in response.data
 
-
-    # # user logs in as admin:
-    # response = auth.admin_login()
-    # # 
+# should allow access to /admin page when logged in as admin user
+def test_admin_authorized_login(client, auth):
+    with client:
+        auth.admin_login()
+        response = client.get('/admin')
+        assert b'ADMIN' in response.data
 
 
 @pytest.mark.parametrize(('username', 'password', 'message'),

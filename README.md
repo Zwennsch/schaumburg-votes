@@ -29,7 +29,7 @@ Students from Schaumburger Str. Bremen should be able to vote from a choice of c
     for each course you can place an image in the static folder. 
     If you don't provide one, a default image will be shown later
 
-create admin-user for access to voting progress 
+- create admin-user for access to voting progress 
     from command-line in root folder use:
         flask --app voting create-admin [username] [password]
     the [username] argument mustn't been taken by any other user. This will be checked and leads to an error otherwise.

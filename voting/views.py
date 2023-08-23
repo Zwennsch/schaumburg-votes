@@ -4,10 +4,19 @@ from flask import (
 from voting.db import get_db
 from voting.auth import login_required
 from voting.models import load_courses
+from datetime import datetime, timedelta, timezone
 
 # from voting.models import get_courses
 
 bp = Blueprint('views', __name__)
+
+@bp.before_app_request
+def init_admin_status():
+    print('in init_admin_status')
+    g.admin = False  # Initialize g.admin to False for each request
+    if session.get('admin'):
+        g.admin = True  # Set g.admin based on session data if user is an admin
+
 
 
 @bp.route('/vote', methods=('GET', 'POST'))
@@ -71,9 +80,25 @@ def vote():
 def load_course_list():
     g.courses = load_courses(current_app)
 
+@bp.before_request
+def track_admin_activity():
+    if g.admin:  # Check if user is an admin (adjust as needed)
+        last_activity = session.get('last_activity')
+        now = datetime.now(timezone.utc)
+
+        if not last_activity:
+            session['last_activity'] = now
+        else:
+            elapsed_time = now - last_activity
+            if elapsed_time >= timedelta(minutes=1):  # Timeout period
+                session.clear()  # Clear session to log out admin user
+            else:
+                session['last_activity'] = now
+
 
 @bp.route("/admin", methods=('GET', 'POST'))
 def admin_page():
+    g.admin = session.get('admin')
     if not session.get('admin'):
         flash('Permission denied. Log in as admin user', category='warning')
         return redirect(url_for('views.index'))
