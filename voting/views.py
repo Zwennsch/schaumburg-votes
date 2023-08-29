@@ -12,7 +12,6 @@ bp = Blueprint('views', __name__)
 
 @bp.before_app_request
 def init_admin_status():
-    print('in init_admin_status')
     g.admin = False  # Initialize g.admin to False for each request
     if session.get('admin'):
         g.admin = True  # Set g.admin based on session data if user is an admin
