@@ -1,24 +1,29 @@
 {% extends 'base.html' %} {% block title %}Course Overview{% endblock %} {%
 block main %}
-<div class="card-group" style="margin-top: 80px">
+<div
+  class="row row-cols-1 row-cols-md-4 row-cols-sm-2 row-cols-xs-1 g-2"
+  style="margin-top: 80px"
+>
   {% for course in g.courses %}
-  <div class="card" style="margin: 5px">
-    <img
-      src="{{ url_for('static', filename='' + course.img_name) }}"
-      class="card-img-top"
-      alt="{{course.name}}"
-    />
-    <div class="card-body">
-      <h5 class="card-title">{{course.name}}</h5>
-      <p class="card-text">
-        {{course.description}}
-        <br />
-      </p>
-    </div>
-    <div class="card-footer">
-      <small class="text-muted"
-        >Maximale Teilnehmer: {{course.max_participants}}</small
-      >
+  <div class="col">
+    <div class="card h-100" style="margin: 5px">
+      <img
+        src="{{ url_for('static', filename='' + course.img_name) }}"
+        class="card-img-top"
+        alt="{{course.name}}"
+      />
+      <div class="card-body">
+        <h5 class="card-title">{{course.name}}</h5>
+        <p class="card-text">
+          {{course.description}}
+          <br />
+        </p>
+      </div>
+      <div class="card-footer">
+        <small class="text-muted"
+          >Maximale Teilnehmer: {{course.max_participants}}</small
+        >
+      </div>
     </div>
   </div>
   {% endfor %}
