@@ -1,5 +1,6 @@
-name,max_participants,teacher,description,img_name
-Kurs1,11,Teacher1,Beschreibung1,kurs1.img
-Kurs2,12,Teacher2,Beschreibung2,kurs2.img
-Kurs3,13,Teacher3,Beschreibung3,kurs3.img
-Kurs4,14,Teacher4,Beschreibung4,kurs4.img
+classes,name,max_participants,teacher,description,img_name
+"8,9",Kurs1,11,Teacher1,Beschreibung1,kurs1.img
+"10",Kurs2,12,Teacher2,Beschreibung2,kurs2.img
+"7,10",Kurs3,13,Teacher3,Beschreibung3,kurs3.img
+"9",Kurs4,14,Teacher4,Beschreibung4,kurs4.img
+"9",Kurs5,14,Teacher5,Beschreibung5,kurs5.img

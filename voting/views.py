@@ -22,7 +22,8 @@ def init_admin_status():
 @login_required
 def vote():
     if request.method == 'GET':
-        return render_template('views/vote.html', active_page='vote')
+        grade = int(g.user['class'][:-1])
+        return render_template('views/vote.html', active_page='vote', grade=grade)
 
     # case for POST
     else:

@@ -2,7 +2,6 @@ import sqlite3
 import click
 from flask import current_app, g
 from voting.helpers import fill_user_db, add_new_admin_into_admin_db, is_username_taken
-import cProfile
 
 
 def get_db():

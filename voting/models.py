@@ -17,7 +17,6 @@ class Course:
 
 
 def load_courses(app: Flask):
-    print('in load courses')
     courses = []
     # TODO: should return an error if there is no courses.csv file
     with open((current_app.config['COURSES']), mode='r') as csv_file:

@@ -14,7 +14,9 @@
         >
           <option selected disabled>Kurs wählen</option>
           {% for course in g.courses %}
-          <option value="{{course.name}}">{{course.name}}</option>
+            {% if grade in course.classes %}
+              <option value="{{course.name}}">{{course.name}}</option>
+            {% endif %}
           {% endfor %}
         </select>
       </div>

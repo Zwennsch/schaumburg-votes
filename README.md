@@ -17,15 +17,15 @@ Students from Schaumburger Str. Bremen should be able to vote from a choice of c
     2. from command-line in root folder use:
         flask --app voting fill-user-db
 
-- this leads to two things:
-    1. It will create a new file in instance folder called 'student_pwd.csv' which contains the original students.csv info and an additional column containing a 5 letter password for each user. 
-    These passwords should be passed individually to each student for login.
-    You can delete this file afterwards.
-    2. the user table in voting.sqlite gets filled with users and hashed passwords
+        - this leads to two things:
+            1. It will create a new file in instance folder called 'student_pwd.csv' which contains the original students.csv info and an additional column containing a 5 letter password for each user. 
+            These passwords should be passed individually to each student for login.
+            You can delete this file afterwards.
+            2. the user table in voting.sqlite gets filled with users and hashed passwords
 
 - create a courses.csv in the instance folder.
-    It should contain 5 columns:
-        name, max_participants, teacher, description, img_name
+    It should contain 6 columns:
+        classes, name, max_participants, teacher, description, img_name
     for each course you can place an image in the static folder. 
     If you don't provide one, a default image will be shown later
 
