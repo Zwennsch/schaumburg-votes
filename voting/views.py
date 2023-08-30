@@ -75,7 +75,7 @@ def vote():
         return render_template('views/vote.html')
 
 
-@bp.before_app_request
+@bp.before_request
 def load_course_list():
     g.courses = load_courses(current_app)
 
