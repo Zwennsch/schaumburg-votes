@@ -2,7 +2,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, current_app, url_for
 )
 from voting.db import get_db
-from voting.auth import login_required
+from voting.auth import login_required, admin_required
 from voting.models import load_courses
 from datetime import datetime, timedelta, timezone
 
@@ -15,6 +15,20 @@ def init_admin_status():
     g.admin = False  # Initialize g.admin to False for each request
     if session.get('admin'):
         g.admin = True  # Set g.admin based on session data if user is an admin
+
+
+@bp.route('/')
+def index():
+    user = None
+    if g.user:
+        user = g.user
+        user_id = g.user['id']
+        if g.user['vote_passed'] == 1:
+            db = get_db()
+            vote = db.execute(
+                "SELECT * FROM vote WHERE user_id = ?", (user_id,)).fetchone()
+            return render_template('views/voted.html', vote=vote)
+    return render_template('views/index.html', user=user, active_page='index')
 
 
 
@@ -74,11 +88,45 @@ def vote():
 
         flash(error, "warning")
         return render_template('views/vote.html')
+    
 
+@bp.route("/course-overview")
+def overview():
+    return render_template('views/courses.html', active_page='overview')
+
+
+@bp.route("/admin", methods=('GET', 'POST'))
+@admin_required
+def admin_page():
+    if request.method == 'POST':
+        selected_course = request.form.get('selected_course')
+
+        # Fetch data from the database based on the selected course
+        db = get_db()
+
+        query = "SELECT first_name, last_name, class, first_vote " \
+                    "FROM user "\
+                    "INNER JOIN vote ON user.id = vote.user_id " \
+                    "WHERE vote.first_vote = ?"
+        results = db.execute(query, (selected_course,)).fetchall()
+
+        return render_template('views/course_results.html', selected_course=selected_course, results = results)
+
+    return render_template('views/admin.html')
+
+
+
+@bp.route('/admin/course-results', methods=('GET',))
+@admin_required
+def course_results():
+    selected_course = request.form.get('selected_course')
+    results = request.form.get('selected_course')
+    return render_template('views/course_results.html', selected_course=selected_course, results=results)
 
 @bp.before_request
 def load_course_list():
     g.courses = load_courses(current_app)
+
 
 @bp.before_request
 def track_admin_activity():
@@ -90,38 +138,7 @@ def track_admin_activity():
             session['last_activity'] = now
         else:
             elapsed_time = now - last_activity
-            if elapsed_time >= timedelta(minutes=1):  # Timeout period
+            if elapsed_time >= timedelta(minutes=10):  # Timeout period
                 session.clear()  # Clear session to log out admin user
             else:
                 session['last_activity'] = now
-
-
-@bp.route("/admin", methods=('GET', 'POST'))
-def admin_page():
-    g.admin = session.get('admin')
-    if not session.get('admin'):
-        flash('Permission denied. Log in as admin user', category='warning')
-        return redirect(url_for('views.index'))
-    if request.method == 'POST':
-        # TODO: 
-        pass
-    return render_template('views/admin.html')
-        
-
-@bp.route("/course-overview")
-def overview():
-    return render_template('views/courses.html', active_page='overview')
-
-
-@bp.route('/')
-def index():
-    user = None
-    if g.user:
-        user = g.user
-        user_id = g.user['id']
-        if g.user['vote_passed'] == 1:
-            db = get_db()
-            vote = db.execute(
-                "SELECT * FROM vote WHERE user_id = ?", (user_id,)).fetchone()
-            return render_template('views/voted.html', vote=vote)
-    return render_template('views/index.html', user=user, active_page='index')

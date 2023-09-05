@@ -6,7 +6,7 @@ def test_course_to_string():
 
     name = str(course)
 
-    assert name == 'Course name: Kurs1'
+    assert name == 'Kurs1'
 
 def test_load_courses(app):
     # should return list of courses:

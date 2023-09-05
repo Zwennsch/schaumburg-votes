@@ -13,7 +13,7 @@ class Course:
         self.img_name = img_name
 
     def __str__(self) -> str:
-        return "Course name: {}".format(self.name)
+        return "{}".format(self.name)
 
 
 def load_courses(app: Flask):

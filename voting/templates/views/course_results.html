@@ -1,0 +1,31 @@
+{% extends 'admin_base.html' %} {% block title %}Ergebnisse{% endblock %} {%
+block main %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Vote Results</title>
+  </head>
+  <body>
+    <div class="centered">
+      <h1>Erstwahlen für {{ selected_course }}</h1>
+      <table>
+        <tr>
+          <th>Vorname</th>
+          <th>Nachname</th>
+          <th>Klasse</th>
+          <th>Erstwahl</th>
+        </tr>
+        {% for result in results %}
+        <tr>
+          <td>{{ result[0] }}</td>
+          <td>{{ result[1] }}</td>
+          <td>{{ result[2] }}</td>
+          <td>{{ result[3] }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </body>
+</html>
+{% endblock %}

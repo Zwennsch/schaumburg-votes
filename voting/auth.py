@@ -95,8 +95,14 @@ def login_required(view):
 
     return wrapped_view
 
-
-# def admin_required(view):
-#     @functools.wraps(view)
-#     def wrapped_view(**kwargs):
-#         if g.user not in admins:
+# decorator for each view that requires an admin
+def admin_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if not session.get('admin'):
+            # redirect to '/' if not an admin user 
+            flash("Permission denied. Please login as admin user", category="info")
+            return redirect(url_for('views.index'))
+        # return original view, if user is admin:
+        return view(**kwargs)
+    return wrapped_view
