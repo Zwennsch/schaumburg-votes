@@ -14,6 +14,8 @@ class Course:
 
     def __str__(self) -> str:
         return "{}".format(self.name)
+    
+   
 
 
 def load_courses(app: Flask):

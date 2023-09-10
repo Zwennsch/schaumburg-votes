@@ -20,6 +20,15 @@ def test_admin_authorized_login(client, auth):
         response = client.get('/admin')
         assert b'ADMIN' in response.data
 
+def test_admin_post(auth, client):
+    auth.admin_login()
+    # get all first votes for'Kurs1'
+    response = client.post('/admin', data={'selected_course' : 'Kurs1'}, follow_redirects=True)
+    assert b'test_first_name' in response.data
+    
+
+
+
 # FIXME: This isn't working:
 # def test_track_admin_activity(client):
 #     with client:

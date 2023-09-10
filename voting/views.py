@@ -10,6 +10,7 @@ from datetime import datetime, timedelta, timezone
 
 bp = Blueprint('views', __name__)
 
+
 @bp.before_app_request
 def init_admin_status():
     g.admin = False  # Initialize g.admin to False for each request
@@ -31,12 +32,11 @@ def index():
     return render_template('views/index.html', user=user, active_page='index')
 
 
-
 @bp.route('/vote', methods=('GET', 'POST'))
 @login_required
 def vote():
+    grade = int(g.user['class'][:-1])
     if request.method == 'GET':
-        grade = int(g.user['class'][:-1])
         return render_template('views/vote.html', active_page='vote', grade=grade)
 
     # case for POST
@@ -49,11 +49,22 @@ def vote():
         votes_list = [wahl_1, wahl_2, wahl_3]
         # check that a vote for every choice has been made:
         if None in votes_list:
-            error = ("Mindestens ein Kurs nicht ausgewählt. Bitte wiederholen")
+            error = "Mindestens ein Kurs nicht ausgewählt. Bitte wiederholen"
 
         # check for no duplicates
         elif len(votes_list) != len(set(votes_list)):
-            error = ("Mindestens ein Kurs doppelt gewählt")
+            error = "Mindestens ein Kurs doppelt gewählt"
+
+        # check that only courses that contains users class are in vote
+        print('grade', grade)
+        if error is None:
+            for course in g.courses:
+                if course.name in votes_list:
+                    if grade not in course.classes:
+                        # print('gewählter Kurs:', course.name)
+                        # print('grades_list des Kurses: ', course.classes)
+                        error = "Mindestens ein Kurs ist nicht für deinen Jahrgang vorgesehen."
+                        break
 
         if error is None:
             db = get_db()
@@ -85,10 +96,9 @@ def vote():
 
             db.commit()
             return redirect(url_for('views.index'))
-
         flash(error, "warning")
         return render_template('views/vote.html')
-    
+
 
 @bp.route("/course-overview")
 def overview():
@@ -105,23 +115,23 @@ def admin_page():
         db = get_db()
 
         query = "SELECT first_name, last_name, class, first_vote " \
-                    "FROM user "\
-                    "INNER JOIN vote ON user.id = vote.user_id " \
-                    "WHERE vote.first_vote = ?"
+            "FROM user "\
+            "INNER JOIN vote ON user.id = vote.user_id " \
+            "WHERE vote.first_vote = ?"
         results = db.execute(query, (selected_course,)).fetchall()
-
-        return render_template('views/course_results.html', selected_course=selected_course, results = results)
-
+        # return redirect(url_for('views.course_results'), )
+        return render_template('views/course_results.html', selected_course=selected_course, results=results)
+    # case for 'GET'
     return render_template('views/admin.html')
 
 
+# @bp.route('/admin/course-results', methods=('GET',))
+# @admin_required
+# def course_results():
+#     selected_course = request.form.get('selected_course')
+#     results = request.form.get('selected_course')
+#     return render_template('views/course_results.html', selected_course=selected_course, results=results)
 
-@bp.route('/admin/course-results', methods=('GET',))
-@admin_required
-def course_results():
-    selected_course = request.form.get('selected_course')
-    results = request.form.get('selected_course')
-    return render_template('views/course_results.html', selected_course=selected_course, results=results)
 
 @bp.before_request
 def load_course_list():

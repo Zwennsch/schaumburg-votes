@@ -13,7 +13,7 @@ def test_load_courses(app):
     with app.app_context():
         courses = load_courses(app=app)
 
-        assert len(courses) == 5
+        assert len(courses) == 7
         assert courses[0].name == 'Kurs1'
 
 def test_load_courses_empty_static_folder(app):
@@ -21,14 +21,14 @@ def test_load_courses_empty_static_folder(app):
         app.static_folder = None
         courses = load_courses(app)
 
-        assert len(courses) == 5
+        assert len(courses) == 7
 
 def test_load_course_with_image(app):
     with app.app_context():
         app.static_folder = os.path.dirname('../tests/static_folder/')
         courses = load_courses(app)
 
-        assert len(courses) == 5
+        assert len(courses) == 7
 
         assert courses[2].img_name == 'kurs3.img'
         assert courses[0].img_name == app.config['DEFAULT_IMAGE']

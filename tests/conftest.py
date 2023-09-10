@@ -25,7 +25,11 @@ class AuthActions(object):
         else:
             return self._client.post('auth/login',
                                      data={'username': 'other_username', 'password': password})
-
+    def login_9th_grade(self):
+        return self.login()
+    
+    def login_8th_grade(self):
+        return self.login(voted=False)
        
     def logout(self):
         self._client.get('auth/logout')
