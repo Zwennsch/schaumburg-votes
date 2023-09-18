@@ -55,9 +55,29 @@
             </li>
             <li class="nav-item">
               <a
-                class="nav-link {% if active_page == 'course-overview' %} active{% endif %}"
-                href="{{ url_for('views.overview')}}"
-                >Kursübersicht</a
+                class="nav-link {% if active_page == 'add-student' %} active{% endif %}"
+                href="{{ url_for('views.add_student')}}"
+                >Schüler hinzufügen</a
+              >
+            <li class="nav-item">
+              <a
+                class="nav-link {% if active_page == 'delete-student' %} active{% endif %}"
+                href="{{ url_for('views.delete_student')}}"
+                >Schüler löschen</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link {% if active_page == 'class-results' %} active{% endif %}"
+                href="{{ url_for('views.class_results')}}"
+                >Wahlergebnisse nach Klassen</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link {% if active_page == 'course-results' %} active{% endif %}"
+                href="{{ url_for('views.course_results')}}"
+                >Wahlergebnisse nach Kursen</a
               >
             </li>
           </ul>

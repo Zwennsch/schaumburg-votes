@@ -105,9 +105,45 @@ def overview():
     return render_template('views/courses.html', active_page='overview')
 
 
-@bp.route("/admin", methods=('GET', 'POST'))
+# Admin pages
+
+@bp.route("/admin",)
 @admin_required
 def admin_page():
+    return render_template('views/admin.html')
+
+
+@bp.route("/admin/add-student", methods=('GET', 'POST'))
+@admin_required
+def add_student():
+    # case for adding a new student:
+    if request.method == 'POST':
+        pass
+    return render_template('views/add_student.html', active_page='add-student')
+
+
+@bp.route("/admin/delete-student", methods=('GET', 'POST'))
+@admin_required
+def delete_student():
+    # case for deleting a new student:
+    if request.method == 'POST':
+        pass
+    return render_template('views/delete_student.html', active_page='delete-student')
+
+
+@bp.route("/admin/class-results", methods=('GET', 'POST'))
+@admin_required
+def class_results():
+    # case for deleting a new student:
+    if request.method == 'POST':
+        pass
+    # case for 'GET'
+    return render_template('views/class_results.html', active_page='class-results')
+
+
+@bp.route("/admin/course-results", methods=('GET', 'POST'))
+@admin_required
+def course_results():
     if request.method == 'POST':
         selected_course = request.form.get('selected_course')
 
@@ -120,10 +156,9 @@ def admin_page():
             "WHERE vote.first_vote = ?"
         results = db.execute(query, (selected_course,)).fetchall()
         # return redirect(url_for('views.course_results'), )
-        return render_template('views/course_results.html', selected_course=selected_course, results=results)
+        return render_template('views/course_results.html', selected_course=selected_course, results=results,)
     # case for 'GET'
-    return render_template('views/admin.html')
-
+    return render_template('views/choose_per_course.html', active_page='course-results')
 
 # @bp.route('/admin/course-results', methods=('GET',))
 # @admin_required

@@ -1,0 +1,37 @@
+{% extends 'admin_base.html' %} {% block title %}Ergebnisse{% endblock %} {%
+    block main %}
+    
+    <div class="centered">
+      <h1>Schüler löschen</h1>
+      <form action="/add-student" method="post">
+        <div>
+          <label for="first-name">Vorname:</label>
+          <input type="text" id="first-name" name="first_name" required />
+        </div>
+        <div>
+          <label for="last-name">Nachname:</label>
+          <input type="text" id="last-name" name="last_name" required />
+        </div>
+        <div>
+          <label for="username">Benutzername(subiti):</label>
+          <input type="text" id="username" name="username" required />
+        </div>
+        <div>
+          <label for="password">Passwort:</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+        <div>
+          <label for="class">Class:</label>
+          <select id="class" name="class" required>
+            <option value="class1">Class 1</option>
+            <option value="class2">Class 2</option>
+            <option value="class3">Class 3</option>
+          </select>
+        </div>
+        <div>
+          <button type="submit">Add Student</button>
+        </div>
+      </form>
+    </div>
+    {% endblock %}
+    
