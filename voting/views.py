@@ -4,12 +4,14 @@ from flask import (
 from voting.db import get_db
 from voting.auth import login_required, admin_required
 from voting.models import load_courses
+from voting.cache import get_cached_classes, get_cache
 from datetime import datetime, timedelta, timezone
 
 # from voting.models import get_courses
 
 bp = Blueprint('views', __name__)
 
+cache = get_cache()
 
 @bp.before_app_request
 def init_admin_status():
@@ -101,6 +103,7 @@ def vote():
 
 
 @bp.route("/course-overview")
+@cache.cached()
 def overview():
     return render_template('views/courses.html', active_page='overview')
 
@@ -117,9 +120,10 @@ def admin_page():
 @admin_required
 def add_student():
     # case for adding a new student:
+    classes = get_cached_classes()
     if request.method == 'POST':
         pass
-    return render_template('views/add_student.html', active_page='add-student')
+    return render_template('views/add_student.html', active_page='add-student', classes=classes)
 
 
 @bp.route("/admin/delete-student", methods=('GET', 'POST'))
@@ -155,18 +159,10 @@ def course_results():
             "INNER JOIN vote ON user.id = vote.user_id " \
             "WHERE vote.first_vote = ?"
         results = db.execute(query, (selected_course,)).fetchall()
-        # return redirect(url_for('views.course_results'), )
+        print(results)
         return render_template('views/course_results.html', selected_course=selected_course, results=results,)
     # case for 'GET'
     return render_template('views/choose_per_course.html', active_page='course-results')
-
-# @bp.route('/admin/course-results', methods=('GET',))
-# @admin_required
-# def course_results():
-#     selected_course = request.form.get('selected_course')
-#     results = request.form.get('selected_course')
-#     return render_template('views/course_results.html', selected_course=selected_course, results=results)
-
 
 @bp.before_request
 def load_course_list():
@@ -175,7 +171,7 @@ def load_course_list():
 
 @bp.before_request
 def track_admin_activity():
-    if g.admin:  # Check if user is an admin (adjust as needed)
+    if g.admin:  # Check if user is an admin
         last_activity = session.get('last_activity')
         now = datetime.now(timezone.utc)
 

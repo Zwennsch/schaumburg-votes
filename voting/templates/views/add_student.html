@@ -13,7 +13,7 @@ block main %}
       <input type="text" id="last-name" name="last_name" required />
     </div>
     <div>
-      <label for="username">Benutzername(subiti):</label>
+      <label for="username">Benutzername (Subiti):</label>
       <input type="text" id="username" name="username" required />
     </div>
     <div>
@@ -21,15 +21,19 @@ block main %}
       <input type="password" id="password" name="password" required />
     </div>
     <div>
-      <label for="class">Class:</label>
+      <label for="password-check">Passwort wiederholen:</label>
+      <input type="password" id="password-check" name="password-check" required />
+    </div>
+    <div>
+      <label for="class">Klasse:</label>
       <select id="class" name="class" required>
-        <option value="class1">Class 1</option>
-        <option value="class2">Class 2</option>
-        <option value="class3">Class 3</option>
+        {% for class in classes %}
+        <option value="{{ class }}">{{ class[0] }}</option>
+        {% endfor %}
       </select>
     </div>
     <div>
-      <button type="submit">Add Student</button>
+      <button type="submit">Jetzt hinzufügen</button>
     </div>
   </form>
 </div>
