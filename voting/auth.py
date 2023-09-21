@@ -30,7 +30,8 @@ def login():
             db = get_db()
 
             # check if user is admin user and render admin-page
-            admin = db.execute('SELECT * FROM  admin WHERE username = ?', (username,)).fetchone()
+            admin = db.execute(
+                'SELECT * FROM  admin WHERE username = ?', (username,)).fetchone()
             if admin and check_password_hash(admin['password_hash'], password):
                 # successfully logged in as admin user
                 session.clear()
@@ -38,7 +39,7 @@ def login():
                 session['admin_name'] = admin['username']
                 # g.admin = True
                 return redirect(url_for('views.admin_page'))
-            
+
             user = db.execute(
                 'SELECT * FROM user WHERE username = ?', (username,)
             ).fetchone()
@@ -100,7 +101,7 @@ def admin_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if not session.get('admin'):
-            # redirect to '/' if not an admin user 
+            # redirect to '/' if not an admin user
             flash("Permission denied. Please login as admin user", category="info")
             return redirect(url_for('views.index'))
         # return original view, if user is admin:

@@ -3,7 +3,7 @@ block main %}
 
 <div class="centered">
   <h1>Bitte Schüler hinzufügen</h1>
-  <form action="/add-student" method="post">
+  <form method="post">
     <div>
       <label for="first-name">Vorname:</label>
       <input type="text" id="first-name" name="first_name" required />
@@ -18,11 +18,23 @@ block main %}
     </div>
     <div>
       <label for="password">Passwort:</label>
-      <input type="password" id="password" name="password" required />
+      <input
+        type="password"
+        id="password"
+        name="password"
+        required
+        minlength="5"
+      />
     </div>
     <div>
       <label for="password-check">Passwort wiederholen:</label>
-      <input type="password" id="password-check" name="password-check" required />
+      <input
+        type="password"
+        id="password_check"
+        name="password_check"
+        required
+        minlength="5"
+      />
     </div>
     <div>
       <label for="class">Klasse:</label>

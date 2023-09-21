@@ -29,8 +29,6 @@ def get_classes_from_database() -> list:
         )
     cursor = con.cursor()
     res = cursor.execute('SELECT DISTINCT class FROM user',).fetchall()
-    print(type(res))
-    print(res)
     con.close()
     return res
 

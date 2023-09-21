@@ -2,6 +2,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, current_app, url_for
 )
 from voting.db import get_db
+from voting.helpers import is_username_taken, add_user_to_database
 from voting.auth import login_required, admin_required
 from voting.models import load_courses
 from voting.cache import get_cached_classes, get_cache
@@ -12,6 +13,7 @@ from datetime import datetime, timedelta, timezone
 bp = Blueprint('views', __name__)
 
 cache = get_cache()
+
 
 @bp.before_app_request
 def init_admin_status():
@@ -58,13 +60,10 @@ def vote():
             error = "Mindestens ein Kurs doppelt gewählt"
 
         # check that only courses that contains users class are in vote
-        print('grade', grade)
         if error is None:
             for course in g.courses:
                 if course.name in votes_list:
                     if grade not in course.classes:
-                        # print('gewählter Kurs:', course.name)
-                        # print('grades_list des Kurses: ', course.classes)
                         error = "Mindestens ein Kurs ist nicht für deinen Jahrgang vorgesehen."
                         break
 
@@ -79,7 +78,6 @@ def vote():
                     "WHERE user_id = ?",
                     (wahl_1, wahl_2, wahl_3, id)
                 )
-                #    print('vote already passed')
                 flash("Deine Wahl wurde aktualisiert", "success")
 
             # save first votes into vote-table in db
@@ -121,8 +119,56 @@ def admin_page():
 def add_student():
     # case for adding a new student:
     classes = get_cached_classes()
+
     if request.method == 'POST':
-        pass
+        error = None
+        class_string = request.form.get('class')
+        if class_string != None:
+            class_string = class_string.replace("('", "")
+            class_string = class_string.replace("',)", "")
+        entries = {'first_name': request.form.get('first_name'),
+                   'last_name' : request.form.get('last_name'),
+                   'username': request.form.get('username'),
+                   'password': request.form.get('password'),
+                   'password_check': request.form.get('password_check'),
+                   'class' : class_string
+                   }
+        # set error , if at least one input is None
+        for entry in entries:
+            if entries[entry] is None:
+                error = 'Mindestens ein Eintrag nicht ausgefüllt'
+                break
+
+        # check for correct password entry:
+        db = get_db()
+        if error is None and entries['password']:
+            if entries['password'] != entries['password_check']:
+                error = 'Fehler bei der Wiederholung des Passworts'
+            elif len(entries['password'])< 5:
+                error = 'Passwort muss mindestesn 5 Zeichen lang sein. Bitte wiederholen'
+            # check that 'class' is valid
+            elif is_username_taken(entries['username'], db):
+                error = 'Benutzername bereits vergeben'
+
+            # FIXME: this doesn't look good, since error is set every single time...
+            if error is None:
+                error =  'Klasse ungültig'
+                for tpl in classes:
+                    if class_string in tpl:
+                        error = None
+                        break
+                
+        # add user to database
+        if error is None:
+            add_user_to_database(entries['first_name'], entries['last_name'],
+                                  entries['username'], entries['password'],entries['class'], db)
+            flash('Neuer Schüler erfolgreich hinzugefügt', 'success')
+        
+        else:
+            flash(error, 'warning')
+
+        # return redirect(url_for('views.admin_page'))
+    # case for 'GET'
     return render_template('views/add_student.html', active_page='add-student', classes=classes)
 
 
@@ -154,7 +200,7 @@ def course_results():
         # Fetch data from the database based on the selected course
         db = get_db()
 
-        query = "SELECT first_name, last_name, class, first_vote " \
+        query = "SELECT first_name, , class, first_vote " \
             "FROM user "\
             "INNER JOIN vote ON user.id = vote.user_id " \
             "WHERE vote.first_vote = ?"
@@ -163,6 +209,7 @@ def course_results():
         return render_template('views/course_results.html', selected_course=selected_course, results=results,)
     # case for 'GET'
     return render_template('views/choose_per_course.html', active_page='course-results')
+
 
 @bp.before_request
 def load_course_list():

@@ -51,7 +51,7 @@ def add_new_admin_into_admin_db(name, password, db: sqlite3.Connection):
         (name, password_hash)
     )
     db.commit()
-
+    
 
 def _add_column_in_csv(csv_input_file_path, csv_output_file_path, column_name: str, values):
     """Adds a new column to the csv entry and fills it with the specified values
@@ -82,6 +82,16 @@ def _get_num_students(csv_file) -> int:
         reader = csv.reader(input)
         return sum(1 for row in reader) - 1
 
+def add_user_to_database(first_name, last_name, username, password, class_name,  db: sqlite3.Connection ):
+    pw_hash = generate_password_hash(password)
+    db.execute(
+                "INSERT INTO user (first_name, last_name, username, password_hash, class)"
+                " VALUES (?,?,?,?,?)",
+                (first_name, last_name,
+                 username, pw_hash, class_name)
+            )
+    db.commit()
+    
 
 def _create_password_list(pwd_length: int, num_of_pwd: int) -> List[str]:
     pwd_list = []
