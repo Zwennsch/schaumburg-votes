@@ -58,7 +58,7 @@ def _add_column_in_csv(csv_input_file_path, csv_output_file_path, column_name: s
         :param csv_input_file_path: The file to add the new column, path included
         :param csv_out_file_path: The file to add the new column, path included
         :param column_name: The name of the new column to be added
-        :param values: A list of strings with the values for each row of the column
+        :param values: A list of strings with the values for each row of the column \n
     """
     with open(csv_input_file_path, 'r') as csv_input, open(csv_output_file_path, 'w') as csv_output:
         writer = csv.writer(csv_output, lineterminator='\n')
@@ -82,15 +82,31 @@ def _get_num_students(csv_file) -> int:
         reader = csv.reader(input)
         return sum(1 for row in reader) - 1
 
-def add_user_to_database(first_name, last_name, username, password, class_name,  db: sqlite3.Connection ):
+def add_user_to_database(first_name, last_name, username, password, class_name,  db: sqlite3.Connection ) -> bool:
+    """Adds a new user into the database. Be sure to check that the username is not taken already
+    Check in advance, that the username is not taken already. 
+    Throws an sqlite3.IntegrityError if the username isn't UNIQUE
+    :param: first_name: The new users first name
+    :param: last_name: The new users last name
+    :param: username: The new users username. Must be a unique one, otherwise the Insert will fail
+    :param: password: The password for the username. Be sure to check for safety in advance
+    :param: class_name: The new users class
+    :param: db: The database the user should be added to \n
+    Returns True, if the user is successfully added, False otherwise.
+    """
     pw_hash = generate_password_hash(password)
-    db.execute(
-                "INSERT INTO user (first_name, last_name, username, password_hash, class)"
-                " VALUES (?,?,?,?,?)",
-                (first_name, last_name,
-                 username, pw_hash, class_name)
-            )
-    db.commit()
+    try:
+        db.execute(
+                    "INSERT INTO user (first_name, last_name, username, password_hash, class)"
+                    " VALUES (?,?,?,?,?)",
+                    (first_name, last_name,
+                    username, pw_hash, class_name)
+                )
+        db.commit()
+        return True
+    except sqlite3.IntegrityError as e:
+        return False
+        
     
 
 def _create_password_list(pwd_length: int, num_of_pwd: int) -> List[str]:

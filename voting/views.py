@@ -196,16 +196,13 @@ def class_results():
 def course_results():
     if request.method == 'POST':
         selected_course = request.form.get('selected_course')
-
         # Fetch data from the database based on the selected course
         db = get_db()
-
-        query = "SELECT first_name, , class, first_vote " \
+        query = "SELECT first_name, class, first_vote " \
             "FROM user "\
             "INNER JOIN vote ON user.id = vote.user_id " \
             "WHERE vote.first_vote = ?"
         results = db.execute(query, (selected_course,)).fetchall()
-        print(results)
         return render_template('views/course_results.html', selected_course=selected_course, results=results,)
     # case for 'GET'
     return render_template('views/choose_per_course.html', active_page='course-results')

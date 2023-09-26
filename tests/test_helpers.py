@@ -8,6 +8,19 @@ from werkzeug.security import check_password_hash
 
 students = os.path.join('./tests/', 'students_data.csv')
 courses = os.path.join('./tests/', 'courses_data.csv')
+test_data_add_user = [("user1", True),
+                      ("test_username", False),
+                      ("other_username", False)
+                      ]
+
+
+@pytest.mark.parametrize(('username', 'expected_result'), test_data_add_user)
+def test_add_user_to_database(app, username, expected_result):
+    with app.app_context():
+        db = get_db()
+        result = helpers.add_user_to_database('Hans', 'Meier', username, 'Password123', '9a',db)
+        assert result == expected_result
+
 
 def test_generate_password(app):
     # should generate a random password of length 5
