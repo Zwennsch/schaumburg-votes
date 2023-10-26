@@ -119,13 +119,15 @@ def admin_page():
 def add_student():
     # case for adding a new student:
     classes = get_cached_classes()
-
     if request.method == 'POST':
         error = None
         class_string = request.form.get('class')
+        print('class_string:')
+        print(class_string)
         if class_string != None:
             class_string = class_string.replace("('", "")
             class_string = class_string.replace("',)", "")
+            
         entries = {'first_name': request.form.get('first_name'),
                    'last_name' : request.form.get('last_name'),
                    'username': request.form.get('username'),
@@ -133,13 +135,19 @@ def add_student():
                    'password_check': request.form.get('password_check'),
                    'class' : class_string
                    }
+        print('entries.values: ')
+        print(entries)
         # set error , if at least one input is None
         for entry in entries:
             if entries[entry] is None:
                 error = 'Mindestens ein Eintrag nicht ausgefüllt'
                 break
+            # else remove all whitespaces from the entry
+            else:
+                entries[entry] = entries[entry].strip() # type: ignore
 
         # check for correct password entry:
+        print('error so far: ', error)
         db = get_db()
         if error is None and entries['password']:
             if entries['password'] != entries['password_check']:
@@ -159,15 +167,17 @@ def add_student():
                         break
                 
         # add user to database
+        print('error so far: ', error)
         if error is None:
             add_user_to_database(entries['first_name'], entries['last_name'],
                                   entries['username'], entries['password'],entries['class'], db)
             flash('Neuer Schüler erfolgreich hinzugefügt', 'success')
+            return redirect(url_for('views.admin_page'))
         
         else:
             flash(error, 'warning')
+            return redirect(url_for('views.add_student'))
 
-        # return redirect(url_for('views.admin_page'))
     # case for 'GET'
     return render_template('views/add_student.html', active_page='add-student', classes=classes)
 

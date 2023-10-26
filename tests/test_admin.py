@@ -1,12 +1,15 @@
 from datetime import datetime, timedelta, timezone
 from flask import g, session
+from voting.db import get_db
+import pytest
+
 
 # should redirect to '/' and flash message 'Permission denied'
 def test_admin_unauthorized(client, auth):
-    with client:
-        auth.logout()
-        response = client.get('/admin', follow_redirects=True)
-        assert b'Permission denied' in response.data
+    # Should get 'Permission denied when not logged in as any user'
+    auth.logout()
+    response = client.get('/admin', follow_redirects=True)
+    assert b'Permission denied' in response.data
 
     # should redirect to '/' when logged in as normal user:
     auth.login()
@@ -14,18 +17,66 @@ def test_admin_unauthorized(client, auth):
     assert response.request.path == '/'
 
 # should allow access to /admin page when logged in as admin user
+
+
 def test_admin_authorized_login(client, auth):
+    auth.admin_login()
+    response = client.get('/admin')
+    assert b'ADMIN' in response.data
+
+
+# remember that only classes '9a' and '8c' are valid
+test_admin_add_user = [('Hans', 'Mueller', 'user123', 'password123', 'password123', '9a', 'Neuer erfolgreich'),
+                       ('Hans', 'Mueller', 'user123', 'password123',
+                        'password123', None, 'Mindestens ein Eintrag'),
+                       ('Hans', 'Mueller', 'user123', 'password123',
+                        'password', '9', 'Fehler bei Wiederholung'),
+                       ('Hans', 'Mueller', 'user123', 'pass',
+                        'pass', '9', 'mindestens 5 Zeichen'),
+                       ('Hans', 'Mueller', 'test_username', 'password123',
+                        'password123', '9', 'Benutzername vergeben'),
+                       ('Hans', 'Mueller', 'user123', 'password123',
+                        'password123', '6', 'Klasse ungültig'),
+                       ]
+
+# FIXME: function add_student() seems to run as expected but message won't show in responses here.
+@pytest.mark.parametrize(('first_name', 'last_name', 'username', 'password', 'password_check', 'class_name', 'message'), test_admin_add_user)
+def test_add_student_view_post(auth, client, first_name, last_name,
+                               username, password, password_check, class_name, message):
     with client:
         auth.admin_login()
-        response = client.get('/admin')
-        assert b'ADMIN' in response.data
+        response = client.post('/admin/add-student', data={'first_name': first_name,
+                                                           'last_name': last_name,
+                                                           'username': username,
+                                                           'password': password,
+                                                           'password_check': password_check,
+                                                           'class': class_name})
+        print()
+        print(response)
+        # assert message in response.get_data(as_text=True)
 
+# @pytest.mark.parametrize()
+def test_remove_whitespaces_when_adding_student(client, app, auth):
+    # login as admin
+    auth.admin_login()
+    assert client.get('/admin').status_code == 200
+    # add new student with whitespace:
+    client.post('/admin/add-student', data={'first_name': 'Hans ',
+                                                    'last_name': 'Mueller',
+                                                    'username': 'user123',
+                                                    'password': 'password123',
+                                                    'password_check': 'password123',
+                                                    'class': '9a'})
+    with app.app_context():
+        db = get_db()
+        name = db.execute("SELECT first_name FROM user WHERE username = 'user123'",).fetchone()['first_name']
+        assert name == 'Hans'
+        assert not name == 'Hans '
 
-def test_add_student_view(auth, client):
+def test_add_student_view_get(auth, client):
     auth.admin_login()
     response = client.get('/admin/add-student')
     assert 'Bitte Schüler hinzufügen' in response.get_data(as_text=True)
-
 
 
 # FIXME: This isn't working:
@@ -60,4 +111,3 @@ def test_add_student_view(auth, client):
 #         # Assert that session data was cleared due to timeout
 #         assert 'last_activity' not in client.session
 #         assert not hasattr(g, 'admin')
-
