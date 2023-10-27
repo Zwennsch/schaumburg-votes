@@ -111,7 +111,7 @@ def overview():
 @bp.route("/admin",)
 @admin_required
 def admin_page():
-    return render_template('views/admin.html')
+    return render_template('views/admin/admin.html')
 
 
 @bp.route("/admin/add-student", methods=('GET', 'POST'))
@@ -179,7 +179,7 @@ def add_student():
             return redirect(url_for('views.add_student'))
 
     # case for 'GET'
-    return render_template('views/add_student.html', active_page='add-student', classes=classes)
+    return render_template('views/admin/add_student.html', active_page='add-student', classes=classes)
 
 
 @bp.route("/admin/delete-student", methods=('GET', 'POST'))
@@ -188,7 +188,7 @@ def delete_student():
     # case for deleting a new student:
     if request.method == 'POST':
         pass
-    return render_template('views/delete_student.html', active_page='delete-student')
+    return render_template('views/admin/delete_student.html', active_page='delete-student')
 
 
 @bp.route("/admin/class-results", methods=('GET', 'POST'))
@@ -213,9 +213,9 @@ def course_results():
             "INNER JOIN vote ON user.id = vote.user_id " \
             "WHERE vote.first_vote = ?"
         results = db.execute(query, (selected_course,)).fetchall()
-        return render_template('views/course_results.html', selected_course=selected_course, results=results,)
+        return render_template('views/admin/show_results_per_course.html', selected_course=selected_course, results=results,)
     # case for 'GET'
-    return render_template('views/choose_per_course.html', active_page='course-results')
+    return render_template('views/admin/get_results_per_course.html', active_page='course-results')
 
 
 @bp.before_request
