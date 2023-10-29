@@ -122,58 +122,50 @@ def add_student():
     if request.method == 'POST':
         error = None
         class_string = request.form.get('class')
-        print('class_string:')
-        print(class_string)
         if class_string != None:
             class_string = class_string.replace("('", "")
             class_string = class_string.replace("',)", "")
-            
+
         entries = {'first_name': request.form.get('first_name'),
-                   'last_name' : request.form.get('last_name'),
+                   'last_name': request.form.get('last_name'),
                    'username': request.form.get('username'),
                    'password': request.form.get('password'),
                    'password_check': request.form.get('password_check'),
-                   'class' : class_string
+                   'class': class_string
                    }
-        print('entries.values: ')
-        print(entries)
-        # set error , if at least one input is None
         for entry in entries:
             if entries[entry] is None:
                 error = 'Mindestens ein Eintrag nicht ausgefüllt'
                 break
-            # else remove all whitespaces from the entry
             else:
-                entries[entry] = entries[entry].strip() # type: ignore
+                entries[entry] = entries[entry].strip()  # type: ignore
 
-        # check for correct password entry:
-        print('error so far: ', error)
         db = get_db()
         if error is None and entries['password']:
             if entries['password'] != entries['password_check']:
                 error = 'Fehler bei der Wiederholung des Passworts'
-            elif len(entries['password'])< 5:
-                error = 'Passwort muss mindestesn 5 Zeichen lang sein. Bitte wiederholen'
+            elif len(entries['password']) < 5:
+                error = 'Passwort muss mindestens 5 Zeichen lang sein. Bitte wiederholen'
             # check that 'class' is valid
             elif is_username_taken(entries['username'], db):
                 error = 'Benutzername bereits vergeben'
 
             # FIXME: this doesn't look good, since error is set every single time...
             if error is None:
-                error =  'Klasse ungültig'
+                error = 'Klasse ungültig'
                 for tpl in classes:
                     if class_string in tpl:
                         error = None
                         break
-                
+
         # add user to database
         print('error so far: ', error)
         if error is None:
             add_user_to_database(entries['first_name'], entries['last_name'],
-                                  entries['username'], entries['password'],entries['class'], db)
+                                 entries['username'], entries['password'], entries['class'], db)
             flash('Neuer Schüler erfolgreich hinzugefügt', 'success')
             return redirect(url_for('views.admin_page'))
-        
+
         else:
             flash(error, 'warning')
             return redirect(url_for('views.add_student'))

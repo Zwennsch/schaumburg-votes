@@ -14,11 +14,10 @@ def test_admin_unauthorized(client, auth):
     # should redirect to '/' when logged in as normal user:
     auth.login()
     response = client.get('/admin', follow_redirects=True)
+    assert b'Permission denied' in response.data
     assert response.request.path == '/'
 
 # should allow access to /admin page when logged in as admin user
-
-
 def test_admin_authorized_login(client, auth):
     auth.admin_login()
     response = client.get('/admin')
@@ -26,34 +25,32 @@ def test_admin_authorized_login(client, auth):
 
 
 # remember that only classes '9a' and '8c' are valid
-test_admin_add_user = [('Hans', 'Mueller', 'user123', 'password123', 'password123', '9a', 'Neuer erfolgreich'),
+test_admin_add_user = [('Hans', 'Mueller', 'user123', 'password123', 'password123', '9a', 'Neuer Schüler'),
                        ('Hans', 'Mueller', 'user123', 'password123',
                         'password123', None, 'Mindestens ein Eintrag'),
                        ('Hans', 'Mueller', 'user123', 'password123',
-                        'password', '9', 'Fehler bei Wiederholung'),
+                        'password', '9a', 'Fehler bei der Wiederholung'),
                        ('Hans', 'Mueller', 'user123', 'pass',
-                        'pass', '9', 'mindestens 5 Zeichen'),
+                        'pass', '9a', 'mindestens 5 Zeichen'),
                        ('Hans', 'Mueller', 'test_username', 'password123',
-                        'password123', '9', 'Benutzername vergeben'),
+                        'password123', '9a', 'Benutzername bereits vergeben'),
                        ('Hans', 'Mueller', 'user123', 'password123',
                         'password123', '6', 'Klasse ungültig'),
                        ]
 
-# FIXME: function add_student() seems to run as expected but message won't show in responses here.
 @pytest.mark.parametrize(('first_name', 'last_name', 'username', 'password', 'password_check', 'class_name', 'message'), test_admin_add_user)
 def test_add_student_view_post(auth, client, first_name, last_name,
                                username, password, password_check, class_name, message):
-    with client:
-        auth.admin_login()
-        response = client.post('/admin/add-student', data={'first_name': first_name,
-                                                           'last_name': last_name,
-                                                           'username': username,
-                                                           'password': password,
-                                                           'password_check': password_check,
-                                                           'class': class_name})
-        print()
-        print(response)
-        # assert message in response.get_data(as_text=True)
+    auth.admin_login()
+    response = client.post('/admin/add-student', data={'first_name': first_name,
+                                                        'last_name': last_name,
+                                                        'username': username,
+                                                        'password': password,
+                                                        'password_check': password_check,
+                                                        'class': class_name}, follow_redirects = True)
+    assert message in response.get_data(as_text=True)
+
+
 
 # @pytest.mark.parametrize()
 def test_remove_whitespaces_when_adding_student(client, app, auth):
