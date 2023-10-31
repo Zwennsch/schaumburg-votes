@@ -75,6 +75,19 @@ def test_add_student_view_get(auth, client):
     response = client.get('/admin/add-student')
     assert 'Bitte Schüler hinzufügen' in response.get_data(as_text=True)
 
+# def test_delete_student_successfully(client, app, auth):
+#     # login as admin
+#     auth.admin_login()
+#     assert client.get('/admin/delete-student').status_code == 200
+#     with app.app_context():
+#         db = get_db()
+#         # make sure that user with id = 1 exists
+#         assert db.execute("SELECT first_name FROM user WHERE id = '1'",).fetchone()['first_name'] == 'test_first_name'
+#         # delete student with id = 1
+#         client.post('/admin/delete-student', data={'id' : '1'})
+#         # user with id = 1 should not exist any longer
+#         name = db.execute("SELECT first_name FROM user WHERE username = 'test_username'",).fetchone()['first_name']
+#         print(name)
 
 # FIXME: This isn't working:
 # def test_track_admin_activity(client):

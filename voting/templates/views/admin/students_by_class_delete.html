@@ -1,0 +1,37 @@
+{% extends 'admin_base.html' %} {% block title %}Klassenübersicht{% endblock %}
+{% block main %}
+
+<form method="post">
+    <div class="students-overview">
+    <h1>Schüler aus {{ student_class }} löschen</h1>
+    <h3>Bitte alle Schüler der Klasse {{ student_class }} wählen, die Sie löschen möchten</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Vorname</th>
+                    <th scope="col">Nachname</th>
+                    <th scope="col">Klasse</th>
+                    <th scope="col">Schüler löschen</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+            <tr>
+                <th scope="row">{{ student['id'] }}</th>
+                <td>{{ student['first_name'] }}</td>
+                <td>{{ student['last_name'] }}</td>
+                <td>{{ student_class }}</td>
+                <td>
+                    <div class="form-check">
+                        <input class="form-check-input" name="selected_students" value="{{ student['id'] }}" type="checkbox" id="flexCheckDefault">
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit">Schüler löschen</button>
+    </div>
+</form>
+{% endblock %}

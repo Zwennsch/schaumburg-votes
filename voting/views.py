@@ -121,17 +121,17 @@ def add_student():
     classes = get_cached_classes()
     if request.method == 'POST':
         error = None
-        class_string = request.form.get('class')
-        if class_string != None:
-            class_string = class_string.replace("('", "")
-            class_string = class_string.replace("',)", "")
+        student_class = request.form.get('class')
+        if student_class != None:
+            student_class = student_class.replace("('", "")
+            student_class = student_class.replace("',)", "")
 
         entries = {'first_name': request.form.get('first_name'),
                    'last_name': request.form.get('last_name'),
                    'username': request.form.get('username'),
                    'password': request.form.get('password'),
                    'password_check': request.form.get('password_check'),
-                   'class': class_string
+                   'class': student_class
                    }
         for entry in entries:
             if entries[entry] is None:
@@ -154,7 +154,7 @@ def add_student():
             if error is None:
                 error = 'Klasse ungültig'
                 for tpl in classes:
-                    if class_string in tpl:
+                    if student_class in tpl:
                         error = None
                         break
 
@@ -174,13 +174,46 @@ def add_student():
     return render_template('views/admin/add_student.html', active_page='add-student', classes=classes)
 
 
+@bp.route("/admin/delete-student/all-students", methods=('GET', 'POST'))
+@admin_required
+def delete_student_from_class():
+    if request.method == 'POST':
+        selected_students_ids = request.form.getlist('selected_students')
+        if selected_students_ids != None:
+            db = get_db()
+            # make sure, that student with id exists in db:
+            for id in selected_students_ids:
+                # db_id =db.execute("SELECT * FROM user WHERE id = ?", (id,)).fetchone()['id']
+                # if (db_id):
+                db.execute("DELETE FROM user WHERE id = ?", (id,))
+            db.commit()
+            if len(selected_students_ids)<=1:
+                flash('Schüler wurde erfolgreich aus Datenbank gelöscht', 'info')
+            else:
+                flash('Schüler wurden erfolgreich aus Datenbank gelöscht', 'info')
+        return redirect(url_for('views.admin_page'))
+
+    # Get
+    # student_class = request.form.get('student_class')
+    db = get_db()
+    student_class = request.args['student_class']
+    students = db.execute(
+            "SELECT id, first_name, last_name, class FROM user WHERE class = ? ORDER BY last_name ASC", (student_class,)).fetchall()
+
+    return render_template('views/admin/students_by_class_delete.html', active_page='delete-student', student_class=student_class, students=students)
+
+
 @bp.route("/admin/delete-student", methods=('GET', 'POST'))
 @admin_required
 def delete_student():
-    # case for deleting a new student:
     if request.method == 'POST':
-        pass
-    return render_template('views/admin/delete_student.html', active_page='delete-student')
+        student_class = request.form.get('class')
+        if student_class != None:
+            student_class = student_class.replace("('", "")
+            student_class = student_class.replace("',)", "")
+        # return render_template('views/admin/students_by_class_delete.html', active_page='delete-student', student_class=student_class, students=students)
+        return redirect(url_for('views.delete_student_from_class', active_page='delete-student', student_class=student_class))
+    return render_template('views/admin/delete_student.html', active_page='delete-student', classes=get_cached_classes())
 
 
 @bp.route("/admin/class-results", methods=('GET', 'POST'))

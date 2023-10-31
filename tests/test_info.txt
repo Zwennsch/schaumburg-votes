@@ -1,3 +1,8 @@
 the hashed_password is from arvid8 and got hashed by following password: 'trsvv' 
 the password for admin is '12345'
 
+These are the credentials for the users:
+ ('test_first_name','test_last_name','test_username','pbkdf2:sha256:260000$M0BmdefyOnOAiRWP$86fa6ba7259d598a5310ccb875c59cd2b3b334f1ca11030330f37815098c45fa','9a',1),
+    ('other_first_name','other_last_name','other_username','pbkdf2:sha256:260000$M0BmdefyOnOAiRWP$86fa6ba7259d598a5310ccb875c59cd2b3b334f1ca11030330f37815098c45fa','8c',0);
+
+the hashed password is for 'test_username' is 'trsvv'
