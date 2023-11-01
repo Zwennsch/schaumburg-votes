@@ -181,10 +181,7 @@ def delete_student_from_class():
         selected_students_ids = request.form.getlist('selected_students')
         if selected_students_ids != None:
             db = get_db()
-            # make sure, that student with id exists in db:
             for id in selected_students_ids:
-                # db_id =db.execute("SELECT * FROM user WHERE id = ?", (id,)).fetchone()['id']
-                # if (db_id):
                 db.execute("DELETE FROM user WHERE id = ?", (id,))
             db.commit()
             if len(selected_students_ids)<=1:
@@ -193,8 +190,7 @@ def delete_student_from_class():
                 flash('Schüler wurden erfolgreich aus Datenbank gelöscht', 'info')
         return redirect(url_for('views.admin_page'))
 
-    # Get
-    # student_class = request.form.get('student_class')
+    # GET
     db = get_db()
     student_class = request.args['student_class']
     students = db.execute(
@@ -211,7 +207,6 @@ def delete_student():
         if student_class != None:
             student_class = student_class.replace("('", "")
             student_class = student_class.replace("',)", "")
-        # return render_template('views/admin/students_by_class_delete.html', active_page='delete-student', student_class=student_class, students=students)
         return redirect(url_for('views.delete_student_from_class', active_page='delete-student', student_class=student_class))
     return render_template('views/admin/delete_student.html', active_page='delete-student', classes=get_cached_classes())
 

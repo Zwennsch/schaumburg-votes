@@ -18,6 +18,8 @@ def test_admin_unauthorized(client, auth):
     assert response.request.path == '/'
 
 # should allow access to /admin page when logged in as admin user
+
+
 def test_admin_authorized_login(client, auth):
     auth.admin_login()
     response = client.get('/admin')
@@ -38,20 +40,21 @@ test_admin_add_user = [('Hans', 'Mueller', 'user123', 'password123', 'password12
                         'password123', '6', 'Klasse ungültig'),
                        ]
 
+
 @pytest.mark.parametrize(('first_name', 'last_name', 'username', 'password', 'password_check', 'class_name', 'message'), test_admin_add_user)
 def test_add_student_view_post(auth, client, first_name, last_name,
                                username, password, password_check, class_name, message):
     auth.admin_login()
     response = client.post('/admin/add-student', data={'first_name': first_name,
-                                                        'last_name': last_name,
-                                                        'username': username,
-                                                        'password': password,
-                                                        'password_check': password_check,
-                                                        'class': class_name}, follow_redirects = True)
+                                                       'last_name': last_name,
+                                                       'username': username,
+                                                       'password': password,
+                                                       'password_check': password_check,
+                                                       'class': class_name}, follow_redirects=True)
     assert message in response.get_data(as_text=True)
 
 
-
+# TODO: whitespaces in username, password ...
 # @pytest.mark.parametrize()
 def test_remove_whitespaces_when_adding_student(client, app, auth):
     # login as admin
@@ -59,35 +62,64 @@ def test_remove_whitespaces_when_adding_student(client, app, auth):
     assert client.get('/admin').status_code == 200
     # add new student with whitespace:
     client.post('/admin/add-student', data={'first_name': 'Hans ',
-                                                    'last_name': 'Mueller',
-                                                    'username': 'user123',
-                                                    'password': 'password123',
-                                                    'password_check': 'password123',
-                                                    'class': '9a'})
+                                            'last_name': 'Mueller',
+                                            'username': 'user123',
+                                            'password': 'password123',
+                                            'password_check': 'password123',
+                                            'class': '9a'})
     with app.app_context():
         db = get_db()
-        name = db.execute("SELECT first_name FROM user WHERE username = 'user123'",).fetchone()['first_name']
+        name = db.execute(
+            "SELECT first_name FROM user WHERE username = 'user123'",).fetchone()['first_name']
         assert name == 'Hans'
         assert not name == 'Hans '
+
 
 def test_add_student_view_get(auth, client):
     auth.admin_login()
     response = client.get('/admin/add-student')
     assert 'Bitte Schüler hinzufügen' in response.get_data(as_text=True)
 
-# def test_delete_student_successfully(client, app, auth):
-#     # login as admin
-#     auth.admin_login()
-#     assert client.get('/admin/delete-student').status_code == 200
-#     with app.app_context():
-#         db = get_db()
-#         # make sure that user with id = 1 exists
-#         assert db.execute("SELECT first_name FROM user WHERE id = '1'",).fetchone()['first_name'] == 'test_first_name'
-#         # delete student with id = 1
-#         client.post('/admin/delete-student', data={'id' : '1'})
-#         # user with id = 1 should not exist any longer
-#         name = db.execute("SELECT first_name FROM user WHERE username = 'test_username'",).fetchone()['first_name']
-#         print(name)
+
+def test_delete_student_successfully(client, auth):
+    # login as admin
+    auth.admin_login()
+    response = client.get('/admin/delete-student')
+    # verify view for 'GET'
+    assert response.status_code == 200
+    assert 'Bitte Klasse wählen' in response.get_data(as_text=True)
+    assert '9a' in response.get_data(as_text=True)
+
+    # verify 'POST
+    response = client.post('/admin/delete-student',
+                           data={'class': "('9a',)"}, follow_redirects=True)
+    assert response.status_code == 200
+    assert 'test_first_name' in response.get_data(as_text=True)
+
+
+
+delete_students_from_list_data = [([1], 1, 'Schüler wurde'), ([1,2], 0, 'Schüler wurden')]
+
+@pytest.mark.parametrize(('ids_list', 'no_user_remaining', 'message'), delete_students_from_list_data)
+def test_delete_student_from_list(client, auth, app, ids_list, no_user_remaining, message):
+    with app.app_context():
+        db = get_db()
+        # make sure that user with id = 1 exists
+        assert db.execute("SELECT first_name FROM user WHERE id = '1'",).fetchone()[
+            'first_name'] == 'test_first_name'
+        # there should be 2 users in db before deletion
+        assert db.execute("SELECT COUNT(*) FROM user",).fetchone()[0] == 2
+        # login as admin
+        auth.admin_login()
+        # delete student with id = 1
+        response = client.post('/admin/delete-student/all-students',
+                    data={'selected_students': ids_list}, follow_redirects=True)
+        # number of users in db should be less
+        assert no_user_remaining == db.execute("SELECT COUNT(*) FROM user").fetchone()[0]
+        assert message in response.get_data(as_text=True)
+
+# def test_delete_student_from_class(app, client):
+
 
 # FIXME: This isn't working:
 # def test_track_admin_activity(client):
