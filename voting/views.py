@@ -2,7 +2,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, current_app, url_for
 )
 from voting.db import get_db
-from voting.helpers import is_username_taken, add_user_to_database
+from voting.helpers import is_username_taken, add_user_to_database, get_query_for_nth_vote
 from voting.auth import login_required, admin_required
 from voting.models import load_courses
 from voting.cache import get_cached_classes, get_cache
@@ -228,12 +228,14 @@ def course_results():
         selected_course = request.form.get('selected_course')
         # Fetch data from the database based on the selected course
         db = get_db()
-        query = "SELECT first_name, class, first_vote " \
-            "FROM user "\
-            "INNER JOIN vote ON user.id = vote.user_id " \
-            "WHERE vote.first_vote = ?"
-        results = db.execute(query, (selected_course,)).fetchall()
-        return render_template('views/admin/show_results_per_course.html', selected_course=selected_course, results=results,)
+        # First_vote-query
+        query_first = get_query_for_nth_vote('first_vote')
+        results_first = db.execute(query_first, (selected_course,)).fetchall()
+        query_second = get_query_for_nth_vote('second_vote')
+        results_second = db.execute(query_second, (selected_course,)).fetchall()
+        query_third = get_query_for_nth_vote('third_vote')
+        results_third = db.execute(query_third, (selected_course,)).fetchall()
+        return render_template('views/admin/show_results_per_course.html', selected_course=selected_course, results_first=results_first, results_second=results_second, results_third=results_third)
     # case for 'GET'
     return render_template('views/admin/get_results_per_course.html', active_page='course-results')
 

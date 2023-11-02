@@ -128,3 +128,11 @@ def is_username_taken(username, db: sqlite3.Connection):
 
     # Check if any of the results is greater than 0, indicating that the username is taken
     return any(count > 0 for count, in results)
+
+
+def get_query_for_nth_vote(nth_vote)-> str:
+    nth_query= "SELECT first_name, last_name, class, first_vote, second_vote, third_vote " \
+            "FROM user "\
+            "INNER JOIN vote ON user.id = vote.user_id " \
+            "WHERE vote."+nth_vote+" = ?"
+    return nth_query

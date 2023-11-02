@@ -22,7 +22,8 @@
   <body
     background="{{ url_for('static', filename='desktop_background_main.png') }}"
   >
-    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+  <!-- FIXME: The navbar is often above other stuff so that you cannot see that -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container">
         <a
           href="{{ url_for('views.index') }}"
