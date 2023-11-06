@@ -1,0 +1,33 @@
+{% extends 'admin_base.html' %} {% block title %}Ergebnisse - nach Klasse{%
+endblock %} {% block main %}
+
+<div class="vote-results-per-class">
+  <div class="container container-results">
+    <div class="centered">
+      <h1>Wahlergebnis der Klasse {{ selected_class }}</h1>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Vorname</th>
+            <th scope="col">Nachname</th>
+            <th scope="col">Erstwahl</th>
+            <th scope="col">Zweitwahl</th>
+            <th scope="col">Drittwahl</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student in class_results %}
+          <tr>
+            <td>{{ student['first_name'] }}</td>
+            <th scope="row">{{ student['last_name'] }}</th>
+            <td>{{ student['first_vote'] }}</td>
+            <td>{{ student['second_vote'] }}</td>
+            <td>{{ student['third_vote'] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

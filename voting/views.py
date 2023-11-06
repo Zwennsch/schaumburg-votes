@@ -184,7 +184,7 @@ def delete_student_from_class():
             for id in selected_students_ids:
                 db.execute("DELETE FROM user WHERE id = ?", (id,))
             db.commit()
-            if len(selected_students_ids)<=1:
+            if len(selected_students_ids) <= 1:
                 flash('Schüler wurde erfolgreich aus Datenbank gelöscht', 'info')
             else:
                 flash('Schüler wurden erfolgreich aus Datenbank gelöscht', 'info')
@@ -194,7 +194,7 @@ def delete_student_from_class():
     db = get_db()
     student_class = request.args['student_class']
     students = db.execute(
-            "SELECT id, first_name, last_name, class FROM user WHERE class = ? ORDER BY last_name ASC", (student_class,)).fetchall()
+        "SELECT id, first_name, last_name, class FROM user WHERE class = ? ORDER BY last_name ASC", (student_class,)).fetchall()
 
     return render_template('views/admin/students_by_class_delete.html', active_page='delete-student', student_class=student_class, students=students)
 
@@ -215,9 +215,13 @@ def delete_student():
 @admin_required
 def class_results():
     if request.method == 'POST':
-        _class = request.from.get
+        selected_class = request.form.get('selected_class')
+        db = get_db()
+        class_results = db.execute(
+            "SELECT first_name, last_name, vote_passed, first_vote, second_vote, third_vote from user INNER JOIN vote ON user.id = vote.user_id WHERE class = ? AND vote_passed = 1 ORDER BY last_name", (selected_class,)).fetchall()
+        return render_template('views/admin/show_results_per_class.html', active_page='class-results', class_results=class_results, selected_class=selected_class)
     # case for 'GET'
-    return render_template('views/admin/choose_class.html', active_page='class-results')
+    return render_template('views/admin/choose_class.html', active_page='class-results', classes=get_cached_classes())
 
 
 @bp.route("/admin/course-results", methods=('GET', 'POST'))
@@ -231,7 +235,8 @@ def course_results():
         query_first = get_query_for_nth_vote('first_vote')
         results_first = db.execute(query_first, (selected_course,)).fetchall()
         query_second = get_query_for_nth_vote('second_vote')
-        results_second = db.execute(query_second, (selected_course,)).fetchall()
+        results_second = db.execute(
+            query_second, (selected_course,)).fetchall()
         query_third = get_query_for_nth_vote('third_vote')
         results_third = db.execute(query_third, (selected_course,)).fetchall()
         return render_template('views/admin/show_results_per_course.html', selected_course=selected_course, results_first=results_first, results_second=results_second, results_third=results_third)

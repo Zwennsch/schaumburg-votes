@@ -24,6 +24,10 @@ a {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+.container-results {
+  margin-top: 100px;
+}
+
 .flash {
   top: 20%;
   margin: 1em 0;
@@ -171,6 +175,18 @@ a {
   color: white;
 }
 #vote-btn:hover {
+  background-color: #212529;
+}
+#show-class-btn {
+  font-weight: 600;
+  font-size: x-large;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  background-color: #6c757d;
+  color: white;
+}
+#show-class-btn:hover {
   background-color: #212529;
 }
 
