@@ -51,7 +51,7 @@ def add_new_admin_into_admin_db(name, password, db: sqlite3.Connection):
         (name, password_hash)
     )
     db.commit()
-    
+
 
 def _add_column_in_csv(csv_input_file_path, csv_output_file_path, column_name: str, values):
     """Adds a new column to the csv entry and fills it with the specified values
@@ -82,7 +82,8 @@ def _get_num_students(csv_file) -> int:
         reader = csv.reader(input)
         return sum(1 for row in reader) - 1
 
-def add_user_to_database(first_name, last_name, username, password, class_name,  db: sqlite3.Connection ) -> bool:
+
+def add_user_to_database(first_name, last_name, username, password, class_name,  db: sqlite3.Connection) -> bool:
     """Adds a new user into the database. Be sure to check that the username is not taken already
     Check in advance, that the username is not taken already. 
     Throws an sqlite3.IntegrityError if the username isn't UNIQUE
@@ -97,23 +98,23 @@ def add_user_to_database(first_name, last_name, username, password, class_name, 
     pw_hash = generate_password_hash(password)
     try:
         db.execute(
-                    "INSERT INTO user (first_name, last_name, username, password_hash, class)"
-                    " VALUES (?,?,?,?,?)",
-                    (first_name, last_name,
-                    username, pw_hash, class_name)
-                )
+            "INSERT INTO user (first_name, last_name, username, password_hash, class)"
+            " VALUES (?,?,?,?,?)",
+            (first_name, last_name,
+             username, pw_hash, class_name)
+        )
         db.commit()
         return True
     except sqlite3.IntegrityError as e:
         return False
-        
-    
+
 
 def _create_password_list(pwd_length: int, num_of_pwd: int) -> List[str]:
     pwd_list = []
     for i in range(num_of_pwd):
         pwd_list.append(_generate_password(pwd_length))
     return pwd_list
+
 
 def is_username_taken(username, db: sqlite3.Connection):
     # Prepare the SQL query with the username as a parameter
@@ -130,9 +131,9 @@ def is_username_taken(username, db: sqlite3.Connection):
     return any(count > 0 for count, in results)
 
 
-def get_query_for_nth_vote(nth_vote)-> str:
-    nth_query= "SELECT first_name, last_name, class, first_vote, second_vote, third_vote " \
-            "FROM user "\
-            "INNER JOIN vote ON user.id = vote.user_id " \
-            "WHERE vote."+nth_vote+" = ?"
+def get_query_for_nth_vote(nth_vote) -> str:
+    nth_query = "SELECT first_name, last_name, class, first_vote, second_vote, third_vote " \
+        "FROM user "\
+        "INNER JOIN vote ON user.id = vote.user_id " \
+        "WHERE vote."+nth_vote+" = ? ORDER BY class, last_name"
     return nth_query

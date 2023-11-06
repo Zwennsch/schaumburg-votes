@@ -104,6 +104,13 @@ def test_create_admin_user_username_exists(runner, app, username, password, mess
         result = runner.invoke(args=['create-admin', username, password])
         assert message in result.output
 
+def test_get_query_for_nth_vote():
+    assert helpers.get_query_for_nth_vote('first_vote') == "SELECT first_name, last_name, class, first_vote, second_vote, third_vote " \
+        "FROM user "\
+        "INNER JOIN vote ON user.id = vote.user_id " \
+        "WHERE vote.first_vote = ? ORDER BY class, last_name"
+
 # TODOD: cProfile for testing performance issues.
 # def test_performance_fill_user_db():
     # input_csv = ""
+

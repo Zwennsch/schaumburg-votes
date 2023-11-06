@@ -214,11 +214,10 @@ def delete_student():
 @bp.route("/admin/class-results", methods=('GET', 'POST'))
 @admin_required
 def class_results():
-    # case for deleting a new student:
     if request.method == 'POST':
-        pass
+        _class = request.from.get
     # case for 'GET'
-    return render_template('views/class_results.html', active_page='class-results')
+    return render_template('views/admin/choose_class.html', active_page='class-results')
 
 
 @bp.route("/admin/course-results", methods=('GET', 'POST'))

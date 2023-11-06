@@ -42,7 +42,6 @@ def auth(client):
 
 @pytest.fixture
 def app():
-    # print('in app fixture!!')
     db_fd, db_path = tempfile.mkstemp()
 
     # creates an app with 4 courses : Kurs1... Kurs4 as name, 11 to 14 as participants, Teacher1 to Teacher4 as teachers

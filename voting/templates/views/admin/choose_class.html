@@ -1,0 +1,16 @@
+{% extends 'base.html' %} {% block title %}Klasse wählen{% endblock %} {% block main %}
+<div class="login-container centered">
+  <h1>Klasse wählen</h1>
+  <form method="post">
+    <select class="form-select" aria-label="Default select example">
+        <option selected>Bitte eine Klasse auswählen</option>
+        {% for result in results_first %}
+        <option value="{{}}"></option>
+        {% endfor %}
+        <option value="1">One</option>
+        <option value="2">Two</option>
+        <option value="3">Three</option>
+      </select>
+  </form>
+</div>
+{% endblock %}

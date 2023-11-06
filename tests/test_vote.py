@@ -117,9 +117,7 @@ def test_cannot_vote_for_courses_with_other_class(app, auth, client, wahl1, wahl
         assert vote['first_vote'] == "Kurs1"
 
     # should be redirected to '/vote' doesn't work. No Location - Key
-    print('type(response): ', type(response))
     assert response.request.path == "/vote"
-    print('response.headers: ',response.headers)
 
 
 def test_courses_view(client):

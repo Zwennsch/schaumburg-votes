@@ -118,8 +118,18 @@ def test_delete_student_from_list(client, auth, app, ids_list, no_user_remaining
         assert no_user_remaining == db.execute("SELECT COUNT(*) FROM user").fetchone()[0]
         assert message in response.get_data(as_text=True)
 
-# def test_delete_student_from_class(app, client):
+def test_admin_course_results(client, auth):
+    auth.admin_login()
+    # GET should render view to select course
+    response = client.get('/admin/course-results', follow_redirects=True)
+    assert response.status_code == 200
+    assert 'Kurs1' in response.get_data(as_text=True)
 
+    # POST
+    response = client.post('/admin/course-results', data={'selected_course' : 'Kurs1'}, follow_redirects=True)
+    assert response.status_code == 200
+    assert 'Erstwahlen für Kurs1' in response.get_data(as_text=True)
+    assert 'test_first_name' in response.get_data(as_text=True)
 
 # FIXME: This isn't working:
 # def test_track_admin_activity(client):
