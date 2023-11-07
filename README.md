@@ -26,6 +26,7 @@ Students from Schaumburger Str. Bremen should be able to vote from a choice of c
 - create a courses.csv in the instance folder.
     It should contain 6 columns:
         classes, name, max_participants, teacher, description, img_name
+        e.g. "8,9,10",football,18,Smith,"Playing football on our local court in school",football_img
     for each course you can place an image in the static folder. 
     If you don't provide one, a default image will be shown later
 

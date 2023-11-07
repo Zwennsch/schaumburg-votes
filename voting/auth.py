@@ -6,6 +6,7 @@ from flask import (
 from werkzeug.security import check_password_hash
 
 from voting.db import get_db
+import sqlite3
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -30,16 +31,19 @@ def login():
             db = get_db()
 
             # check if user is admin user and render admin-page
-            admin = db.execute(
-                'SELECT * FROM  admin WHERE username = ?', (username,)).fetchone()
-            if admin and check_password_hash(admin['password_hash'], password):
-                # successfully logged in as admin user
-                session.clear()
-                session['admin'] = True
-                session['admin_name'] = admin['username']
-                # g.admin = True
-                return redirect(url_for('views.admin_page'))
-
+            try:
+                admin = db.execute(
+                    'SELECT * FROM  admin WHERE username = ?', (username,)).fetchone()
+                if admin and check_password_hash(admin['password_hash'], password):
+                    # successfully logged in as admin user
+                    session.clear()
+                    session['admin'] = True
+                    session['admin_name'] = admin['username']
+                    # g.admin = True
+                    return redirect(url_for('views.admin_page'))
+            except sqlite3.OperationalError:
+                pass
+                
             user = db.execute(
                 'SELECT * FROM user WHERE username = ?', (username,)
             ).fetchone()
