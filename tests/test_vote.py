@@ -88,10 +88,10 @@ def test_update_vote(client, app, auth):
 # only courses 'Kurs1', 'Kurs4', Kurs5' are valid, so here at least one is invalid
 # so this is: 1. iv, v, iv - 2. iv, v, v - 3. v, iv, v, - 4. iv, iv, v
 @pytest.mark.parametrize(('wahl1', 'wahl2', 'wahl3', 'message'), (
-    ('Kurs2', 'Kurs1', 'Kurs6', b'Kurs nicht Jahrgang'),
-    ('Kurs3', 'Kurs4', 'Kurs5', b'Kurs nicht Jahrgang'),
-    ('Kurs4', 'Kurs6', 'Kurs5', b'Kurs nicht Jahrgang'),
-    ('Kurs3', 'Kurs2', 'Kurs5', b'Kurs nicht Jahrgang'),
+    ('Kurs2', 'Kurs1', 'Kurs6', 'Kurs ist nicht für deinen Jahrgang'),
+    ('Kurs3', 'Kurs4', 'Kurs5', 'Kurs ist nicht für deinen Jahrgang'),
+    ('Kurs4', 'Kurs6', 'Kurs5', 'Kurs ist nicht für deinen Jahrgang'),
+    ('Kurs3', 'Kurs2', 'Kurs5', 'Kurs ist nicht für deinen Jahrgang'),
 ))
 def test_cannot_vote_for_courses_with_other_class(app, auth, client, wahl1, wahl2, wahl3, message):
     # login as user with 9th grade:
@@ -107,8 +107,7 @@ def test_cannot_vote_for_courses_with_other_class(app, auth, client, wahl1, wahl
         "wahl2": wahl2,
         "wahl3": wahl3,
     }, follow_redirects=True,)
-    # FIXME: message doesn't show up in response.
-    # assert message in response.data
+    assert message in response.get_data(as_text=True)
 
     # assert that course is not stored in db and still 'Kurs1' as first_vote
     with app.app_context():
