@@ -6,7 +6,7 @@ from flask import (
 from werkzeug.security import check_password_hash
 
 from voting.db import get_db
-import sqlite3
+from sqlite3 import OperationalError
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -41,7 +41,7 @@ def login():
                     session['admin_name'] = admin['username']
                     # g.admin = True
                     return redirect(url_for('views.admin_page'))
-            except sqlite3.OperationalError:
+            except OperationalError:
                 pass
                 
             user = db.execute(

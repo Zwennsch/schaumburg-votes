@@ -115,7 +115,6 @@ def test_cannot_vote_for_courses_with_other_class(app, auth, client, wahl1, wahl
         vote = db.execute('SELECT * FROM vote WHERE user_id = 1').fetchone()
         assert vote['first_vote'] == "Kurs1"
 
-    # should be redirected to '/vote' doesn't work. No Location - Key
     assert response.request.path == "/vote"
 
 
