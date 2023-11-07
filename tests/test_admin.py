@@ -97,8 +97,9 @@ def test_delete_student_successfully(client, auth):
     assert 'test_first_name' in response.get_data(as_text=True)
 
 
+delete_students_from_list_data = [
+    ([1], 1, 'Schüler wurde'), ([1, 2], 0, 'Schüler wurden')]
 
-delete_students_from_list_data = [([1], 1, 'Schüler wurde'), ([1,2], 0, 'Schüler wurden')]
 
 @pytest.mark.parametrize(('ids_list', 'no_user_remaining', 'message'), delete_students_from_list_data)
 def test_delete_student_from_list(client, auth, app, ids_list, no_user_remaining, message):
@@ -113,10 +114,12 @@ def test_delete_student_from_list(client, auth, app, ids_list, no_user_remaining
         auth.admin_login()
         # delete student with id = 1
         response = client.post('/admin/delete-student/all-students',
-                    data={'selected_students': ids_list}, follow_redirects=True)
+                               data={'selected_students': ids_list}, follow_redirects=True)
         # number of users in db should be less
-        assert no_user_remaining == db.execute("SELECT COUNT(*) FROM user").fetchone()[0]
+        assert no_user_remaining == db.execute(
+            "SELECT COUNT(*) FROM user").fetchone()[0]
         assert message in response.get_data(as_text=True)
+
 
 def test_admin_course_results(client, auth):
     auth.admin_login()
@@ -126,10 +129,27 @@ def test_admin_course_results(client, auth):
     assert 'Kurs1' in response.get_data(as_text=True)
 
     # POST
-    response = client.post('/admin/course-results', data={'selected_course' : 'Kurs1'}, follow_redirects=True)
+    response = client.post('/admin/course-results',
+                           data={'selected_course': 'Kurs1'}, follow_redirects=True)
     assert response.status_code == 200
     assert 'Erstwahlen für Kurs1' in response.get_data(as_text=True)
     assert 'test_first_name' in response.get_data(as_text=True)
+
+
+def test_admin_class_results(client, auth):
+    auth.admin_login()
+    # GET should render view of class to select:
+    response = client.get('/admin/class-results', follow_redirects=True)
+    assert response.status_code == 200
+    assert 'Klasse wählen' in response.get_data(as_text=True)
+
+    # POST
+    response = client.post('/admin/class-results', data={'selected_class' : '9a'}, follow_redirects=True)
+    assert 'test_first_name' in response.get_data(as_text=True)
+    # Show only those who voted:
+    response = client.post('/admin/class-results', data={'selected_class' : '8c'}, follow_redirects=True)
+    assert 'other_first_name' not in response.get_data(as_text=True)
+
 
 # FIXME: This isn't working:
 # def test_track_admin_activity(client):

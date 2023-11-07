@@ -223,7 +223,6 @@ def class_results():
     # case for 'GET'
     return render_template('views/admin/choose_class.html', active_page='class-results', classes=get_cached_classes())
 
-
 @bp.route("/admin/course-results", methods=('GET', 'POST'))
 @admin_required
 def course_results():
