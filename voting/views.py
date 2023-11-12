@@ -179,7 +179,7 @@ def add_student():
 def delete_student_from_class():
     if request.method == 'POST':
         selected_students_ids = request.form.getlist('selected_students')
-        if selected_students_ids != None:
+        if len(selected_students_ids) != 0:
             db = get_db()
             for id in selected_students_ids:
                 db.execute("DELETE FROM user WHERE id = ?", (id,))
@@ -188,6 +188,8 @@ def delete_student_from_class():
                 flash('Schüler wurde erfolgreich aus Datenbank gelöscht', 'info')
             else:
                 flash('Schüler wurden erfolgreich aus Datenbank gelöscht', 'info')
+        else:
+            flash('No user selected', 'info')
         return redirect(url_for('views.admin_page'))
 
     # GET
@@ -199,14 +201,19 @@ def delete_student_from_class():
     return render_template('views/admin/students_by_class_delete.html', active_page='delete-student', student_class=student_class, students=students)
 
 
+
 @bp.route("/admin/delete-student", methods=('GET', 'POST'))
 @admin_required
 def delete_student():
     if request.method == 'POST':
         student_class = request.form.get('class')
+        # TODO: only checks whether 'class' is empty but should check whether class is 'valid' format and in class_list
         if student_class != None:
             student_class = student_class.replace("('", "")
             student_class = student_class.replace("',)", "")
+        else:
+            flash('No class selected or class not in database' 'error')
+            return redirect(url_for('views.admin_page'))
         return redirect(url_for('views.delete_student_from_class', active_page='delete-student', student_class=student_class))
     return render_template('views/admin/delete_student.html', active_page='delete-student', classes=get_cached_classes())
 
@@ -259,6 +266,7 @@ def track_admin_activity():
         else:
             elapsed_time = now - last_activity
             if elapsed_time >= timedelta(minutes=10):  # Timeout period
-                session.clear()  # Clear session to log out admin user
+                session.clear()
+                g.admin = False  # Clear session to log out admin user
             else:
                 session['last_activity'] = now

@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from flask import g, session
 from voting.db import get_db
+from freezegun import freeze_time
 import pytest
 
 
@@ -97,6 +98,15 @@ def test_delete_student_successfully(client, auth):
     assert 'test_first_name' in response.get_data(as_text=True)
 
 
+def test_delete_student_from_list_wrong_class(client, auth):
+    auth.admin_login()
+    response = client.post('/admin/delete-student'
+                           , follow_redirects=True)
+    
+    assert 'No class selected or class not in database' in response.get_data(as_text=True)
+    assert response.request.path == '/admin'
+
+
 delete_students_from_list_data = [
     ([1], 1, 'Schüler wurde'), ([1, 2], 0, 'Schüler wurden')]
 
@@ -119,6 +129,21 @@ def test_delete_student_from_list(client, auth, app, ids_list, no_user_remaining
         assert no_user_remaining == db.execute(
             "SELECT COUNT(*) FROM user").fetchone()[0]
         assert message in response.get_data(as_text=True)
+
+
+def test_delete_student_from_list_wrong_id(client, auth, app):
+    with app.app_context():
+        db = get_db()
+        no_students_before = db.execute("SELECT COUNT(*) FROM user",).fetchone()[0] == 2
+
+        auth.admin_login()
+        response = client.post('/admin/delete-student/all-students',
+                               data={'selected_students': None}, follow_redirects=True)
+        
+        no_students_after = db.execute("SELECT COUNT(*) FROM user",).fetchone()[0] == 2
+        assert no_students_after == no_students_before
+        assert 'No user selected' in response.get_data(as_text=True)
+
 
 
 def test_admin_course_results(client, auth):
@@ -144,42 +169,46 @@ def test_admin_class_results(client, auth):
     assert 'Klasse wählen' in response.get_data(as_text=True)
 
     # POST
-    response = client.post('/admin/class-results', data={'selected_class' : '9a'}, follow_redirects=True)
+    response = client.post('/admin/class-results',
+                           data={'selected_class': '9a'}, follow_redirects=True)
     assert 'test_first_name' in response.get_data(as_text=True)
     # Show only those who voted:
-    response = client.post('/admin/class-results', data={'selected_class' : '8c'}, follow_redirects=True)
+    response = client.post('/admin/class-results',
+                           data={'selected_class': '8c'}, follow_redirects=True)
     assert 'other_first_name' not in response.get_data(as_text=True)
 
 
-# FIXME: This isn't working:
-# def test_track_admin_activity(client):
-#     with client:
-#         with client.session_transaction() as sess:
-#             sess['admin'] = True  # Set session data for admin user
+def test_track_admin_activity(client):
+    initial_datetime = datetime(
+        year=2023, month=1, day=1, hour=1, minute=0, second=0)
+    other_datetime = datetime(
+        year=2023, month=1, day=1, hour=1, minute=20, second=0)
+    
+    with client, freeze_time(initial_datetime) as frozen_datetime:
+        with client.session_transaction() as sess:
+            sess['admin'] = True  # Set session data for admin user
 
-#         # Simulate a request to trigger the before_request function
-#         response = client.get('/auth/admin')  # Replace with actual route
+        # Simulate a request to trigger the before_request function
+        response = client.get('/admin/class-results')  # Replace with actual route
 
-#         assert response.status_code == 200  # Replace with expected status code
+        assert response.status_code == 200  # Replace with expected status code
 
-#         # Assert that session data was updated correctly
-#         assert 'last_activity' in client.session
-#         assert isinstance(client.session['last_activity'], datetime)
+        # Assert that session data was updated correctly
+        assert 'last_activity' in session
+        assert isinstance(session['last_activity'], datetime)
 
-#         # Assert that g.admin was updated correctly
-#         assert hasattr(g, 'admin')
-#         assert g.admin is True  # Assuming the user is an admin
+        # # Assert that g.admin was updated correctly
+        assert hasattr(g, 'admin')
+        assert g.admin is True  # Assuming the user is an admin
 
-#         # Simulate passing time by using UTC-aware datetime
-#         now = datetime.now(timezone.utc)
-#         elapsed_time = now - client.session['last_activity']
+        # move 20 minutes in time:
+        frozen_datetime.move_to(other_datetime)
+        assert frozen_datetime() == other_datetime
+        
+        # Make another request 20 minutes later:
+        response = client.get('/admin/class-results')  
+        assert response.status_code != 200
 
-#         # Assert that the elapsed time was calculated correctly
-#         assert elapsed_time >= timedelta(minutes=15)  # Replace with expected timeout
-
-#         # Simulate another request after elapsed time
-#         response = client.get('/auth/admin')  # Replace with actual route
-
-#         # Assert that session data was cleared due to timeout
-#         assert 'last_activity' not in client.session
-#         assert not hasattr(g, 'admin')
+        # Assert that session data was cleared due to timeout
+        assert 'last_activity' not in session
+        assert g.admin is False
