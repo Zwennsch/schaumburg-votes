@@ -207,7 +207,6 @@ def delete_student_from_class():
 def delete_student():
     if request.method == 'POST':
         student_class = request.form.get('class')
-        # TODO: only checks whether 'class' is empty but should check whether class is 'valid' format and in class_list
         if student_class != None:
             student_class = student_class.replace("('", "")
             student_class = student_class.replace("',)", "")
