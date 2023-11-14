@@ -55,6 +55,20 @@ def test_create_admin_user_command_missing_arguments(runner, app):
         assert 'Missing' in result.output
         
     
+def test_calculate_courses_command(runner, app, monkeypatch):
+    class Recorder(object):
+        called = False
+
+    def fake_calculate_courses():
+        Recorder.called = True
+
+    with app.app_context():
+        assert Recorder.called == False
+        monkeypatch.setattr('voting.db.calculate_courses', fake_calculate_courses)
+        result = runner.invoke(args=['calculate-courses'])
+        assert 'calculating courses' in result.output
+        assert Recorder.called 
+
 
 def test_fill_user_db_command(runner, monkeypatch, app):
     class Recorder(object):

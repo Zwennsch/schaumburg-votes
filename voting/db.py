@@ -1,7 +1,7 @@
 import sqlite3
 import click
 from flask import current_app, g
-from voting.helpers import fill_user_db, add_new_admin_into_admin_db, is_username_taken
+from voting.helpers import fill_user_db, add_new_admin_into_admin_db, is_username_taken, calculate_courses
 
 
 def get_db():
@@ -72,9 +72,16 @@ def create_admin_command(name, password):
         return
     click.echo(f'admin-user for {name} added to database')
 
+@click.command('calculate-courses')
+def calculate_courses_command():
+    calculate_courses()
+    click.echo('calculating courses')
+    
+
 
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
     app.cli.add_command(fill_user_db_command)
     app.cli.add_command(create_admin_command)
+    app.cli.add_command(calculate_courses_command)

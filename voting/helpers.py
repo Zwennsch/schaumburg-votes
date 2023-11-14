@@ -137,3 +137,6 @@ def get_query_for_nth_vote(nth_vote) -> str:
         "INNER JOIN vote ON user.id = vote.user_id " \
         "WHERE vote."+nth_vote+" = ? ORDER BY class, last_name"
     return nth_query
+
+def calculate_courses():
+    pass
