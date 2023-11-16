@@ -59,7 +59,7 @@ def test_calculate_courses_command(runner, app, monkeypatch):
     class Recorder(object):
         called = False
 
-    def fake_calculate_courses():
+    def fake_calculate_courses(*args):
         Recorder.called = True
 
     with app.app_context():

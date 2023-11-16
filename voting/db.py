@@ -74,7 +74,7 @@ def create_admin_command(name, password):
 
 @click.command('calculate-courses')
 def calculate_courses_command():
-    calculate_courses()
+    calculate_courses(get_db())
     click.echo('calculating courses')
     
 

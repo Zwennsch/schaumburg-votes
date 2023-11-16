@@ -2,7 +2,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, current_app, url_for
 )
 from voting.db import get_db
-from voting.helpers import is_username_taken, add_user_to_database, get_query_for_nth_vote
+from voting.helpers import is_username_taken, add_user_to_database, get_query_for_nth_vote, get_all_grades
 from voting.auth import login_required, admin_required
 from voting.models import load_courses
 from voting.cache import get_cached_classes, get_cache
@@ -201,7 +201,6 @@ def delete_student_from_class():
     return render_template('views/admin/students_by_class_delete.html', active_page='delete-student', student_class=student_class, students=students)
 
 
-
 @bp.route("/admin/delete-student", methods=('GET', 'POST'))
 @admin_required
 def delete_student():
@@ -229,6 +228,7 @@ def class_results():
     # case for 'GET'
     return render_template('views/admin/choose_class.html', active_page='class-results', classes=get_cached_classes())
 
+
 @bp.route("/admin/course-results", methods=('GET', 'POST'))
 @admin_required
 def course_results():
@@ -252,6 +252,7 @@ def course_results():
 @bp.before_request
 def load_course_list():
     g.courses = load_courses(current_app)
+    # classes = get_all_grades()
 
 
 @bp.before_request

@@ -4,6 +4,7 @@ import csv
 import sqlite3
 from werkzeug.security import generate_password_hash
 from typing import List
+from flask import g
 
 
 def _generate_password(length: int) -> str:
@@ -138,5 +139,33 @@ def get_query_for_nth_vote(nth_vote) -> str:
         "WHERE vote."+nth_vote+" = ? ORDER BY class, last_name"
     return nth_query
 
-def calculate_courses():
+def get_all_grades() -> set[int]:
+    grades = set()
+    for course in g.courses:
+        for c in course.classes:
+            grades.add(c)
+
+    return grades
+
+def calculate_courses(db: sqlite3.Connection):
+    # Easy solution:
+    grades = get_all_grades()
+    # create a dict so students for each class (i.e. 8a- 8d is ONE class 8) get stored where key is class
+    students_per_grade = {}
+    for grade in grades:
+        students_per_grade[grade] = []
+    
+    # fill the dict:
+    # get all n-th-graders, where n is element of grades-list
+    for nth_grade in students_per_grade:
+        grade = nth_grade
+        students = db.execute("SELECT id from")
+
+    # create a list for each course ()
+    # create an additional list 'unfulfilled wish' if even third wish not fulfilled for student
+    # create a dict (course -> places available ) to keep track of available places for each course
+    # loop through every student of each list for each class:
+        # check if course for first_vote is available, 
+            # if so add to list, update dict
+            # if not, check second- and third-vote. If even third vote not available add to unfulfilled wish course
     pass
