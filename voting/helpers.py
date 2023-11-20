@@ -5,6 +5,7 @@ import sqlite3
 from werkzeug.security import generate_password_hash
 from typing import List
 from flask import g
+from random import shuffle
 
 
 def _generate_password(length: int) -> str:
@@ -158,14 +159,41 @@ def calculate_courses(db: sqlite3.Connection):
     # fill the dict:
     # get all n-th-graders, where n is element of grades-list
     for nth_grade in students_per_grade:
-        grade = nth_grade
-        students = db.execute("SELECT id from")
+        grade = str(nth_grade) + "%"
+        students = db.execute("SELECT * from user WHERE class like ? AND vote_passed = 1", (grade,)).fetchall()
+        # reorder students randomly
+        shuffle(students)
+        students_per_grade[nth_grade] = students
 
-    # create a list for each course ()
-    # create an additional list 'unfulfilled wish' if even third wish not fulfilled for student
-    # create a dict (course -> places available ) to keep track of available places for each course
+    # print((students_per_grade[8][0]['first_name'])) -> prints Elena 
+    # dict that stores the id's for each course
+    final_courses = {}
+    # dict that stores the actual nums of students inside a specific course
+    available_spots_per_course = {}
+    for course in g.courses:
+        final_courses[course.name] =[]
+        available_spots_per_course[course.name] = int(course.max_participants)
+
+    # create an additional list 'unfulfilled_wish' if even third wish not fulfilled for student
+    final_courses['unfulfilled_wish'] = []
     # loop through every student of each list for each class:
-        # check if course for first_vote is available, 
-            # if so add to list, update dict
-            # if not, check second- and third-vote. If even third vote not available add to unfulfilled wish course
-    pass
+    for grade in grades:
+        if len(students_per_grade[grade]) != 0:
+            for student in students_per_grade[grade]:
+                id = student['id']
+                vote = db.execute("SELECT * from vote WHERE user_id = ?", (id,)).fetchone()
+                # check if course for first_vote is available, 
+                # if so add to list, update dict
+                if available_spots_per_course[vote['first_vote']] > 0:
+                    final_courses[vote['first_vote']].append(id)
+                    available_spots_per_course[vote['first_vote']] -= 1
+                # if not, check second- and third-vote. If even third vote not available add to unfulfilled wish course
+                elif available_spots_per_course[student['second_wish']] >0:
+                    final_courses[student['second_wish']].append(id)
+                    available_spots_per_course[student['second_wish']] -= 1
+                elif available_spots_per_course[student['third_wish']] > 0:
+                    final_courses[student['third_wish']].append(id)
+                    available_spots_per_course[student['third_wish']] -= 1
+                else:
+                    final_courses['unfulfilled_wish'].append(id)
+    print(final_courses)

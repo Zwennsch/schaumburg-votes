@@ -2,7 +2,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, current_app, url_for
 )
 from voting.db import get_db
-from voting.helpers import is_username_taken, add_user_to_database, get_query_for_nth_vote, get_all_grades
+from voting.helpers import is_username_taken, add_user_to_database, get_query_for_nth_vote, calculate_courses
 from voting.auth import login_required, admin_required
 from voting.models import load_courses
 from voting.cache import get_cached_classes, get_cache
@@ -252,7 +252,7 @@ def course_results():
 @bp.before_request
 def load_course_list():
     g.courses = load_courses(current_app)
-    # classes = get_all_grades()
+    calculate_courses(get_db())
 
 
 @bp.before_request
