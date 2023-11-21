@@ -188,12 +188,12 @@ def calculate_courses(db: sqlite3.Connection):
                     final_courses[vote['first_vote']].append(id)
                     available_spots_per_course[vote['first_vote']] -= 1
                 # if not, check second- and third-vote. If even third vote not available add to unfulfilled wish course
-                elif available_spots_per_course[student['second_wish']] >0:
-                    final_courses[student['second_wish']].append(id)
-                    available_spots_per_course[student['second_wish']] -= 1
-                elif available_spots_per_course[student['third_wish']] > 0:
-                    final_courses[student['third_wish']].append(id)
-                    available_spots_per_course[student['third_wish']] -= 1
+                elif available_spots_per_course[vote['second_vote']] >0:
+                    final_courses[vote['second_vote']].append(id)
+                    available_spots_per_course[vote['second_vote']] -= 1
+                elif available_spots_per_course[vote['third_vote']] > 0:
+                    final_courses[vote['third_vote']].append(id)
+                    available_spots_per_course[vote['third_vote']] -= 1
                 else:
                     final_courses['unfulfilled_wish'].append(id)
     print(final_courses)
