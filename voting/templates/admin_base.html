@@ -82,6 +82,13 @@
                 >Wahlergebnisse nach Kursen</a
               >
             </li>
+            <li class="nav-item">
+              <a
+                class="nav-link {% if active_page == 'calculate-courses' %} active{% endif %}"
+                href="{{ url_for('views.calculate_cs')}}"
+                >Kursvorschläge berechnen</a
+              >
+            </li>
           </ul>
         </div>
       </div>

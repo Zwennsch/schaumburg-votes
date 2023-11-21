@@ -148,7 +148,7 @@ def get_all_grades() -> set[int]:
 
     return grades
 
-def calculate_courses(db: sqlite3.Connection):
+def calculate_courses(db: sqlite3.Connection) -> bool:
     # Easy solution:
     grades = get_all_grades()
     # create a dict so students for each class (i.e. 8a- 8d is ONE class 8) get stored where key is class
@@ -165,8 +165,7 @@ def calculate_courses(db: sqlite3.Connection):
         shuffle(students)
         students_per_grade[nth_grade] = students
 
-    # print((students_per_grade[8][0]['first_name'])) -> prints Elena 
-    # dict that stores the id's for each course
+    # dict that stores the id's for each course, e.g. final_course['Sport-JG8'] = [12, 34, 15, 20]
     final_courses = {}
     # dict that stores the actual nums of students inside a specific course
     available_spots_per_course = {}
@@ -196,4 +195,5 @@ def calculate_courses(db: sqlite3.Connection):
                     available_spots_per_course[vote['third_vote']] -= 1
                 else:
                     final_courses['unfulfilled_wish'].append(id)
-    print(final_courses)
+    g.course_results = final_courses
+    return True

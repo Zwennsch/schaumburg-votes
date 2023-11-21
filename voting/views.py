@@ -249,10 +249,18 @@ def course_results():
     return render_template('views/admin/get_results_per_course.html', active_page='course-results')
 
 
+@bp.route("/admin/course-calculation")
+@admin_required
+def calculate_cs():
+    calculated = calculate_courses(get_db())
+    if calculated:
+        return render_template('views/admin/calculated.html')
+    return render_template('views/admin/calculate.html')
+
 @bp.before_request
 def load_course_list():
     g.courses = load_courses(current_app)
-    calculate_courses(get_db())
+   
 
 
 @bp.before_request
