@@ -4,8 +4,9 @@ import csv
 import sqlite3
 from werkzeug.security import generate_password_hash
 from typing import List
-from flask import g
+from flask import g, session
 from random import shuffle
+from voting.cache import get_cache
 
 
 def _generate_password(length: int) -> str:
@@ -140,6 +141,7 @@ def get_query_for_nth_vote(nth_vote) -> str:
         "WHERE vote."+nth_vote+" = ? ORDER BY class, last_name"
     return nth_query
 
+# TODO: test needed
 def get_all_grades() -> set[int]:
     grades = set()
     for course in g.courses:
@@ -148,7 +150,8 @@ def get_all_grades() -> set[int]:
 
     return grades
 
-def calculate_courses(db: sqlite3.Connection) -> bool:
+# TODO: test needed
+def calculate_courses(db: sqlite3.Connection) -> dict:
     # Easy solution:
     grades = get_all_grades()
     # create a dict so students for each class (i.e. 8a- 8d is ONE class 8) get stored where key is class
@@ -165,7 +168,7 @@ def calculate_courses(db: sqlite3.Connection) -> bool:
         shuffle(students)
         students_per_grade[nth_grade] = students
 
-    # dict that stores the id's for each course, e.g. final_course['Sport-JG8'] = [12, 34, 15, 20]
+    # dict that stores the students-Row-objects for each course, e.g. final_course['Sport-JG8'] = [student1, student2,...]
     final_courses = {}
     # dict that stores the actual nums of students inside a specific course
     available_spots_per_course = {}
@@ -179,21 +182,28 @@ def calculate_courses(db: sqlite3.Connection) -> bool:
     for grade in grades:
         if len(students_per_grade[grade]) != 0:
             for student in students_per_grade[grade]:
-                id = student['id']
-                vote = db.execute("SELECT * from vote WHERE user_id = ?", (id,)).fetchone()
+                vote = db.execute("SELECT * from vote WHERE user_id = ?", (student['id'],)).fetchone()
                 # check if course for first_vote is available, 
                 # if so add to list, update dict
                 if available_spots_per_course[vote['first_vote']] > 0:
-                    final_courses[vote['first_vote']].append(id)
+                    final_courses[vote['first_vote']].append(student)
                     available_spots_per_course[vote['first_vote']] -= 1
                 # if not, check second- and third-vote. If even third vote not available add to unfulfilled wish course
                 elif available_spots_per_course[vote['second_vote']] >0:
-                    final_courses[vote['second_vote']].append(id)
+                    final_courses[vote['second_vote']].append(student)
                     available_spots_per_course[vote['second_vote']] -= 1
                 elif available_spots_per_course[vote['third_vote']] > 0:
-                    final_courses[vote['third_vote']].append(id)
+                    final_courses[vote['third_vote']].append(student)
                     available_spots_per_course[vote['third_vote']] -= 1
                 else:
-                    final_courses['unfulfilled_wish'].append(id)
-    g.course_results = final_courses
-    return True
+                    final_courses['unfulfilled_wish'].append(student)
+    print(final_courses['Sport - JG 8'][0]['first_name'])
+    serialized_data = {course: [row_to_dict(student) for student in students] for course, students, in final_courses.items()}
+    get_cache().set('course_proposals', serialized_data)
+    session['courses_calculated'] = True
+    print('finished calculation')
+    return final_courses
+
+
+def row_to_dict(row):
+    return dict(zip(row.keys(), row))

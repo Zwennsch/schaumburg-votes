@@ -1,0 +1,29 @@
+{% extends 'admin_base.html' %} {% block title %}Kursvorschlag für {{
+selected_course }}{% endblock %} {% block main %}
+
+<div class="vote-results-per-course">
+  <div class="container container-results">
+    <h1>Vorschlag für {{ selected_course }}</h1>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">id</th>
+          <th scope="col">Vorname</th>
+          <th scope="col">Nachname</th>
+          <th scope="col">Klasse</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for student in course_proposal %}
+        <tr>
+          <th scope="row">{{ student.id }}</th>
+          <td>{{ student.first_name }}</td>
+          <td>{{ student.last_name }}</td>
+          <td>{{ student.class }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -15,13 +15,6 @@ bp = Blueprint('views', __name__)
 cache = get_cache()
 
 
-@bp.before_app_request
-def init_admin_status():
-    g.admin = False  # Initialize g.admin to False for each request
-    if session.get('admin'):
-        g.admin = True  # Set g.admin based on session data if user is an admin
-
-
 @bp.route('/')
 def index():
     user = None
@@ -101,7 +94,7 @@ def vote():
 
 
 @bp.route("/course-overview")
-@cache.cached()
+@cache.cached(timeout=50)
 def overview():
     return render_template('views/courses.html', active_page='overview')
 
@@ -150,13 +143,11 @@ def add_student():
             elif is_username_taken(entries['username'], db):
                 error = 'Benutzername bereits vergeben'
 
-            # FIXME: this doesn't look good, since error is set every single time...
             if error is None:
-                error = 'Klasse ungültig'
-                for tpl in classes:
-                    if student_class in tpl:
-                        error = None
-                        break
+                if any(student_class in value for value in classes):
+                    error = None
+                else:
+                    error = 'Klasse ungültig'
 
         # add user to database
         print('error so far: ', error)
@@ -249,18 +240,34 @@ def course_results():
     return render_template('views/admin/get_results_per_course.html', active_page='course-results')
 
 
-@bp.route("/admin/course-calculation")
+@bp.route("/admin/course-calculation", methods=('GET', 'POST'))
 @admin_required
 def calculate_cs():
-    calculated = calculate_courses(get_db())
-    if calculated:
-        return render_template('views/admin/calculated.html')
-    return render_template('views/admin/calculate.html')
+
+    if request.method == 'POST':
+        selected_course = request.form.get('selected_course')
+        course_proposal = list(get_cache().get('course_proposals')[selected_course])  # type: ignore
+        print(type(course_proposal))
+        print(type(course_proposal[0]))
+        if  not course_proposal:
+            flash('No proposal found for course')
+            return redirect(url_for('views.admin_page'))
+        return render_template('views/admin/course-proposal.html', selected_course=selected_course, course_proposal=course_proposal)
+    calculate_courses(get_db())
+    # session.modified = True
+    return render_template('views/admin/calculated.html', active_page='calculate-courses')
+
+
+@bp.before_app_request
+def init_admin_status():
+    g.admin = False  # Initialize g.admin to False for each request
+    if session.get('admin'):
+        g.admin = True  # Set g.admin based on session data if user is an admin
+
 
 @bp.before_request
 def load_course_list():
     g.courses = load_courses(current_app)
-   
 
 
 @bp.before_request

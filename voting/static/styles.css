@@ -8,6 +8,9 @@ a {
   font-weight: 700;
   font-size: 15px;
 }
+body {
+  background-repeat: no-repeat;
+}
 .button-container {
   display: flex;
   align-items: center;
