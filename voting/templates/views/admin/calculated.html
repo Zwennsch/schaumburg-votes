@@ -1,24 +1,23 @@
-{% extends 'admin_base.html' %} {% block title %}Kursvorschläge berechnen{% endblock %} {%
-    block main %}
-    <div class="login-container centered">
-      <h1>Kurse wurden berechnet.</h1>
-      <form method="post">
-        <select
-          class="form-select"
-          aria-label="Default select example"
-          name="selected_course"
-        >
-          <option selected disabled>Bitte einen Kurs wählen</option>
-          {% for course in g.courses %}
-          <option value="{{ course}}">{{ course }}</option>
-          {% endfor %}
-        </select>
-        <div class="button-container">
-          <button type="submit" class="btn" id="show-class-btn">
-            Vorschlag für Kurs anzeigen
-          </button>
-        </div>
-      </form>
+{% extends 'admin_base.html' %} {% block title %}Kursvorschläge berechnen{%
+endblock %} {% block main %}
+<div class="login-container centered">
+  <h1>Bitte einen Kurs wählen</h1>
+  <form method="post">
+    <select
+      class="form-select"
+      aria-label="Default select example"
+      name="selected_course"
+    >
+      <option selected disabled>WP-Kurs</option>
+      {% for course in g.courses %}
+      <option value="{{ course}}">{{ course }}</option>
+      {% endfor %}
+    </select>
+    <div class="button-container">
+      <button type="submit" class="btn" id="show-class-btn">
+        Vorschlag für Kurs anzeigen
+      </button>
     </div>
-    {% endblock %}
-    
+  </form>
+</div>
+{% endblock %}

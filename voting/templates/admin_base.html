@@ -82,11 +82,21 @@
                 >Wahlergebnisse nach Kursen</a
               >
             </li>
+            {% if session['courses_calculated'] %}
+            <li class="nav-item">
+              <a
+                class="nav-link {% if active_page == 'course-proposal' %} active{% endif %}"
+                href="{{ url_for('views.course_proposal')}}"
+                >Kursvorschlag für Klasse anzeigen</a
+              >
+            </li>
+            {% endif %}
             <li class="nav-item">
               <a
                 class="nav-link {% if active_page == 'calculate-courses' %} active{% endif %}"
                 href="{{ url_for('views.calculate_cs')}}"
-                >Kursvorschläge berechnen</a
+                >Kursvorschläge {% if session['courses_calculated'] %} neu {%
+                endif %} berechnen</a
               >
             </li>
           </ul>

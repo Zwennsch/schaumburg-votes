@@ -197,11 +197,9 @@ def calculate_courses(db: sqlite3.Connection) -> dict:
                     available_spots_per_course[vote['third_vote']] -= 1
                 else:
                     final_courses['unfulfilled_wish'].append(student)
-    print(final_courses['Sport - JG 8'][0]['first_name'])
     serialized_data = {course: [row_to_dict(student) for student in students] for course, students, in final_courses.items()}
     get_cache().set('course_proposals', serialized_data)
     session['courses_calculated'] = True
-    print('finished calculation')
     return final_courses
 
 

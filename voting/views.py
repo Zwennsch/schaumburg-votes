@@ -235,27 +235,30 @@ def course_results():
             query_second, (selected_course,)).fetchall()
         query_third = get_query_for_nth_vote('third_vote')
         results_third = db.execute(query_third, (selected_course,)).fetchall()
-        return render_template('views/admin/show_results_per_course.html', selected_course=selected_course, results_first=results_first, results_second=results_second, results_third=results_third)
+        return render_template('views/admin/show_results_per_course.html', active_page='course-results', selected_course=selected_course, results_first=results_first, results_second=results_second, results_third=results_third)
     # case for 'GET'
     return render_template('views/admin/get_results_per_course.html', active_page='course-results')
 
 
-@bp.route("/admin/course-calculation", methods=('GET', 'POST'))
+@bp.route("/admin/course-proposal", methods=('GET', 'POST'))
 @admin_required
-def calculate_cs():
-
+def course_proposal():
     if request.method == 'POST':
         selected_course = request.form.get('selected_course')
-        course_proposal = list(get_cache().get('course_proposals')[selected_course])  # type: ignore
-        print(type(course_proposal))
-        print(type(course_proposal[0]))
-        if  not course_proposal:
+        course_proposal = get_cache().get('course_proposals')[selected_course]  # type: ignore
+        if not course_proposal:
             flash('No proposal found for course')
             return redirect(url_for('views.admin_page'))
-        return render_template('views/admin/course-proposal.html', selected_course=selected_course, course_proposal=course_proposal)
+        return render_template('views/admin/course-proposal.html',active_page='course-proposal', selected_course=selected_course, course_proposal=course_proposal)
+    return render_template('views/admin/calculated.html', active_page='course-proposal')
+
+
+@bp.route("/admin/course-calculation")
+@admin_required
+def calculate_cs():
     calculate_courses(get_db())
-    # session.modified = True
-    return render_template('views/admin/calculated.html', active_page='calculate-courses')
+    flash('Kurse wurden berechnet', category='info')
+    return redirect(url_for('views.admin_page'))
 
 
 @bp.before_app_request
