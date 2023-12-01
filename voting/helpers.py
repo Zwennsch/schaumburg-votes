@@ -143,6 +143,8 @@ def get_query_for_nth_vote(nth_vote) -> str:
 
 # TODO: test needed
 def get_all_grades() -> set[int]:
+    '''Returns a set of grades from all courses that can be voted
+    '''
     grades = set()
     for course in g.courses:
         for c in course.classes:
@@ -155,7 +157,7 @@ def calculate_courses(db: sqlite3.Connection) -> dict:
     # Easy solution:
     grades = get_all_grades()
     # create a dict so students for each class (i.e. 8a- 8d is ONE class 8) get stored where key is class
-    students_per_grade = {}
+    students_per_grade = {} 
     for grade in grades:
         students_per_grade[grade] = []
     
@@ -197,6 +199,7 @@ def calculate_courses(db: sqlite3.Connection) -> dict:
                     available_spots_per_course[vote['third_vote']] -= 1
                 else:
                     final_courses['unfulfilled_wish'].append(student)
+    # create a dictionary that stores 
     serialized_data = {course: [row_to_dict(student) for student in students] for course, students, in final_courses.items()}
     get_cache().set('course_proposals', serialized_data)
     session['courses_calculated'] = True

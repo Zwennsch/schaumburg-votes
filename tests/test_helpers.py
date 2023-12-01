@@ -4,7 +4,8 @@ import os
 import tempfile
 import csv
 import pytest
-from werkzeug.security import check_password_hash
+from flask import g
+# from werkzeug.security import check_password_hash
 
 students = os.path.join('./tests/', 'students_data.csv')
 courses = os.path.join('./tests/', 'courses_data.csv')
@@ -109,6 +110,17 @@ def test_get_query_for_nth_vote():
         "FROM user "\
         "INNER JOIN vote ON user.id = vote.user_id " \
         "WHERE vote.first_vote = ? ORDER BY class, last_name"
+
+def test_get_all_grades(app, auth, client):
+
+    with app.app_context():
+        response = client.get('/course-overview')
+        assert response.status_code == 200
+        assert helpers.get_all_grades() == {7,8,9,10}
+
+# TODO:
+def test_calculate_courses():
+    pass
 
 # TODOD: cProfile for testing performance issues.
 # def test_performance_fill_user_db():

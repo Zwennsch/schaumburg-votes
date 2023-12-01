@@ -55,7 +55,6 @@ def test_add_student_view_post(auth, client, first_name, last_name,
     assert message in response.get_data(as_text=True)
 
 
-# TODO: whitespaces in username, password ...
 # @pytest.mark.parametrize()
 def test_remove_whitespaces_when_adding_student(client, app, auth):
     # login as admin
@@ -178,6 +177,32 @@ def test_admin_class_results(client, auth):
     assert 'other_first_name' not in response.get_data(as_text=True)
 
 
+
+
+def test_admin_course_proposal(client, auth, monkeypatch):
+    # GET
+    auth.admin_login()
+    response = client.get('/admin/course-proposal', follow_redirects=True)
+    assert response.status_code == 200
+    assert 'Wunsch unerfüllt' in response.get_data(as_text=True)
+
+    # POST
+    # Mock the cache function to return a predefined value
+
+    mock_cache_value = {'course1': [{'student1': 'details1'}, {'student2': 'details2'}]}
+    monkeypatch.setattr('your_flask_app.your_module.get_cache', lambda: mock_cache_value)
+
+    # Make a POST request to the view
+    response = client.post('/admin/course-proposal', data={'selected_course': 'course1'})
+
+    assert response.status_code == 200  # Replace with expected status code
+    assert b'Jeroen Torgen' in response.data  # Replace with expected content in HTML
+
+    # Test the case where no proposal is found
+    response_no_proposal = client.post('/admin/course-proposal', data={'selected_course': 'nonexistent_course'})
+    assert b'No proposal found for course' in response_no_proposal.data
+
+
 def test_track_admin_activity(client):
     initial_datetime = datetime(
         year=2023, month=1, day=1, hour=1, minute=0, second=0)
@@ -189,9 +214,9 @@ def test_track_admin_activity(client):
             sess['admin'] = True  # Set session data for admin user
 
         # Simulate a request to trigger the before_request function
-        response = client.get('/admin/class-results')  # Replace with actual route
+        response = client.get('/admin/class-results')  
 
-        assert response.status_code == 200  # Replace with expected status code
+        assert response.status_code == 200 
 
         # Assert that session data was updated correctly
         assert 'last_activity' in session

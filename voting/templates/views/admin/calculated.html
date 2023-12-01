@@ -12,6 +12,7 @@ endblock %} {% block main %}
       {% for course in g.courses %}
       <option value="{{ course}}">{{ course }}</option>
       {% endfor %}
+      <option value="unfulfilled_wish">Wunsch unerfüllt</option>
     </select>
     <div class="button-container">
       <button type="submit" class="btn" id="show-class-btn">

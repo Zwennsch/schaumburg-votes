@@ -245,11 +245,19 @@ def course_results():
 def course_proposal():
     if request.method == 'POST':
         selected_course = request.form.get('selected_course')
+        if not selected_course:
+            flash('Bitte Kurs auswählen', category='warning')
+            return redirect(url_for('views.course_proposal'))
+        # FIXME: does throw 'TypeError' of 'NoneType' sometimes... I guess because auf caching problems...
         course_proposal = get_cache().get('course_proposals')[selected_course]  # type: ignore
+        print(course_proposal)
         if not course_proposal:
-            flash('No proposal found for course')
+            if (selected_course == 'unfulfilled_wish'):
+                flash('Alle Wünsche erfüllt!', category='info')
+            else:
+                flash('No proposal found for course')
             return redirect(url_for('views.admin_page'))
-        return render_template('views/admin/course-proposal.html',active_page='course-proposal', selected_course=selected_course, course_proposal=course_proposal)
+        return render_template('views/admin/course-proposal.html', active_page='course-proposal', selected_course=selected_course, course_proposal=course_proposal)
     return render_template('views/admin/calculated.html', active_page='course-proposal')
 
 
@@ -258,7 +266,7 @@ def course_proposal():
 def calculate_cs():
     calculate_courses(get_db())
     flash('Kurse wurden berechnet', category='info')
-    return redirect(url_for('views.admin_page'))
+    return redirect(url_for('views.course_proposal', active_page='course-proposal'))
 
 
 @bp.before_app_request
@@ -271,6 +279,7 @@ def init_admin_status():
 @bp.before_request
 def load_course_list():
     g.courses = load_courses(current_app)
+    print(g.get('courses'))
 
 
 @bp.before_request
