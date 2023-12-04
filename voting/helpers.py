@@ -154,6 +154,10 @@ def get_all_grades() -> set[int]:
 
 # TODO: test needed
 def calculate_courses(db: sqlite3.Connection) -> dict:
+    '''Calcutes the final courses based on the votes of all students and the maximum 
+    capacity of each course. 
+    Returns a dict with course name as key and a list of student dictionaries as value.
+    '''
     # Easy solution:
     grades = get_all_grades()
     # create a dict so students for each class (i.e. 8a- 8d is ONE class 8) get stored where key is class
@@ -162,7 +166,7 @@ def calculate_courses(db: sqlite3.Connection) -> dict:
         students_per_grade[grade] = []
     
     # fill the dict:
-    # get all n-th-graders, where n is element of grades-list
+    # get all n-th-graders, where n is element of grades-list. Randomly order the students
     for nth_grade in students_per_grade:
         grade = str(nth_grade) + "%"
         students = db.execute("SELECT * from user WHERE class like ? AND vote_passed = 1", (grade,)).fetchall()

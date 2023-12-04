@@ -264,6 +264,8 @@ def course_proposal():
 @bp.route("/admin/course-calculation")
 @admin_required
 def calculate_cs():
+    # TODO: I have to somehow make sure, that everyone voted... 
+    # otherwise the admin should be redirected to views.admin    
     calculate_courses(get_db())
     flash('Kurse wurden berechnet', category='info')
     return redirect(url_for('views.course_proposal', active_page='course-proposal'))
@@ -279,7 +281,6 @@ def init_admin_status():
 @bp.before_request
 def load_course_list():
     g.courses = load_courses(current_app)
-    print(g.get('courses'))
 
 
 @bp.before_request

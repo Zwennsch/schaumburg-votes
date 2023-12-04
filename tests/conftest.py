@@ -66,6 +66,39 @@ def app():
     os.close(db_fd)
     os.unlink(db_path)
 
+# TODO: create a fixture with db_predefinde
+@pytest.fixture
+def app_prefedined_db():
+    db_fd, db_path = tempfile.mkstemp()
+
+    # creates an app with predefined data for testing calculate_courses
+    # You can create a separate SQL file with predefined data for this case
+    predefined_data_sql = '''
+    -- Your predefined data here
+    '''
+
+    course_path = os.path.join('./tests/', 'courses_data.csv')
+    students_path = os.path.join('./tests/', 'students_data.csv')
+    students_pwd_path = os.path.join('./tests/', 'students_pwd_data.csv')
+
+    app = create_app({
+        'TESTING': True,
+        'DATABASE': db_path,
+        'COURSES': course_path,
+        'STUDENTS': students_path,
+        'STUDENTS_PWD': students_pwd_path
+    })
+
+    with app.app_context():
+        init_db()
+        get_db().executescript(predefined_data_sql)
+    yield app
+
+    os.close(db_fd)
+    os.unlink(db_path)
+
+
+
 
 @pytest.fixture
 def client(app):
