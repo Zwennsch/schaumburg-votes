@@ -55,7 +55,6 @@ def test_add_student_view_post(auth, client, first_name, last_name,
     assert message in response.get_data(as_text=True)
 
 
-# @pytest.mark.parametrize()
 def test_remove_whitespaces_when_adding_student(client, app, auth):
     # login as admin
     auth.admin_login()
@@ -176,31 +175,47 @@ def test_admin_class_results(client, auth):
                            data={'selected_class': '8c'}, follow_redirects=True)
     assert 'other_first_name' not in response.get_data(as_text=True)
 
+def test_calculate_cs(auth, client, monkeypatch):
+    class Recorder(object):
+        called = False
 
+    def fake_calculate_courses(*args):
+        Recorder.called = True
 
-
-def test_admin_course_proposal(client, auth, monkeypatch):
-    # GET
     auth.admin_login()
-    response = client.get('/admin/course-proposal', follow_redirects=True)
+    assert Recorder.called == False
+    monkeypatch.setattr('voting.views.calculate_courses', fake_calculate_courses)
+    response = client.get('/admin/course-calculation', follow_redirects=True)
+    assert response.status_code == 200
+    assert Recorder.called == True
+    assert 'Kurse wurden berechnet' in response.get_data(as_text=True)
+
+
+
+
+def test_admin_course_proposal(app_predefined_db, client_real_data, real_auth, monkeypatch):
+    # GET
+    real_auth.real_admin()
+    response = client_real_data.get('/admin/course-proposal', follow_redirects=True)
     assert response.status_code == 200
     assert 'Wunsch unerfüllt' in response.get_data(as_text=True)
 
     # POST
-    # Mock the cache function to return a predefined value
+    # flask warning when no course selected:
+    response = client_real_data.post('/admin/course-proposal', follow_redirects=True)
+    assert 'Bitte Kurs auswählen' in response.get_data(as_text=True)
+    # Make sure redirect to same page again
+    assert 'Wunsch unerfüllt' in response.get_data(as_text=True)
 
-    mock_cache_value = {'course1': [{'student1': 'details1'}, {'student2': 'details2'}]}
-    monkeypatch.setattr('your_flask_app.your_module.get_cache', lambda: mock_cache_value)
+    # test with empty course '
+    monkeypatch.setattr('')
+    with app_predefined_db.app_context():
+        with client_real_data:
+            response = client_real_data.post('/admin/course-proposal', data={'selected_course' : 'empty course'}, follow_redirects=True)
+            assert 'Kein Vorschlag für diesen Kurs gefunden' in response.get_data(as_text=True)
 
-    # Make a POST request to the view
-    response = client.post('/admin/course-proposal', data={'selected_course': 'course1'})
 
-    assert response.status_code == 200  # Replace with expected status code
-    assert b'Jeroen Torgen' in response.data  # Replace with expected content in HTML
 
-    # Test the case where no proposal is found
-    response_no_proposal = client.post('/admin/course-proposal', data={'selected_course': 'nonexistent_course'})
-    assert b'No proposal found for course' in response_no_proposal.data
 
 
 def test_track_admin_activity(client):

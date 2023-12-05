@@ -141,7 +141,6 @@ def get_query_for_nth_vote(nth_vote) -> str:
         "WHERE vote."+nth_vote+" = ? ORDER BY class, last_name"
     return nth_query
 
-# TODO: test needed
 def get_all_grades() -> set[int]:
     '''Returns a set of grades from all courses that can be voted
     '''

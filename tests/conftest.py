@@ -15,6 +15,9 @@ class AuthActions(object):
 
     def admin_login(self):
         return self._client.post('/auth/login', data={'username': 'test_admin', 'password': '12345'})
+    
+    def real_admin(self):
+        return self._client.post('/auth/login', data={'username': 'admin', 'password': '12345'})
 
     def login(self, username='test_username', password='trsvv', voted=True):
         if voted:
@@ -39,6 +42,9 @@ class AuthActions(object):
 def auth(client):
     return AuthActions(client)
 
+@pytest.fixture
+def real_auth(client_real_data):
+    return AuthActions(client_real_data)
 
 @pytest.fixture
 def app():
@@ -66,36 +72,30 @@ def app():
     os.close(db_fd)
     os.unlink(db_path)
 
-# TODO: create a fixture with db_predefinde
 @pytest.fixture
-def app_prefedined_db():
-    db_fd, db_path = tempfile.mkstemp()
+def app_predefined_db():
+    db_path = os.path.join('./tests/', 'real_data.sqlite')
 
-    # creates an app with predefined data for testing calculate_courses
-    # You can create a separate SQL file with predefined data for this case
-    predefined_data_sql = '''
-    -- Your predefined data here
-    '''
 
-    course_path = os.path.join('./tests/', 'courses_data.csv')
-    students_path = os.path.join('./tests/', 'students_data.csv')
-    students_pwd_path = os.path.join('./tests/', 'students_pwd_data.csv')
+    course_path = os.path.join('./tests/', 'real_courses.csv')
+    # students_path = os.path.join('./tests/', 'students_data.csv')
+    # students_pwd_path = os.path.join('./tests/', 'students_pwd_data.csv')
 
     app = create_app({
         'TESTING': True,
         'DATABASE': db_path,
         'COURSES': course_path,
-        'STUDENTS': students_path,
-        'STUDENTS_PWD': students_pwd_path
+        # 'STUDENTS': students_path,
+        # 'STUDENTS_PWD': students_pwd_path
     })
 
-    with app.app_context():
-        init_db()
-        get_db().executescript(predefined_data_sql)
+    # with app.app_context():
+    #     # init_db()
+        # get_db()
     yield app
 
-    os.close(db_fd)
-    os.unlink(db_path)
+    # os.close(db_fd)
+    # os.unlink(db_path)
 
 
 
@@ -103,6 +103,10 @@ def app_prefedined_db():
 @pytest.fixture
 def client(app):
     return app.test_client()
+
+@pytest.fixture
+def client_real_data(app_predefined_db):
+    return app_predefined_db.test_client()
 
 
 @pytest.fixture

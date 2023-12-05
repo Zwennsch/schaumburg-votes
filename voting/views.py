@@ -255,7 +255,7 @@ def course_proposal():
             if (selected_course == 'unfulfilled_wish'):
                 flash('Alle Wünsche erfüllt!', category='info')
             else:
-                flash('No proposal found for course')
+                flash('Kein Vorschlag für diesen Kurs gefunden')
             return redirect(url_for('views.admin_page'))
         return render_template('views/admin/course-proposal.html', active_page='course-proposal', selected_course=selected_course, course_proposal=course_proposal)
     return render_template('views/admin/calculated.html', active_page='course-proposal')
