@@ -8,8 +8,6 @@ from voting.models import load_courses
 from voting.cache import get_cached_classes, get_cache
 from datetime import datetime, timedelta, timezone
 
-# from voting.models import get_courses
-
 bp = Blueprint('views', __name__)
 
 cache = get_cache()
@@ -150,7 +148,6 @@ def add_student():
                     error = 'Klasse ungültig'
 
         # add user to database
-        print('error so far: ', error)
         if error is None:
             add_user_to_database(entries['first_name'], entries['last_name'],
                                  entries['username'], entries['password'], entries['class'], db)
@@ -249,9 +246,7 @@ def course_proposal():
             flash('Bitte Kurs auswählen', category='warning')
             return redirect(url_for('views.course_proposal'))
         # FIXME: does throw 'TypeError' of 'NoneType' sometimes... I guess because auf caching problems...
-        # print('result of get_cache:',get_cache().get('course_proposals'))
         course_proposal = get_cache().get('course_proposals')[selected_course]  # type: ignore
-        # print(course_proposal)
         if not course_proposal:
             if (selected_course == 'unfulfilled_wish'):
                 flash('Alle Wünsche erfüllt!', category='info')

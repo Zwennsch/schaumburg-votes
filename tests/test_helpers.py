@@ -100,9 +100,8 @@ def test_add_new_admin_into_admin_db(app):
             "SELECT * FROM admin WHERE username = 'hans'").fetchone()
         assert admin['username'] == 'hans'
 
+
 # should not create a new admin when username exists
-
-
 @pytest.mark.parametrize(('username', 'password', 'message'),
                          (
     ('test_username', 'password', 'username already'),
@@ -137,7 +136,7 @@ def test_get_all_grades(app, auth, client):
 def test_calculate_courses(app_predefined_db, client_real_data):
     with app_predefined_db.app_context():
         with client_real_data:
-            response = client_real_data.get('/course-overview')
+            client_real_data.get('/course-overview')
             db = get_db()
             result = helpers.calculate_courses(db)
             assert type(result) == type(dict())
@@ -147,6 +146,6 @@ def test_calculate_courses(app_predefined_db, client_real_data):
             assert len(result['Schulzeitung - JG 8']) <= 16
 
 
-# TODOD: cProfile for testing performance issues.
+# TODO: cProfile for testing performance issues.
 # def test_performance_fill_user_db():
     # input_csv = ""
