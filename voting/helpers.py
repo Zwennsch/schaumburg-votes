@@ -151,13 +151,35 @@ def get_all_grades() -> set[int]:
 
     return grades
 
-# TODO: test needed
 def calculate_courses(db: sqlite3.Connection) -> dict:
     '''Calcutes the final courses based on the votes of all students and the maximum 
     capacity of each course. 
     Returns a dict with course name as key and a list of student dictionaries as value.
     '''
-    # Easy solution:
+    final_courses = {}
+    available_spots_per_course = {}
+    # saves the students id's for those students who gets set into a course primarily because first wish could be fulfilled immediately 
+    first_votes_fits_user_ids = []
+
+    for course in g.courses:
+        final_courses[course.name] =[]
+        available_spots_per_course[course.name] = int(course.max_participants)
+        count = db.execute("SELECT count(*) FROM vote WHERE first_vote = ?", (course.name,)).fetchone()[0]
+        if count > 0 and count <= int(course.max_participants):
+            students = db.execute("SELECT user.id, first_name, last_name, class FROM user INNER JOIN vote ON user.id = vote.user_id WHERE first_vote = ?", (course.name,)).fetchall()
+            final_courses[course.name].extend(students)
+            for student in students:
+                first_votes_fits_user_ids.append(student['id'])
+            available_spots_per_course[course.name] -= count
+
+    
+    placeholders = ','.join('?' for _ in range(len(first_votes_fits_user_ids)))
+    query = (
+        "SELECT id, first_name, last_name, class "
+        "FROM user "
+        "WHERE class LIKE ? AND vote_passed = 1 AND id NOT IN ({})"
+    ).format(placeholders)
+
     grades = get_all_grades()
     # create a dict so students for each class (i.e. 8a- 8d is ONE class 8) get stored where key is class
     students_per_grade = {} 
@@ -168,18 +190,12 @@ def calculate_courses(db: sqlite3.Connection) -> dict:
     # get all n-th-graders, where n is element of grades-list. Randomly order the students
     for nth_grade in students_per_grade:
         grade = str(nth_grade) + "%"
-        students = db.execute("SELECT * from user WHERE class like ? AND vote_passed = 1", (grade,)).fetchall()
+        students = db.execute(query, (grade,)+ tuple(first_votes_fits_user_ids)).fetchall()
         # reorder students randomly
         shuffle(students)
         students_per_grade[nth_grade] = students
 
     # dict that stores the students-Row-objects for each course, e.g. final_course['Sport-JG8'] = [student1, student2,...]
-    final_courses = {}
-    # dict that stores the actual nums of students inside a specific course
-    available_spots_per_course = {}
-    for course in g.courses:
-        final_courses[course.name] =[]
-        available_spots_per_course[course.name] = int(course.max_participants)
 
     # create an additional list 'unfulfilled_wish' if even third wish not fulfilled for student
     final_courses['unfulfilled_wish'] = []
@@ -202,6 +218,7 @@ def calculate_courses(db: sqlite3.Connection) -> dict:
                     available_spots_per_course[vote['third_vote']] -= 1
                 else:
                     final_courses['unfulfilled_wish'].append(student)
+    
     # create a dictionary that stores 
     serialized_data = {course: [row_to_dict(student) for student in students] for course, students, in final_courses.items()}
     get_cache().set('course_proposals', serialized_data)
