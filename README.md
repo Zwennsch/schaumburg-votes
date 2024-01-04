@@ -38,7 +38,23 @@ Students from Schaumburger Str. Bremen should be able to vote from a choice of c
   the [username] argument mustn't been taken by any other user. This will be checked and leads to an error otherwise.
   the [password] argument must be at least 5 characters long
 
-## User/student uses the app:
+## Student uses the app:
+
+- see all available courses to choose from:
+  ![alt text](https://github.com/Zwennsch/schaumburg-votes/blob/main/pics/courses.png)
 
 - log in:
   ![alt text](https://github.com/Zwennsch/schaumburg-votes/blob/main/pics/login.png)
+
+- pass a vote:
+  ![alt text](https://github.com/Zwennsch/schaumburg-votes/blob/main/pics/user-vote.png)
+
+
+## Admin uses the app:
+
+- After logging in as admin user you are able to add/delete a student. You can also get an overview of all voting results per class or per course:
+
+![alt text](https://github.com/Zwennsch/schaumburg-votes/blob/main/pics/admin_show_proposal.png)
+
+- you can calculate a proposal for composition of all the courses and see the results:
+![alt text](https://github.com/Zwennsch/schaumburg-votes/blob/main/pics/admin_view_proposal.png)
