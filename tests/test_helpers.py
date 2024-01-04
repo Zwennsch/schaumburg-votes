@@ -130,8 +130,6 @@ def test_get_all_grades(app, auth, client):
         assert response.status_code == 200
         assert helpers.get_all_grades() == {7, 8, 9, 10}
 
-# TODO:
-
 
 def test_calculate_courses(app_predefined_db, client_real_data):
     with app_predefined_db.app_context():
