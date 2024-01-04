@@ -47,7 +47,7 @@ Students from Schaumburger Str. Bremen should be able to vote from a choice of c
   ![alt text](https://github.com/Zwennsch/schaumburg-votes/blob/main/pics/login.png)
 
 - pass a vote:
-  ![alt text](https://github.com/Zwennsch/schaumburg-votes/blob/main/pics/user-vote.png)
+  ![alt text](https://github.com/Zwennsch/schaumburg-votes/blob/main/pics/user_vote.png)
 
 ## Admin uses the app:
 
