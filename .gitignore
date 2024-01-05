@@ -138,3 +138,16 @@ self_hosting.txt
 
 # instance folder
 instance/
+
+# course images
+voting/static/firma.jpg
+voting/static/first_aid.jpg
+voting/static/gardening.jpg
+voting/static/gender.jpg
+voting/static/glueck.jpg
+voting/static/janitor.jpg
+voting/static/MINT.jpg
+voting/static/sports.jpg
+voting/static/werkstatt.jpg
+voting/static/zeitung.jpg
+voting/static/test.txt

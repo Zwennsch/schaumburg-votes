@@ -9,14 +9,14 @@ Students from Schaumburger Str. Bremen should be able to vote from a choice of c
 - initialize the database first from command-line in root folder using:
   flask --app voting init-db
 
-- fill table 'user' inside voting.sql db in instance folder:
+- fill table 'user' inside voting.sql db in instance folder:  
   Keep in mind that when in production the instance folder is located in 'venv/var/voting-instance' instead of the regular instance folder of a flask app.
 
-  1. store a file students.csv in the instance folder.
+  1. store a file students.csv in the instance folder.  
      This will only be for temporarily use, you can delete this file after the data is stored in the database voting.sql in the instance folder
      the file contains 4 columns:
      Klasse, Nachname, Vorname, LogIn
-  2. from command-line in root folder use:
+  2. from command-line in root folder use:  
      flask --app voting fill-user-db
 
      - this leads to two things:
@@ -28,13 +28,15 @@ Students from Schaumburger Str. Bremen should be able to vote from a choice of c
 - create a courses.csv in the instance folder.
   It should contain 6 columns:
   classes, name, max_participants, teacher, description, img_name
-  e.g. "8,9,10",football,18,Smith,"Playing football on our local court in school",football_img
-  for each course you can place an image in the static folder.
+  e.g.  
+  "8,9,10",football,18,Smith,"Playing football on our local court in school",football.jpg.    
+  Make sure, that the name of the image matches the name of the course.
+  For each course you can place an image in the static folder.
   If you don't provide one, a default image will be shown later
 
-- create admin-user for access to voting progress
-  from command-line in root folder use:
-  flask --app voting create-admin [username] [password]
+- create admin-user for access to voting progress.  
+  from command-line in root folder use:  
+  flask --app voting create-admin [username] [password]  
   the [username] argument mustn't been taken by any other user. This will be checked and leads to an error otherwise.
   the [password] argument must be at least 5 characters long
 

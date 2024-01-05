@@ -1,6 +1,7 @@
 [project]
 name = "voting"
 version = "1.1.0"
+description = "A basic app that takes in votes from students and calculates the composition of courses regarding the votes"
 dependencies = [
     "flask",
 ]
