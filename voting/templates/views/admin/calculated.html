@@ -9,7 +9,7 @@ endblock %} {% block main %}
       name="selected_course"
     >
       <option selected disabled>WP-Kurs</option>
-      {% for course in g.courses %}
+      {% for course in courses %}
       <option value="{{ course}}">{{ course }}</option>
       {% endfor %}
       <option value="unfulfilled_wish">Wunsch unerfüllt</option>

@@ -9,7 +9,7 @@ main %}
       name="selected_course"
     >
       <option selected disabled>Bitte einen Kurs wählen</option>
-      {% for course in g.courses %}
+      {% for course in courses %}
       <option value="{{ course}}">{{ course }}</option>
       {% endfor %}
     </select>

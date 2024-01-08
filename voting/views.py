@@ -4,7 +4,7 @@ from flask import (
 from voting.db import get_db
 from voting.helpers import is_username_taken, add_user_to_database, get_query_for_nth_vote, calculate_courses
 from voting.auth import login_required, admin_required
-from voting.models import load_courses
+from voting.models import get_courses_list
 from voting.cache import get_cached_classes, get_cache
 from datetime import datetime, timedelta, timezone
 
@@ -12,6 +12,9 @@ bp = Blueprint('views', __name__)
 
 cache = get_cache()
 
+# @current_app.before_request
+# def load_courses_into_app():
+#     load_courses(current_app)
 
 @bp.route('/')
 def index():
@@ -32,7 +35,7 @@ def index():
 def vote():
     grade = int(g.user['class'][:-1])
     if request.method == 'GET':
-        return render_template('views/vote.html', active_page='vote', grade=grade)
+        return render_template('views/vote.html', active_page='vote', grade=grade, courses = get_courses_list())
 
     # case for POST
     else:
@@ -52,7 +55,7 @@ def vote():
 
         # check that only courses that contains users class are in vote
         if error is None:
-            for course in g.courses:
+            for course in get_courses_list():
                 if course.name in votes_list:
                     if grade not in course.classes:
                         error = "Mindestens ein Kurs ist nicht für deinen Jahrgang vorgesehen."
@@ -94,7 +97,7 @@ def vote():
 @bp.route("/course-overview")
 @cache.cached(timeout=50)
 def overview():
-    return render_template('views/courses.html', active_page='overview')
+    return render_template('views/courses.html', active_page='overview', courses = get_courses_list())
 
 
 # Admin pages
@@ -234,7 +237,7 @@ def course_results():
         results_third = db.execute(query_third, (selected_course,)).fetchall()
         return render_template('views/admin/show_results_per_course.html', active_page='course-results', selected_course=selected_course, results_first=results_first, results_second=results_second, results_third=results_third)
     # case for 'GET'
-    return render_template('views/admin/get_results_per_course.html', active_page='course-results')
+    return render_template('views/admin/get_results_per_course.html', active_page='course-results', courses = get_courses_list())
 
 
 @bp.route("/admin/course-proposal", methods=('GET', 'POST'))
@@ -254,7 +257,7 @@ def course_proposal():
                 flash('Kein Vorschlag für diesen Kurs gefunden')
             return redirect(url_for('views.admin_page'))
         return render_template('views/admin/course-proposal.html', active_page='course-proposal', selected_course=selected_course, course_proposal=course_proposal)
-    return render_template('views/admin/calculated.html', active_page='course-proposal')
+    return render_template('views/admin/calculated.html', active_page='course-proposal', courses = get_courses_list())
 
 
 @bp.route("/admin/course-calculation")
@@ -274,9 +277,9 @@ def init_admin_status():
         g.admin = True  # Set g.admin based on session data if user is an admin
 
 
-@bp.before_request
-def load_course_list():
-    g.courses = load_courses(current_app)
+# @bp.before_request
+# def load_course_list():
+#     g.courses = load_courses(current_app)
 
 
 @bp.before_request

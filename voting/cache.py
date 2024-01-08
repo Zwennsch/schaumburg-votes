@@ -1,6 +1,6 @@
 import sqlite3
 from flask_caching import Cache
-from flask import Flask, current_app, g
+from flask import Flask, current_app
 # from voting.db import get_dbn 
 
 
@@ -13,7 +13,7 @@ def init_cache(app: Flask):
     cache.init_app(app)
 
 
-def get_classes_from_database() -> list:
+def _get_classes_from_database() -> list:
     """Retrieves all the classes that take part in the vote. \n
     Returns a list of tuples, where each tuple contains just one 'String'
     """
@@ -30,4 +30,4 @@ def get_classes_from_database() -> list:
 
 @cache.cached(key_prefix='classes')
 def get_cached_classes():
-    return get_classes_from_database()
+    return _get_classes_from_database()

@@ -2,6 +2,8 @@ from flask import Flask, current_app
 import csv
 import os
 
+_courses_list = []
+
 
 class Course:
     def __init__(self, classes, name, max_participants, teacher, description, img_name) -> None:
@@ -14,12 +16,13 @@ class Course:
 
     def __str__(self) -> str:
         return "{}".format(self.name)
-    
-   
-def load_courses(app: Flask) -> list[Course]:
+
+
+def init_courses(app: Flask) -> list[Course]:
+    global _courses_list
     courses = []
     # TODO: should return an error if there is no courses.csv file
-    with open((current_app.config['COURSES']), mode='r') as csv_file:
+    with open((app.config['COURSES']), mode='r') as csv_file:
         csv_reader = csv.DictReader(csv_file)
         img_name = ''
         for row in csv_reader:
@@ -29,7 +32,12 @@ def load_courses(app: Flask) -> list[Course]:
             if app.static_folder:
                 if os.path.exists(os.path.join(app.static_folder, row['img_name'])):
                     img_name = row['img_name']
-                    
+
             courses.append(Course(classes,
-                row['name'], row['max_participants'], row['teacher'], row['description'], img_name))
+                                  row['name'], row['max_participants'], row['teacher'], row['description'], img_name))
+    _courses_list = courses
     return courses
+
+
+def get_courses_list() -> list[Course]:
+    return _courses_list

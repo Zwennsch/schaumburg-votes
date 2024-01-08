@@ -5,6 +5,7 @@ import pytest
 from voting import create_app
 from voting.db import get_db, init_db
 from voting.cache import init_cache, get_cache
+from voting.models import init_courses
 
 with open(os.path.join(os.path.dirname(__file__), 'data.sql'), 'rb') as f:
     _data_sql = f.read().decode('utf8')
@@ -67,11 +68,11 @@ def app():
         'STUDENTS': students_path,
         'STUDENTS_PWD': students_pwd_path
     })
+    init_courses(app)
     with app.app_context():
         init_db()
         get_db().executescript(_data_sql)
     yield app
-
     os.close(db_fd)
     os.unlink(db_path)
 

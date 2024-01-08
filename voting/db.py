@@ -9,7 +9,6 @@ def get_db():
 
     Sets db to the actual ['DATABASE'] from current_app.config if there isn't any db in the g object
     """
-
     if 'db' not in g:
         g.db = sqlite3.connect(
             current_app.config['DATABASE'],

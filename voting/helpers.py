@@ -7,8 +7,9 @@ from typing import List
 from flask import g, session
 from random import shuffle
 from voting.cache import get_cache
+from voting.models import get_courses_list
 
-
+# _courses_list = get_courses_list()
 def _generate_password(length: int) -> str:
     """Generates and returns a password of a given length.
     The password contains ascii_letters and digits
@@ -145,14 +146,14 @@ def get_all_grades() -> set[int]:
     '''Returns a set of grades from all courses that can be voted
     '''
     grades = set()
-    for course in g.courses:
+    for course in get_courses_list():
         for c in course.classes:
             grades.add(c)
 
     return grades
 
 def calculate_courses(db: sqlite3.Connection) -> dict:
-    '''Calcutes the final courses based on the votes of all students and the maximum 
+    '''Calculates the final courses based on the votes of all students and the maximum 
     capacity of each course. 
     Returns a dict with course name as key and a list of student dictionaries as value.
     '''
@@ -161,7 +162,7 @@ def calculate_courses(db: sqlite3.Connection) -> dict:
     # saves the students id's for those students who gets set into a course primarily because first wish could be fulfilled immediately 
     first_votes_fits_user_ids = []
 
-    for course in g.courses:
+    for course in get_courses_list():
         final_courses[course.name] =[]
         available_spots_per_course[course.name] = int(course.max_participants)
         count = db.execute("SELECT count(*) FROM vote WHERE first_vote = ?", (course.name,)).fetchone()[0]
