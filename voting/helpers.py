@@ -45,8 +45,6 @@ def fill_user_db(user_input_csv_file, user_output_psw_csv,  db: sqlite3.Connecti
                  row['LogIn'], password_hash, row['Klasse'])
             )
         db.commit()
-        print('db ready!')
-
 
 def add_new_admin_into_admin_db(name, password, db: sqlite3.Connection):
     password_hash = generate_password_hash(password)

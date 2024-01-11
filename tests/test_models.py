@@ -27,15 +27,3 @@ def test_init_courses_empty_static_folder(app):
         courses = get_courses_list()
 
         assert len(courses) == 7
-
-
-# def test_load_course_with_image(app):
-#     with app.app_context():
-#         app.static_folder = os.path.dirname('../tests/static_folder/')
-#         # needs to be done to load the images
-#         init_courses(app)
-#         courses = get_courses_list()
-
-#         assert len(courses) == 7
-#         assert courses[2].img_name == 'kurs3.img'
-#         assert courses[0].img_name == app.config['DEFAULT_IMAGE']

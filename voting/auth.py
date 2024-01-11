@@ -83,21 +83,6 @@ def load_logged_in_user():
             'SELECT * FROM user WHERE id = ?', (user_id,)
         ).fetchone()
 
-
-
-# bp.record_once(init_first_courses)
-# This does work, but before_app_first_request is deprecated
-# @bp.before_app_first_request
-# def init_first_courses():
-#     print("in before_app_first_request")
-#     init_courses(current_app)
-
-# @bp.record_once
-# def init_first_courses(state):
-#     print("in record once")
-#     init_courses(state.app)
-
-
 # decorator for each view, that requires a login.
 def login_required(view):
     @functools.wraps(view)

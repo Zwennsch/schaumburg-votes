@@ -19,7 +19,6 @@ class Course:
 
 
 def init_courses():
-    print("in init courses")
     global _courses_list
     courses = []
     # TODO: should return an error if there is no courses.csv file
