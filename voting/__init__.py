@@ -9,7 +9,7 @@ def create_app(test_config=None):
     app.config.from_mapping(
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'voting.sqlite'),
-        COURSES=os.path.join(app.instance_path, 'courses.csv'),
+        COURSES=os.path.join('./voting/static/', 'courses.csv'),
         STUDENTS=os.path.join(app.instance_path, 'students.csv'),
         STUDENTS_PWD=os.path.join(app.instance_path, 'students_pwd.csv'),
         DEFAULT_IMAGE='New-Class-Alert.jpg',
@@ -36,10 +36,13 @@ def create_app(test_config=None):
     from . import auth
     app.register_blueprint(auth.bp)
 
-    from . import models
-    models.init_courses(app)
-
     from . import views
     app.register_blueprint(views.bp)
+
+    from . import models
+    with app.app_context():
+        models.init_courses()
+
+    # app.before_first_request(models.init_courses)
 
     return app

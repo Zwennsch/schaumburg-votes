@@ -1,6 +1,7 @@
 import pytest
 from flask import g, session
 from voting.db import get_db
+from voting.models import get_courses_list
 
 
 def test_login(client, auth):
@@ -18,6 +19,12 @@ def test_login(client, auth):
         client.get('/')
         assert session['user_id'] == 1
         assert g.user['username'] == 'test_username'
+
+def test_should_load_courses_before_first_request(app):
+    # should not be any courses before first request:
+    with app.app_context():
+        courses = get_courses_list()
+        assert len(courses) == 7
 
 
 

@@ -18,26 +18,26 @@ class Course:
         return "{}".format(self.name)
 
 
-def init_courses(app: Flask) -> list[Course]:
+def init_courses():
+    print("in init courses")
     global _courses_list
     courses = []
     # TODO: should return an error if there is no courses.csv file
-    with open((app.config['COURSES']), mode='r') as csv_file:
+    with open((current_app.config['COURSES']), mode='r') as csv_file:
+
         csv_reader = csv.DictReader(csv_file)
         img_name = ''
         for row in csv_reader:
             classes = tuple(map(int, row['classes'].split(',')))
-            img_name = app.config['DEFAULT_IMAGE']
+            img_name = current_app.config['DEFAULT_IMAGE']
             # check if there is a file in the static folder:
-            if app.static_folder:
-                if os.path.exists(os.path.join(app.static_folder, row['img_name'])):
+            if current_app.static_folder:
+                if os.path.exists(os.path.join(current_app.static_folder, row['img_name'])):
                     img_name = row['img_name']
-
             courses.append(Course(classes,
                                   row['name'], row['max_participants'], row['teacher'], row['description'], img_name))
     _courses_list = courses
-    return courses
 
 
-def get_courses_list() -> list[Course]:
+def get_courses_list() -> list[Course] :
     return _courses_list

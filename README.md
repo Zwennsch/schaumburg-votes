@@ -6,6 +6,14 @@ Students from Schaumburger Str. Bremen should be able to vote from a choice of c
 
 ## User instructions:
 
+- create a courses.csv in the static folder.
+  It should contain 6 columns:
+  classes, name, max_participants, teacher, description, img_name
+  e.g.  
+  "8,9,10",football,18,Smith,"Playing football on our local court in school",football.jpg.    
+  For each course you can place an image in the static folder.
+  If you don't provide one, a default image will be shown later
+
 - initialize the database first from command-line in root folder using:
   flask --app voting init-db
 
@@ -25,20 +33,15 @@ Students from Schaumburger Str. Bremen should be able to vote from a choice of c
           You can delete this file afterwards.
        2. the user table in voting.sqlite gets filled with users and hashed passwords
 
-- create a courses.csv in the instance folder.
-  It should contain 6 columns:
-  classes, name, max_participants, teacher, description, img_name
-  e.g.  
-  "8,9,10",football,18,Smith,"Playing football on our local court in school",football.jpg.    
-  Make sure, that the name of the image matches the name of the course.
-  For each course you can place an image in the static folder.
-  If you don't provide one, a default image will be shown later
 
 - create admin-user for access to voting progress.  
   from command-line in root folder use:  
   flask --app voting create-admin [username] [password]  
   the [username] argument mustn't been taken by any other user. This will be checked and leads to an error otherwise.
   the [password] argument must be at least 5 characters long
+
+- run the app with:  
+  flask --app voting run
 
 ## Student uses the app:
 

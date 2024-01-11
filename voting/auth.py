@@ -1,12 +1,13 @@
 import functools
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, redirect, render_template, request, session, url_for, current_app
 )
 from werkzeug.security import check_password_hash
 
 from voting.db import get_db
 from sqlite3 import OperationalError
+from voting.models import init_courses
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -81,6 +82,20 @@ def load_logged_in_user():
         g.user = get_db().execute(
             'SELECT * FROM user WHERE id = ?', (user_id,)
         ).fetchone()
+
+
+
+# bp.record_once(init_first_courses)
+# This does work, but before_app_first_request is deprecated
+# @bp.before_app_first_request
+# def init_first_courses():
+#     print("in before_app_first_request")
+#     init_courses(current_app)
+
+# @bp.record_once
+# def init_first_courses(state):
+#     print("in record once")
+#     init_courses(state.app)
 
 
 # decorator for each view, that requires a login.
