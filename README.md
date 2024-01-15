@@ -6,16 +6,10 @@ Students from Schaumburger Str. Bremen should be able to vote from a choice of c
 
 ## User instructions:
 
-- create a courses.csv in the static folder.
-  It should contain 6 columns:
-  classes, name, max_participants, teacher, description, img_name
-  e.g.  
-  "8,9,10",football,18,Smith,"Playing football on our local court in school",football.jpg.    
-  For each course you can place an image in the static folder.
-  If you don't provide one, a default image will be shown later
 
 - initialize the database first from command-line in root folder using:
   flask --app voting init-db
+
 
 - fill table 'user' inside voting.sql db in instance folder:  
   Keep in mind that when in production the instance folder is located in 'venv/var/voting-instance' instead of the regular instance folder of a flask app.
@@ -25,7 +19,7 @@ Students from Schaumburger Str. Bremen should be able to vote from a choice of c
      the file contains 4 columns:
      Klasse, Nachname, Vorname, LogIn
   2. from command-line in root folder use:  
-     flask --app voting fill-user-db
+     flask --app voting init-data
 
      - this leads to two things:
        1. It will create a new file in instance folder called 'student_pwd.csv' which contains the original students.csv info and an additional column containing a 5 letter password for each user.
@@ -33,6 +27,13 @@ Students from Schaumburger Str. Bremen should be able to vote from a choice of c
           You can delete this file afterwards.
        2. the user table in voting.sqlite gets filled with users and hashed passwords
 
+- create a courses.csv in the instance folder.
+  It should contain 6 columns:
+  classes, name, max_participants, teacher, description, img_name
+  e.g.  
+  "8,9,10",football,18,Smith,"Playing football on our local court in school",football.jpg.    
+  For each course you can place an image in the static folder.
+  If you don't provide one, a default image will be shown later
 
 - create admin-user for access to voting progress.  
   from command-line in root folder use:  

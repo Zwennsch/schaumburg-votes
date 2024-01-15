@@ -38,5 +38,5 @@ def init_courses():
     _courses_list = courses
 
 
-def get_courses_list() -> list[Course] :
+def get_courses_list() -> list[Course]:
     return _courses_list

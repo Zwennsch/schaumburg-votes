@@ -9,7 +9,7 @@ def create_app(test_config=None):
     app.config.from_mapping(
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'voting.sqlite'),
-        COURSES=os.path.join(app.root_path, 'static/courses.csv'),
+        COURSES=os.path.join(app.instance_path, 'courses.csv'),
         STUDENTS=os.path.join(app.instance_path, 'students.csv'),
         STUDENTS_PWD=os.path.join(app.instance_path, 'students_pwd.csv'),
         DEFAULT_IMAGE='New-Class-Alert.jpg',
@@ -40,9 +40,10 @@ def create_app(test_config=None):
     app.register_blueprint(views.bp)
 
     from . import models
-    with app.app_context():
-        models.init_courses()
+    # make sure this gets only loaded after courses.csv is in instance folder
+    if os.path.exists(os.path.join(app.instance_path, 'courses.csv')):
+        with app.app_context():
+            models.init_courses()
 
-    # app.before_first_request(models.init_courses)
 
     return app

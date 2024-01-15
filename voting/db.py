@@ -1,6 +1,7 @@
 import sqlite3
 import click
 from flask import current_app, g
+from voting.models import init_courses
 from voting.helpers import fill_user_db, add_new_admin_into_admin_db, is_username_taken, calculate_courses
 
 
@@ -41,8 +42,9 @@ def init_db_command():
     click.echo('Initialized the database')
 
 
-@click.command('fill-user-db')
-def fill_user_db_command():
+@click.command('init-data')
+def init_data_command():
+    # fill the user_db
     try:
         fill_user_db(user_input_csv_file=current_app.config['STUDENTS'],
                      user_output_psw_csv=current_app.config['STUDENTS_PWD'], db=get_db())
@@ -50,6 +52,7 @@ def fill_user_db_command():
         click.echo('no students.csv file found.')
         return
     click.echo('user-db initialized')
+
 
 
 @click.command('create-admin')
@@ -71,16 +74,16 @@ def create_admin_command(name, password):
         return
     click.echo(f'admin-user for {name} added to database')
 
+
 @click.command('calculate-courses')
 def calculate_courses_command():
     calculate_courses(get_db())
     click.echo('calculating courses')
-    
 
 
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
-    app.cli.add_command(fill_user_db_command)
+    app.cli.add_command(init_data_command)
     app.cli.add_command(create_admin_command)
     app.cli.add_command(calculate_courses_command)

@@ -139,6 +139,9 @@ self_hosting.txt
 # instance folder
 instance/
 
+# instance backup folder
+instance_back
+
 # course images
 voting/static/firma.jpg
 voting/static/first_aid.jpg
