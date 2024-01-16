@@ -67,11 +67,7 @@ def create_admin_command(name, password):
     if is_username_taken(name, db):
         click.echo('username already exists. Please choose another one')
         return
-    try:
-        add_new_admin_into_admin_db(name, password, db=get_db())
-    except:
-        click.echo('error while accessing database')
-        return
+    add_new_admin_into_admin_db(name, password, db=get_db())
     click.echo(f'admin-user for {name} added to database')
 
 

@@ -200,23 +200,23 @@ def calculate_courses(db: sqlite3.Connection) -> dict:
     final_courses['unfulfilled_wish'] = []
     # loop through every student of each list for each class:
     for grade in grades:
-        if len(students_per_grade[grade]) != 0:
-            for student in students_per_grade[grade]:
-                vote = db.execute("SELECT * from vote WHERE user_id = ?", (student['id'],)).fetchone()
-                # check if course for first_vote is available, 
-                # if so add to list, update dict
-                if available_spots_per_course[vote['first_vote']] > 0:
-                    final_courses[vote['first_vote']].append(student)
-                    available_spots_per_course[vote['first_vote']] -= 1
-                # if not, check second- and third-vote. If even third vote not available add to unfulfilled wish course
-                elif available_spots_per_course[vote['second_vote']] >0:
-                    final_courses[vote['second_vote']].append(student)
-                    available_spots_per_course[vote['second_vote']] -= 1
-                elif available_spots_per_course[vote['third_vote']] > 0:
-                    final_courses[vote['third_vote']].append(student)
-                    available_spots_per_course[vote['third_vote']] -= 1
-                else:
-                    final_courses['unfulfilled_wish'].append(student)
+        # assuming that there will be at least one student for each grade
+        for student in students_per_grade[grade]:
+            vote = db.execute("SELECT * from vote WHERE user_id = ?", (student['id'],)).fetchone()
+            # check if course for first_vote is available, 
+            # if so add to list, update dict
+            if available_spots_per_course[vote['first_vote']] > 0:
+                final_courses[vote['first_vote']].append(student)
+                available_spots_per_course[vote['first_vote']] -= 1
+            # if not, check second- and third-vote. If even third vote not available add to unfulfilled wish course
+            elif available_spots_per_course[vote['second_vote']] >0:
+                final_courses[vote['second_vote']].append(student)
+                available_spots_per_course[vote['second_vote']] -= 1
+            elif available_spots_per_course[vote['third_vote']] > 0:
+                final_courses[vote['third_vote']].append(student)
+                available_spots_per_course[vote['third_vote']] -= 1
+            else:
+                final_courses['unfulfilled_wish'].append(student)
     
     # create a dictionary that stores 
     serialized_data = {course: [row_to_dict(student) for student in students] for course, students, in final_courses.items()}

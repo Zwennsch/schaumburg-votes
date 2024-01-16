@@ -54,6 +54,12 @@ def test_create_admin_user_command_missing_arguments(runner, app):
         result = runner.invoke(args=['create-admin', 'username'])
         assert 'Missing' in result.output
         
+# def test_create_admin_user_command_missing_db(runner, app):
+#     with app.app_context():
+#         app.config['DATABASE'] = ''
+#         result = runner.invoke(args=['create-admin', 'username', '123456'])
+#         assert 'error while accessing database' in result.output
+        
     
 def test_calculate_courses_command(runner, app, monkeypatch):
     class Recorder(object):
@@ -70,24 +76,24 @@ def test_calculate_courses_command(runner, app, monkeypatch):
         assert Recorder.called 
 
 
-def test_fill_user_db_command(runner, monkeypatch, app):
+def test_init_data_command(runner, monkeypatch, app):
     class Recorder(object):
         called = False
 
-    def fake_fill_user_db(*args, **kwargs):
+    def fake_init_data(*args, **kwargs):
         Recorder.called = True
 
     with app.app_context():
         assert Recorder.called is False
-        monkeypatch.setattr('voting.db.fill_user_db', fake_fill_user_db)
-        result = runner.invoke(args=['fill-user-db'])
+        monkeypatch.setattr('voting.db.fill_user_db', fake_init_data)
+        result = runner.invoke(args=['init-data'])
         assert 'user-db initialized' in result.output
         assert Recorder.called
 
 def test_fill_user_db_no_students_file(runner, monkeypatch, app):
     with app.app_context():
         app.config['STUDENTS'] = ' '
-        result = runner.invoke(args=['fill-user-db'])
+        result = runner.invoke(args=['init-data'])
         assert 'no students.csv' in result.output
 
 
