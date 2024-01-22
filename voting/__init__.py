@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from flask_session import Session
 
 
 def create_app(test_config=None):
@@ -13,6 +14,7 @@ def create_app(test_config=None):
         STUDENTS=os.path.join(app.instance_path, 'students.csv'),
         STUDENTS_PWD=os.path.join(app.instance_path, 'students_pwd.csv'),
         DEFAULT_IMAGE='New-Class-Alert.jpg',
+        SESSION_TYPE='filesystem',
         CACHE_TYPE='SimpleCache',
         CACHE_DEFAULT_TIMEOUT=600  # 10 minutes of cache timeout
     )
@@ -26,6 +28,10 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
+
+    # using server-side session for storing temporary courses
+    session = Session()
+    session.init_app(app)
 
     from . import db
     db.init_app(app)

@@ -135,6 +135,10 @@ dmypy.json
 # my personal note page:
 personal_info.txt
 self_hosting.txt
+server_settings.txt
+
+# flask-session folder
+flask_session
 
 # instance folder
 instance/

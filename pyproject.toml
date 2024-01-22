@@ -1,6 +1,6 @@
 [project]
 name = "voting"
-version = "1.2.1"
+version = "1.2.2"
 authors = [{name="Sven Schröder", email="schuen@gmx.de"},]
 description = "A basic app that takes in votes from students and calculates the composition of courses regarding the votes"
 dependencies = [

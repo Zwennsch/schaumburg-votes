@@ -249,7 +249,8 @@ def course_proposal():
             flash('Bitte Kurs auswählen', category='warning')
             return redirect(url_for('views.course_proposal'))
         # FIXME: does throw 'TypeError' of 'NoneType' sometimes... I guess because auf caching problems...
-        course_proposal = get_cache().get('course_proposals')[selected_course]  # type: ignore
+        # course_proposal = get_cache().get('course_proposals')[selected_course]  # type: ignore
+        course_proposal = session['course_proposals'][selected_course]
         if not course_proposal:
             if (selected_course == 'unfulfilled_wish'):
                 flash('Alle Wünsche erfüllt!', category='info')

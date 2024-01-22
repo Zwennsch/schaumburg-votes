@@ -82,11 +82,14 @@ def app_predefined_db():
     db_path = os.path.join('./tests/', 'real_data.sqlite')
 
     course_path = os.path.join('./tests/', 'real_courses.csv')
+    session_fd, session_path = tempfile.mkstemp()
 
     app = create_app({
         'TESTING': True,
         'DATABASE': db_path,
         'COURSES': course_path,
+        'SESSION_TYPE': 'filesystem',
+        'SESSION_FILE_DIR': session_path,
         'CACHE_TYPE': 'SimpleCache',
         'CACHE_DEFAULT_TIMEOUT': 300
     })
