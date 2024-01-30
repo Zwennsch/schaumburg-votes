@@ -1,11 +1,11 @@
 import os
 import tempfile
-
 import pytest
+import sqlite3
 from voting import create_app
 from voting.db import get_db, init_db
 from voting.cache import init_cache, get_cache
-from voting.models import init_courses
+# from voting.models import init_courses
 
 with open(os.path.join(os.path.dirname(__file__), 'data.sql'), 'rb') as f:
     _data_sql = f.read().decode('utf8')
@@ -68,7 +68,6 @@ def app():
         'STUDENTS': students_path,
         'STUDENTS_PWD': students_pwd_path
     })
-    # init_courses(app)
     with app.app_context():
         init_db()
         get_db().executescript(_data_sql)
@@ -80,20 +79,41 @@ def app():
 @pytest.fixture
 def app_predefined_db():
     db_path = os.path.join('./tests/', 'real_data.sqlite')
-
     course_path = os.path.join('./tests/', 'real_courses.csv')
-    session_fd, session_path = tempfile.mkstemp()
 
     app = create_app({
         'TESTING': True,
         'DATABASE': db_path,
         'COURSES': course_path,
-        'SESSION_TYPE': 'filesystem',
-        'SESSION_FILE_DIR': session_path,
         'CACHE_TYPE': 'SimpleCache',
         'CACHE_DEFAULT_TIMEOUT': 300
     })
+    init_cache(app)
+    yield app
+    
+@pytest.fixture
+def app_predefined_test_db():
+    db_path = os.path.join('./tests/', 'real_data2.sqlite')
+    course_path = os.path.join('./tests/', 'real_courses.csv')
 
+    # delete the final_course entry in the database:
+    connection = sqlite3.connect(db_path)
+    cursor = connection.cursor()
+    try:
+        cursor.execute("UPDATE user SET final_course = 'LEER'")
+        connection.commit()
+    except sqlite3.Error as e:
+        print(f"Error: {e}")
+    finally:
+        cursor.close()
+
+    app = create_app({
+        'TESTING': True,
+        'DATABASE': db_path,
+        'COURSES': course_path,
+        'CACHE_TYPE': 'SimpleCache',
+        'CACHE_DEFAULT_TIMEOUT': 300
+    })
     init_cache(app)
     yield app
 

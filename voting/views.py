@@ -248,9 +248,8 @@ def course_proposal():
         if not selected_course:
             flash('Bitte Kurs auswählen', category='warning')
             return redirect(url_for('views.course_proposal'))
-        # FIXME: does throw 'TypeError' of 'NoneType' sometimes... I guess because auf caching problems...
-        # course_proposal = get_cache().get('course_proposals')[selected_course]  # type: ignore
-        course_proposal = session['course_proposals'][selected_course]
+        # course_proposal = session['course_proposals'][selected_course]
+        course_proposal = get_db().execute("SELECT * FROM user WHERE final_course = ?", (selected_course,))
         if not course_proposal:
             if (selected_course == 'unfulfilled_wish'):
                 flash('Alle Wünsche erfüllt!', category='info')
@@ -266,6 +265,7 @@ def course_proposal():
 def calculate_cs():
     # TODO: I have to somehow make sure, that everyone voted... 
     # otherwise the admin should be redirected to views.admin    
+    print('in route for course-calculation in views')
     calculate_courses(get_db())
     flash('Kurse wurden berechnet', category='info')
     return redirect(url_for('views.course_proposal', active_page='course-proposal'))
@@ -276,11 +276,6 @@ def init_admin_status():
     g.admin = False  # Initialize g.admin to False for each request
     if session.get('admin'):
         g.admin = True  # Set g.admin based on session data if user is an admin
-
-
-# @bp.before_request
-# def load_course_list():
-#     g.courses = load_courses(current_app)
 
 
 @bp.before_request

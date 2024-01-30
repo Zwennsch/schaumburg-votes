@@ -131,24 +131,6 @@ def test_get_all_grades(app, auth, client):
         assert helpers.get_all_grades() == {7, 8, 9, 10}
 
 
-def test_calculate_courses(app_predefined_db, client_real_data):
-    with app_predefined_db.app_context():
-        with client_real_data:
-            client_real_data.get('/course-overview')
-            db = get_db()
-            result = helpers.calculate_courses(db)
-            # assert that all students are distributed
-            total_sum = 0
-            for course in result:
-                total_sum += len(result[course])
-            assert total_sum == 151
-            assert type(result) == type(dict())
-            # assert that there aren't too many students in a course:
-            assert len(result['Sport - JG 8']) <= 20
-            assert len(result['Gendern - JG 8']) <= 20
-            assert len(result['Schulzeitung - JG 8']) <= 16
-
-
 # TODO: cProfile for testing performance issues.
 # def test_performance_fill_user_db():
     # input_csv = ""

@@ -37,6 +37,7 @@ def login():
             if admin and check_password_hash(admin['password_hash'], password):
                 # successfully logged in as admin user
                 session.clear()
+                print('in auth.py before setting session for admin')
                 session['admin'] = True
                 session['admin_name'] = admin['username']
                 # g.admin = True
@@ -105,5 +106,6 @@ def admin_required(view):
             flash("Permission denied. Please login as admin user", category="info")
             return redirect(url_for('views.index'))
         # return original view, if user is admin:
+        session['courses_calculated'] = current_app.config['COURSES_CALCULATED']
         return view(**kwargs)
     return wrapped_view

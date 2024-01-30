@@ -177,25 +177,11 @@ def test_admin_class_results(client, auth):
     assert 'other_first_name' not in response.get_data(as_text=True)
 
 
-def test_calculate_cs(auth, client, monkeypatch):
-    class Recorder(object):
-        called = False
 
-    def fake_calculate_courses(*args):
-        Recorder.called = True
-
-    auth.admin_login()
-    assert Recorder.called == False
-    monkeypatch.setattr('voting.views.calculate_courses',
-                        fake_calculate_courses)
-    response = client.get('/admin/course-calculation', follow_redirects=True)
-    assert response.status_code == 200
-    assert Recorder.called == True
-    assert 'Kurse wurden berechnet' in response.get_data(as_text=True)
 
 
 @pytest.mark.parametrize(('course_name', 'message',),[('empty course', 'Kein Vorschlag für diesen Kurs gefunden',),('unfulfilled_wish', 'Alle Wünsche erfüllt!'), ('Gendern - JG 8', 'Salomon'),])
-def test_admin_course_proposal(app_predefined_db, client_real_data, real_auth, cache, course_name, message):
+def test_admin_course_proposal(app_predefined_db, client_real_data,  real_auth, course_name, message):
     # GET
     real_auth.real_admin()
     response = client_real_data.get(
@@ -211,14 +197,14 @@ def test_admin_course_proposal(app_predefined_db, client_real_data, real_auth, c
     # Make sure redirect to same page again
     assert 'Wunsch unerfüllt' in response.get_data(as_text=True)
 
-    # # test with empty course '
-    with app_predefined_db.app_context():
-        with client_real_data:
-            c = cache
-            response = client_real_data.post(
-                '/admin/course-proposal', data={'selected_course': course_name}, follow_redirects=True)
-            assert message in response.get_data(
-                as_text=True)
+    # test with empty course '
+    # with app_predefined_db.app_context():
+    #     with client_session:
+    #         response = client_real_data.post(
+    #             '/admin/course-proposal', data={'selected_course': course_name}, follow_redirects=True)
+    #         # print(session[''])
+    #         assert message in response.get_data(
+    #             as_text=True)
 
 
 

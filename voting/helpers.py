@@ -4,12 +4,14 @@ import csv
 import sqlite3
 from werkzeug.security import generate_password_hash
 from typing import List
-from flask import session
+from flask import session, current_app
 from random import shuffle
 from voting.cache import get_cache
 from voting.models import get_courses_list
 
 # _courses_list = get_courses_list()
+
+
 def _generate_password(length: int) -> str:
     """Generates and returns a password of a given length.
     The password contains ascii_letters and digits
@@ -45,6 +47,7 @@ def fill_user_db(user_input_csv_file, user_output_psw_csv,  db: sqlite3.Connecti
                  row['LogIn'], password_hash, row['Klasse'])
             )
         db.commit()
+
 
 def add_new_admin_into_admin_db(name, password, db: sqlite3.Connection):
     password_hash = generate_password_hash(password)
@@ -140,6 +143,7 @@ def get_query_for_nth_vote(nth_vote) -> str:
         "WHERE vote."+nth_vote+" = ? ORDER BY class, last_name"
     return nth_query
 
+
 def get_all_grades() -> set[int]:
     '''Returns a set of grades from all courses that can be voted
     '''
@@ -150,6 +154,7 @@ def get_all_grades() -> set[int]:
 
     return grades
 
+
 def calculate_courses(db: sqlite3.Connection) -> dict:
     '''Calculates the final courses based on the votes of all students and the maximum 
     capacity of each course. 
@@ -157,21 +162,24 @@ def calculate_courses(db: sqlite3.Connection) -> dict:
     '''
     final_courses = {}
     available_spots_per_course = {}
-    # saves the students id's for those students who gets set into a course primarily because first wish could be fulfilled immediately 
+    # saves the students id's for those students who gets set into a course primarily because first wish could be fulfilled immediately
     first_votes_fits_user_ids = []
 
     for course in get_courses_list():
-        final_courses[course.name] =[]
+        final_courses[course.name] = []
         available_spots_per_course[course.name] = int(course.max_participants)
-        count = db.execute("SELECT count(*) FROM vote WHERE first_vote = ?", (course.name,)).fetchone()[0]
+        count = db.execute(
+            "SELECT count(*) FROM vote WHERE first_vote = ?", (course.name,)).fetchone()[0]
         if count > 0 and count <= int(course.max_participants):
-            students = db.execute("SELECT user.id, first_name, last_name, class FROM user INNER JOIN vote ON user.id = vote.user_id WHERE first_vote = ?", (course.name,)).fetchall()
+            students = db.execute(
+                "SELECT user.id, first_name, last_name, class FROM user INNER JOIN vote ON user.id = vote.user_id WHERE first_vote = ?", (course.name,)).fetchall()
             final_courses[course.name].extend(students)
             for student in students:
+                # id = student['id']
                 first_votes_fits_user_ids.append(student['id'])
+                add_final_course_into_db(course.name, student['id'], db)
             available_spots_per_course[course.name] -= count
 
-    
     placeholders = ','.join('?' for _ in range(len(first_votes_fits_user_ids)))
     query = (
         "SELECT id, first_name, last_name, class "
@@ -181,15 +189,16 @@ def calculate_courses(db: sqlite3.Connection) -> dict:
 
     grades = get_all_grades()
     # create a dict so students for each class (i.e. 8a- 8d is ONE class 8) get stored where key is class
-    students_per_grade = {} 
+    students_per_grade = {}
     for grade in grades:
         students_per_grade[grade] = []
-    
+
     # fill the dict:
     # get all n-th-graders, where n is element of grades-list. Randomly order the students
     for nth_grade in students_per_grade:
         grade = str(nth_grade) + "%"
-        students = db.execute(query, (grade,)+ tuple(first_votes_fits_user_ids)).fetchall()
+        students = db.execute(
+            query, (grade,) + tuple(first_votes_fits_user_ids)).fetchall()
         # reorder students randomly
         shuffle(students)
         students_per_grade[nth_grade] = students
@@ -202,29 +211,40 @@ def calculate_courses(db: sqlite3.Connection) -> dict:
     for grade in grades:
         # assuming that there will be at least one student for each grade
         for student in students_per_grade[grade]:
-            vote = db.execute("SELECT * from vote WHERE user_id = ?", (student['id'],)).fetchone()
-            # check if course for first_vote is available, 
+            # id = student['id']
+            vote = db.execute(
+                "SELECT * from vote WHERE user_id = ?", (student['id'],)).fetchone()
+            # check if course for first_vote is available,
             # if so add to list, update dict
             if available_spots_per_course[vote['first_vote']] > 0:
                 final_courses[vote['first_vote']].append(student)
                 available_spots_per_course[vote['first_vote']] -= 1
+                add_final_course_into_db(vote['first_vote'], student['id'], db)
             # if not, check second- and third-vote. If even third vote not available add to unfulfilled wish course
-            elif available_spots_per_course[vote['second_vote']] >0:
+            elif available_spots_per_course[vote['second_vote']] > 0:
                 final_courses[vote['second_vote']].append(student)
                 available_spots_per_course[vote['second_vote']] -= 1
+                add_final_course_into_db(vote['second_vote'], student['id'], db)
             elif available_spots_per_course[vote['third_vote']] > 0:
                 final_courses[vote['third_vote']].append(student)
                 available_spots_per_course[vote['third_vote']] -= 1
+                add_final_course_into_db(vote['third_vote'], student['id'], db)
             else:
                 final_courses['unfulfilled_wish'].append(student)
-    
-    # create a dictionary that stores 
-    serialized_data = {course: [row_to_dict(student) for student in students] for course, students, in final_courses.items()}
-    session['course_proposals'] = serialized_data
-    # get_cache().set('course_proposals', serialized_data)
-    session['courses_calculated'] = True
+                add_final_course_into_db('unfulfilled_wish', student['id'], db)
+
+    # create a dictionary that stores
+    serialized_data = {course: [row_to_dict(
+        student) for student in students] for course, students, in final_courses.items()}
+    # session['course_proposals'] = serialized_data
+    current_app.config['COURSES_CALCULATED'] = True
     return final_courses
 
 
 def row_to_dict(row):
     return dict(zip(row.keys(), row))
+
+
+def add_final_course_into_db(course_name : str, user_id: int, db : sqlite3.Connection):
+    db.execute("UPDATE user SET final_course = ? WHERE id = ?", (course_name, user_id,))
+    db.commit()
