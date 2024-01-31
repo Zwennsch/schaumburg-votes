@@ -50,6 +50,10 @@ def auth(client):
 def real_auth(client_real_data):
     return AuthActions(client_real_data)
 
+@pytest.fixture
+def empty_final_courses_auth(client_empty_final_courses):
+    return AuthActions(client_empty_final_courses)
+
 
 @pytest.fixture
 def app():
@@ -90,9 +94,10 @@ def app_predefined_db():
     })
     init_cache(app)
     yield app
-    
+
+
 @pytest.fixture
-def app_predefined_test_db():
+def app_empty_final_courses_db():
     db_path = os.path.join('./tests/', 'real_data2.sqlite')
     course_path = os.path.join('./tests/', 'real_courses.csv')
 
@@ -106,6 +111,7 @@ def app_predefined_test_db():
         print(f"Error: {e}")
     finally:
         cursor.close()
+        connection.close()
 
     app = create_app({
         'TESTING': True,
@@ -120,9 +126,16 @@ def app_predefined_test_db():
 
 @pytest.fixture
 def cache(app_predefined_db):
+    print('in cache fixture')
     cache = get_cache()
     cache.set('course_proposals', final_courses_dict)
     return cache
+
+# @pytest.fixture
+# def cache(app_empty_final_courses_db):
+#     cache = get_cache()
+#     cache.set('course_proposals', final_courses_dict)
+#     return cache
 
 
 @pytest.fixture
@@ -132,7 +145,13 @@ def client(app):
 
 @pytest.fixture
 def client_real_data(app_predefined_db):
+    print('in fixture client_real_data')
     return app_predefined_db.test_client()
+
+@pytest.fixture
+def client_empty_final_courses(app_empty_final_courses_db):
+    print('in fixture client_empty_final_courses')
+    return app_empty_final_courses_db.test_client()
 
 
 @pytest.fixture

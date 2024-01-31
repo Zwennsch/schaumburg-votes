@@ -2,7 +2,6 @@ import voting.helpers as helpers
 from voting.db import get_db
 
 
-
 def test_calculate_courses(app_predefined_db, client_real_data):
     with app_predefined_db.app_context():
         with client_real_data:
@@ -36,6 +35,7 @@ def test_calculate_cs_view(auth, client, monkeypatch):
     assert Recorder.called == True
     assert 'Kurse wurden berechnet' in response.get_data(as_text=True)
 
+
 def test_should_set_global_state_courses_calculated(app_predefined_db, client_real_data, real_auth):
     with app_predefined_db.app_context():
         # should be false, before calculating course
@@ -48,15 +48,17 @@ def test_should_set_global_state_courses_calculated(app_predefined_db, client_re
         assert app_predefined_db.config['COURSES_CALCULATED'] == True
 
 
-def test_should_add_final_courses_into_user_db(app_predefined_test_db, real_auth):
-    with app_predefined_test_db.app_context():
-        real_auth.admin_login()
+def test_should_add_final_courses_into_user_db(app_empty_final_courses_db, client_empty_final_courses, empty_final_courses_auth):
+    with app_empty_final_courses_db.app_context():
         # should not be any data before adding
         db = get_db()
-        final_course_before = db.execute("SELECT final_course FROM user WHERE id = 1").fetchone()[0]
+        final_course_before = db.execute(
+            "SELECT final_course FROM user WHERE id = 1").fetchone()[0]
         assert final_course_before == 'LEER'
         # should be a final course after course_calculation:
-        app_predefined_test_db.test_client().get('/admin/course-calculation')
-        final_course_before = db.execute("SELECT final_course FROM user WHERE id = 1").fetchone()[0]
+        empty_final_courses_auth.real_admin()
+        client_empty_final_courses.get('/admin/course-calculation')
+        # app_predefined_db.test_client().get('/admin/course-calculation')
+        final_course_before = db.execute(
+            "SELECT final_course FROM user WHERE id = 1").fetchone()[0]
         assert final_course_before != 'LEER'
-
