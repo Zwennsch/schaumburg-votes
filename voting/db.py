@@ -1,7 +1,6 @@
 import sqlite3
 import click
 from flask import current_app, g
-from voting.models import init_courses
 from voting.helpers import fill_user_db, add_new_admin_into_admin_db, is_username_taken, calculate_courses
 
 

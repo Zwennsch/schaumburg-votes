@@ -6,8 +6,7 @@ from flask import (
 from werkzeug.security import check_password_hash
 
 from voting.db import get_db
-from sqlite3 import OperationalError
-from voting.models import init_courses
+# from sqlite3 import OperationalError
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -37,7 +36,6 @@ def login():
             if admin and check_password_hash(admin['password_hash'], password):
                 # successfully logged in as admin user
                 session.clear()
-                print('in auth.py before setting session for admin')
                 session['admin'] = True
                 session['admin_name'] = admin['username']
                 # g.admin = True

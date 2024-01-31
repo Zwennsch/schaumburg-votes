@@ -4,12 +4,10 @@ import csv
 import sqlite3
 from werkzeug.security import generate_password_hash
 from typing import List
-from flask import session, current_app
+from flask import current_app
 from random import shuffle
-from voting.cache import get_cache
 from voting.models import get_courses_list
 
-# _courses_list = get_courses_list()
 
 
 def _generate_password(length: int) -> str:
@@ -164,7 +162,6 @@ def calculate_courses(db: sqlite3.Connection) -> dict:
     available_spots_per_course = {}
     # saves the students id's for those students who gets set into a course primarily because first wish could be fulfilled immediately
     first_votes_fits_user_ids = []
-    print('in calculate_courses in helpers.py')
     for course in get_courses_list():
         final_courses[course.name] = []
         available_spots_per_course[course.name] = int(course.max_participants)
@@ -238,7 +235,6 @@ def calculate_courses(db: sqlite3.Connection) -> dict:
         student) for student in students] for course, students, in final_courses.items()}
     # session['course_proposals'] = serialized_data
     current_app.config['COURSES_CALCULATED'] = True
-    print('after setting current_app_config_COURSES_CALCULATED to True')
     return final_courses
 
 

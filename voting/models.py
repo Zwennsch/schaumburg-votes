@@ -1,4 +1,4 @@
-from flask import Flask, current_app
+from flask import current_app
 import csv
 import os
 

@@ -126,7 +126,6 @@ def app_empty_final_courses_db():
 
 @pytest.fixture
 def cache(app_predefined_db):
-    print('in cache fixture')
     cache = get_cache()
     cache.set('course_proposals', final_courses_dict)
     return cache
@@ -145,12 +144,10 @@ def client(app):
 
 @pytest.fixture
 def client_real_data(app_predefined_db):
-    print('in fixture client_real_data')
     return app_predefined_db.test_client()
 
 @pytest.fixture
 def client_empty_final_courses(app_empty_final_courses_db):
-    print('in fixture client_empty_final_courses')
     return app_empty_final_courses_db.test_client()
 
 

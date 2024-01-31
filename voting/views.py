@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, current_app, url_for
+    Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 from voting.db import get_db
 from voting.helpers import is_username_taken, add_user_to_database, get_query_for_nth_vote, calculate_courses
@@ -265,7 +265,6 @@ def course_proposal():
 def calculate_cs():
     # TODO: I have to somehow make sure, that everyone voted... 
     # otherwise the admin should be redirected to views.admin    
-    print('in route for course-calculation in views')
     calculate_courses(get_db())
     flash('Kurse wurden berechnet', category='info')
     return redirect(url_for('views.course_proposal', active_page='course-proposal'))
