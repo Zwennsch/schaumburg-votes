@@ -248,9 +248,8 @@ def course_proposal():
         if not selected_course:
             flash('Bitte Kurs auswählen', category='warning')
             return redirect(url_for('views.course_proposal'))
-        # course_proposal = session['course_proposals'][selected_course]
-        course_proposal = get_db().execute("SELECT * FROM user WHERE final_course = ?", (selected_course,))
-        if not course_proposal:
+        course_proposal = get_db().execute("SELECT * FROM user WHERE final_course = ?", (selected_course,)).fetchall()
+        if (len(course_proposal)) == 0:
             if (selected_course == 'unfulfilled_wish'):
                 flash('Alle Wünsche erfüllt!', category='info')
             else:
