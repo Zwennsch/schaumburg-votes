@@ -197,6 +197,7 @@ def test_admin_course_proposal(app_predefined_db, client_real_data,  real_auth, 
     # Make sure redirect to same page again
     assert 'Wunsch unerfüllt' in response.get_data(as_text=True)
 
+    # TODO: Test missing, because corses are no longer stored in session data
     # test with empty course '
     # with app_predefined_db.app_context():
     #     with client_session:

@@ -38,7 +38,10 @@ def login():
                 session.clear()
                 session['admin'] = True
                 session['admin_name'] = admin['username']
-                # g.admin = True
+                # set session object if courses have already been calculated before
+                session['courses_calculated'] = db.execute(
+                    "SELECT COUNT(*) FROM user WHERE final_course != 'LEER'"
+                ).fetchone()[0] > 0
                 return redirect(url_for('views.admin_page'))
             user = db.execute(
                 'SELECT * FROM user WHERE username = ?', (username,)
@@ -104,6 +107,5 @@ def admin_required(view):
             flash("Permission denied. Please login as admin user", category="info")
             return redirect(url_for('views.index'))
         # return original view, if user is admin:
-        session['courses_calculated'] = current_app.config['COURSES_CALCULATED']
         return view(**kwargs)
     return wrapped_view

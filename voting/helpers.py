@@ -4,7 +4,7 @@ import csv
 import sqlite3
 from werkzeug.security import generate_password_hash
 from typing import List
-from flask import current_app
+from flask import current_app, session
 from random import shuffle
 from voting.models import get_courses_list
 
@@ -233,8 +233,8 @@ def calculate_courses(db: sqlite3.Connection) -> dict:
     # create a dictionary that stores
     serialized_data = {course: [row_to_dict(
         student) for student in students] for course, students, in final_courses.items()}
-    # session['course_proposals'] = serialized_data
-    current_app.config['COURSES_CALCULATED'] = True
+    session['courses_calculated'] = True
+    # current_app.config['COURSES_CALCULATED'] = True
     return final_courses
 
 

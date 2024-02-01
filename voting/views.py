@@ -12,10 +12,6 @@ bp = Blueprint('views', __name__)
 
 cache = get_cache()
 
-# @current_app.before_request
-# def load_courses_into_app():
-#     load_courses(current_app)
-
 @bp.route('/')
 def index():
     user = None

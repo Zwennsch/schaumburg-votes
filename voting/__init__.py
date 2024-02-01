@@ -13,7 +13,7 @@ def create_app(test_config=None):
         STUDENTS=os.path.join(app.instance_path, 'students.csv'),
         STUDENTS_PWD=os.path.join(app.instance_path, 'students_pwd.csv'),
         DEFAULT_IMAGE='New-Class-Alert.jpg',
-        COURSES_CALCULATED= False,
+        # COURSES_CALCULATED= False,
         CACHE_TYPE='SimpleCache',
         CACHE_DEFAULT_TIMEOUT=600  # 10 minutes of cache timeout
     )

@@ -130,11 +130,6 @@ def cache(app_predefined_db):
     cache.set('course_proposals', final_courses_dict)
     return cache
 
-# @pytest.fixture
-# def cache(app_empty_final_courses_db):
-#     cache = get_cache()
-#     cache.set('course_proposals', final_courses_dict)
-#     return cache
 
 
 @pytest.fixture
