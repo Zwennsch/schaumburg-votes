@@ -1,11 +1,14 @@
 import voting.helpers as helpers
 from voting.db import get_db
+from flask import session
 
 
 def test_calculate_courses(app_predefined_db, client_real_data):
     with app_predefined_db.app_context():
         with client_real_data:
             db = get_db()
+            # make basic HTTP-request to get access to session object
+            client_real_data.get('/admin/course-results')
             result = helpers.calculate_courses(db)
             # assert that all students are distributed
             total_sum = 0
@@ -36,16 +39,19 @@ def test_calculate_cs_view(auth, client, monkeypatch):
     assert 'Kurse wurden berechnet' in response.get_data(as_text=True)
 
 
-def test_should_set_global_state_courses_calculated(app_predefined_db, client_real_data, real_auth):
-    with app_predefined_db.app_context():
-        # should be false, before calculating course
-        assert app_predefined_db.config['COURSES_CALCULATED'] == False
-        # login as admin
-        real_auth.real_admin()
-        # course calculation
-        client_real_data.get('/admin/course-calculation')
-        # should be True, after calculating courses
-        assert app_predefined_db.config['COURSES_CALCULATED'] == True
+def test_should_set_session_courses_calculated(app_empty_final_courses_db, client_empty_final_courses, empty_final_courses_auth):
+    with app_empty_final_courses_db.app_context():
+        with client_empty_final_courses:
+            # login as admin
+            empty_final_courses_auth.real_admin()
+            # make arbitrary HTTP request 
+            client_empty_final_courses.get('/admin/course-results')
+            # should be false, before calculating course
+            assert session['courses_calculated'] == False
+            # course calculation
+            client_empty_final_courses.get('/admin/course-calculation')
+            # should be True, after calculating courses
+            assert session['courses_calculated'] == True
 
 
 def test_should_add_final_courses_into_user_db(app_empty_final_courses_db, client_empty_final_courses, empty_final_courses_auth):
