@@ -1,6 +1,7 @@
 from flask import current_app
 import csv
 import os
+from voting.exceptions import WrongCsvFormatError
 
 _courses_list = []
 
@@ -21,20 +22,21 @@ class Course:
 def init_courses():
     global _courses_list
     courses = []
-    # TODO: should return an error if there is no courses.csv file
     with open((current_app.config['COURSES']), mode='r') as csv_file:
-
         csv_reader = csv.DictReader(csv_file)
         img_name = ''
-        for row in csv_reader:
-            classes = tuple(map(int, row['classes'].split(',')))
-            img_name = current_app.config['DEFAULT_IMAGE']
-            # check if there is a file in the static folder:
-            if current_app.static_folder:
-                if os.path.exists(os.path.join(current_app.static_folder, row['img_name'])):
-                    img_name = row['img_name']
-            courses.append(Course(classes,
-                                  row['name'], row['max_participants'], row['teacher'], row['description'], img_name))
+        try:
+            for row in csv_reader:
+                classes = tuple(map(int, row['classes'].split(',')))
+                img_name = current_app.config['DEFAULT_IMAGE']
+                # check if there is a file in the static folder:
+                if current_app.static_folder:
+                    if os.path.exists(os.path.join(current_app.static_folder, row['img_name'])):
+                        img_name = row['img_name']
+                courses.append(Course(classes,
+                                      row['name'], row['max_participants'], row['teacher'], row['description'], img_name))
+        except KeyError as ex:
+            print('Warning: Could not read courses.csv file properly because of KeyError. Please check format of file!')
     _courses_list = courses
 
 
