@@ -133,9 +133,7 @@ dmypy.json
 .vscode/
 
 # my personal note page:
-personal_info.txt
-self_hosting.txt
-server_settings.txt
+personal/
 
 # flask-session folder
 flask_session
