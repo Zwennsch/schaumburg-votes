@@ -9,7 +9,7 @@ Students from Schaumburger Str. Bremen should be able to vote from a choice of c
 - initialize the database first from command-line in root folder using:
   flask --app voting init-db
 
-- load data into database anc courses:  
+- load data into database and courses:  
   Keep in mind that when in production the instance folder is located in 'venv/var/voting-instance' instead of the regular instance folder of a flask app.
 
   1. store a file students.csv in the instance folder.  
