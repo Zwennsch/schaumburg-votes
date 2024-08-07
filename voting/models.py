@@ -1,7 +1,6 @@
 from flask import current_app
 import csv
 import os
-from voting.exceptions import WrongCsvFormatError
 
 _courses_list = []
 
