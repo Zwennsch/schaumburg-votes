@@ -23,8 +23,8 @@ Students from Schaumburger Str. Bremen should be able to vote from a choice of c
      e.g.  
      "8,9,10",football,18,Smith,"Playing football on our local court in school",football.jpg.  
      For each course you can place an image in the 'venv/var/voting-instance/course_images' folder.
-     The name of the image file s´has to match the name courses.csv file for the img_name.
-     If you don't provide one, a default image will be shown later   
+     The name of the image file has to match the name courses.csv file for the img_name.
+     If you don't provide an image, a default one will be shown later   
 
   3. from command-line in root folder use:  
      flask --app voting init-data
