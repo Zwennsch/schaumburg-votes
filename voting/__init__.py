@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, send_from_directory
 
 
 def create_app(test_config=None):
@@ -9,10 +9,13 @@ def create_app(test_config=None):
     app.config.from_mapping(
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'voting.sqlite'),
+        COURSE_IMAGES_FOLDER_NAME='course_images',
+        COURSE_IMAGES_SRC_FOLDER=os.path.join(
+            app.instance_path, 'course_images'),
         COURSES=os.path.join(app.instance_path, 'courses.csv'),
         STUDENTS=os.path.join(app.instance_path, 'students.csv'),
         STUDENTS_PWD=os.path.join(app.instance_path, 'students_pwd.csv'),
-        DEFAULT_IMAGE='New-Class-Alert.jpg',
+        DEFAULT_IMAGE_NAME='DEFAULT.jpg',
         # COURSES_CALCULATED= False,
         CACHE_TYPE='SimpleCache',
         CACHE_DEFAULT_TIMEOUT=600  # 10 minutes of cache timeout
@@ -46,5 +49,11 @@ def create_app(test_config=None):
         with app.app_context():
             models.init_courses()
 
+    @app.route('/instance/course_images/<filename>')
+    def course_image(filename):
+        return send_from_directory(
+            app.config['COURSE_IMAGES_SRC_FOLDER'],
+            filename
+        )
 
     return app

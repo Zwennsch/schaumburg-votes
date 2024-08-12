@@ -8,7 +8,11 @@ block main %}
   <div class="col">
     <div class="card h-100" style="margin: 5px">
       <img
-        src="{{ url_for('static', filename='' + course.img_name) }}"
+        src="{% if course.img_name == 'DEFAULT.jpg' %}
+        {{ url_for('static', filename='DEFAULT.jpg') }}
+      {% else %}
+        {{ url_for('course_image', filename=course.img_name) }}
+      {% endif %}"
         class="card-img-top"
         alt="{{course.name}}"
       />
