@@ -23,6 +23,10 @@ selected_course }}{% endblock %} {% block main %}
         </tr>
         {% endfor %}
       </tbody>
+      <tfoot class="table-active">
+        <th colspan="3">gesamt</th>
+        <td>{{ course_proposal | length }}</td>
+      </tfoot>
     </table>
   </div>
 </div>

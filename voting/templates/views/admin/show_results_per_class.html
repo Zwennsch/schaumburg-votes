@@ -26,6 +26,10 @@ endblock %} {% block main %}
           </tr>
           {% endfor %}
         </tbody>
+        <tfoot class="table-active">
+          <th colspan="4">gesamt</th>
+          <td>{{ class_results | length }}</td>
+        </tfoot>
       </table>
     <!-- </div> -->
   </div>
