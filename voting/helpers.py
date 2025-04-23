@@ -191,7 +191,7 @@ def calculate_courses(db: sqlite3.Connection) -> dict:
         students_per_grade[grade] = []
 
     # fill the dict:
-    # get all n-th-graders, where n is element of grades-list. Randomly order the students
+    # get all n-th-graders, where n is element of grades-list. 
     for nth_grade in students_per_grade:
         grade = str(nth_grade) + "%"
         students = db.execute(
@@ -245,3 +245,8 @@ def row_to_dict(row):
 def add_final_course_into_db(course_name : str, user_id: int, db : sqlite3.Connection):
     db.execute("UPDATE user SET final_course = ? WHERE id = ?", (course_name, user_id,))
     db.commit()
+
+# I might need to reset at some point
+# def reset_final_courses(db : sqlite3.Connection):
+#     db.execute("UPDATE user SET final_course = 'LEER'")
+#     db.commit()

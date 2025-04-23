@@ -18,7 +18,7 @@ def _get_classes_from_database() -> list:
     Returns a list of tuples, where each tuple contains just one 'String'
     """
     # Using the cursor instead of get_db() since Flask caching does not work with 
-    # sqlite3.Row since Row objects are not picklable 
+    # sqlite3.Row since Row objects are not pickable 
     con = sqlite3.connect(
             current_app.config['DATABASE'],
             detect_types=sqlite3.PARSE_DECLTYPES
