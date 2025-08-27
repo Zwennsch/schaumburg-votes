@@ -16,6 +16,7 @@ Students from Schaumburger Str. Bremen should be able to vote from a choice of c
      This will only be for temporarily use, you can delete this file after the data is stored in the database voting.sql in the instance folder
      the file contains 4 columns:
      Klasse, Nachname, Vorname, LogIn
+     The second row starts with the data.
 
   2. create a courses.csv in the instance folder.
      It should contain 6 columns:
