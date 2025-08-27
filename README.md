@@ -15,7 +15,7 @@ Students from Schaumburger Str. Bremen should be able to vote from a choice of c
   1. store a file students.csv in the instance folder.  
      This will only be for temporarily use, you can delete this file after the data is stored in the database voting.sql in the instance folder
      the file contains 4 columns:
-     Klasse, Nachname, Vorname, LogIn
+     Klasse, Nachname, Vorname, LogIn\
      The second row starts with the data.
 
   2. create a courses.csv in the instance folder.
@@ -25,7 +25,7 @@ Students from Schaumburger Str. Bremen should be able to vote from a choice of c
      "8,9,10",football,18,Smith,"Playing football on our local court in school",football.jpg.  
      For each course you can place an image in the 'venv/var/voting-instance/course_images' folder.
      The name of the image file has to match the name courses.csv file for the img_name.
-     If you don't provide an image, a default one will be shown later   
+     If you don't provide an image, a default one will be shown later
 
   3. from command-line in root folder use:  
      flask --app voting init-data
